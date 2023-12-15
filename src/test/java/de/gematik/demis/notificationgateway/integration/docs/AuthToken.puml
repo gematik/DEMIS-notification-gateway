@@ -1,0 +1,27 @@
+@startuml
+digraph overviewNotificationGatewayAPITestArchitecture{
+fontname="Helvetica,Arial,sans-serif"
+ node [fontname="Helvetica,Arial,sans-serif"]
+ edge [fontname="Helvetica,Arial,sans-serif"]
+	authService[];
+	testcontrol[tooltip="Testausführung, Validierung und Report"];
+    testdata1[label="Custom Testdata" tooltip="Testdaten werden in Yaml modelliert"];
+    testdata2[label="Fake Testdata"];
+
+    node [shape=record];
+    notificationGAPI[label="{<f0> Hospitalization |<f1> Laboratory} | Notification Gateway API"];
+    mockFHIR[label="Mock for FHIR Notifications"];
+
+	testcontrol -> authService [taillabel="accessToken"];
+	authService -> testcontrol;
+	testcontrol -> testdata1;
+	testcontrol -> testdata2;
+
+    testcontrol -> notificationGAPI:f0;
+    testcontrol -> notificationGAPI:f1;
+    notificationGAPI -> mockFHIR[taillabel="output"];
+    testcontrol -> mockFHIR[taillabel=""];
+
+
+}
+@enduml

@@ -1,0 +1,87 @@
+{
+  "pathogen": "cvdp",
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "existsBsnr": false
+    },
+    "address": {
+      "street": "Straße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "additionalInfo": null
+    },
+    "contact": {
+      "salutation": null,
+      "lastname": "Ansprechpartner",
+      "firstname": "Anna",
+      "prefix": null
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      }
+    ]
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "FEMALE",
+      "firstname": "Bertha",
+      "lastname": "Betroffen",
+      "birthDate": null
+    },
+    "primaryAddress": {
+      "street": null,
+      "houseNumber": null,
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "addressType": "primary"
+    },
+    "contacts": []
+  },
+  "disease": {
+    "conditionInfo": {
+      "symptomQuestion": {
+        "symptomStatus": "NO"
+      }
+    },
+    "diseaseInfoCommon": {
+      "deathQuestion": {
+        "dead": "NO"
+      },
+      "hospitalizationQuestion": {
+        "hospitalized": "NO"
+      },
+      "infectionProtectionFacilityQuestion": {
+        "infectionProtectionFacilityExisting": "NO"
+      },
+      "labQuestion": {
+        "labAssigned": "NO"
+      },
+      "military": "UNKNOWN",
+      "organDonor": "UNKNOWN",
+      "exposurePlaceQuestion": {
+        "exposurePlaceKnown": "YES",
+        "exposurePlaceInfo": {
+          "region": "ASKU",
+          "exposureStartDate": "2021-12-20",
+          "exposureEndDate": "2021-12-28",
+          "hint": "Anmerkung"
+        }
+      }
+    },
+    "diseaseInfoCVDD": {
+      "contactToInfected": "UNKNOWN",
+      "vaccinationQuestion": {
+        "immunizationStatus": "INDETERMINATE"
+      },
+      "infectionEnvironmentQuestion": {
+        "infectionEnvironmentExisting": "NO"
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "resourceType": "OperationOutcome",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"/>"
+  },
+  "issue": [ {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for the specified profile among choices: ; [https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory, https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratorySARSCoV2]"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Patient/f55d6ca9-20fd-466c-9dc6-56aac1d97f41 among choices: https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson (validating against https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory|1.2.1 [NotificationLaboratory])"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile DiagnosticReport/ba8c093a-b6f1-432d-925e-79f0271906ea among choices: https://demis.rki.de/fhir/StructureDefinition/LaboratoryReport (validating against https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory|1.2.1 [NotificationLaboratory])"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Composition.section:laboratoryReport: max allowed = 0, but found 1 (from https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratorySARSCoV2) (validating against https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratorySARSCoV2|1.0.1 [NotificationLaboratorySARSCoV2])"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Patient/f55d6ca9-20fd-466c-9dc6-56aac1d97f41 among choices: https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson (validating against https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratorySARSCoV2|1.0.1 [NotificationLaboratorySARSCoV2])"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile DiagnosticReport/ba8c093a-b6f1-432d-925e-79f0271906ea among choices: https://demis.rki.de/fhir/StructureDefinition/LaboratoryReport (validating against https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratorySARSCoV2|1.0.1 [NotificationLaboratorySARSCoV2])"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Patient/f55d6ca9-20fd-466c-9dc6-56aac1d97f41 among choices: https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile DiagnosticReport/ba8c093a-b6f1-432d-925e-79f0271906ea among choices: https://demis.rki.de/fhir/StructureDefinition/LaboratoryReport"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "noNumbersInFamilyName: 'Der Nachname der betroffenen Person darf keine Zahlen enthalten.' Rule 'Der Nachname der betroffenen Person darf keine Zahlen enthalten.' Failed"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "noNumbersInGivenName: 'Die Vornamen der betroffenen Person dürfen keine Zahlen enthalten.' Rule 'Die Vornamen der betroffenen Person dürfen keine Zahlen enthalten.' Failed"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Patient/f55d6ca9-20fd-466c-9dc6-56aac1d97f41 among choices: https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Observation/468303ee-e5ff-444a-a50d-df457eab65cc among choices: https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionCVDP"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Patient/f55d6ca9-20fd-466c-9dc6-56aac1d97f41 among choices: https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Specimen/56bc402c-6662-4a50-90e4-88d0fd36aae8 among choices: https://demis.rki.de/fhir/StructureDefinition/SpecimenCVDP"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Unable to find a match for profile Patient/f55d6ca9-20fd-466c-9dc6-56aac1d97f41 among choices: https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+  } ]
+}

@@ -1,0 +1,108 @@
+{
+  "pathogen": "cvdp",
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "existsBsnr": false
+    },
+    "address": {
+      "street": "Straße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "additionalInfo": null
+    },
+    "contact": {
+      "salutation": null,
+      "lastname": "Ansprechpartner",
+      "firstname": "Anna",
+      "prefix": null
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      }
+    ]
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "FEMALE",
+      "firstname": "Bertha",
+      "lastname": "Betroffen",
+      "birthDate": null
+    },
+    "primaryAddress": {
+      "street": null,
+      "houseNumber": null,
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "addressType": "primary"
+    },
+    "contacts": []
+  },
+  "disease": {
+    "conditionInfo": {
+      "symptomQuestion": {
+        "symptomStatus": "NO"
+      }
+    },
+    "diseaseInfoCommon": {
+      "deathQuestion": {
+        "dead": "NO"
+      },
+      "hospitalizationQuestion": {
+        "hospitalized": "YES",
+        "hospitalizedEncounterInfo": {
+          "hospitalizationStartDate": "2022-01-05",
+          "intensiveCare": "false",
+          "intensiveCareStartDate": null
+        }
+      },
+      "infectionProtectionFacilityQuestion": {
+        "infectionProtectionFacilityExisting": "YES",
+        "infectionProtectionFacilityInfo": {
+          "role": "EMPLOYMENT",
+          "facilityName": "Friedhof",
+          "address": {
+            "street": null,
+            "houseNumber": null,
+            "zip": "12345",
+            "city": "Berlin",
+            "country": "20422"
+          },
+          "startDate": null,
+          "endDate": null,
+          "contactsInfo": null
+        }
+      },
+      "military": "UNKNOWN",
+      "organDonor": "UNKNOWN",
+      "exposurePlaceQuestion": {
+        "exposurePlaceKnown": "YES",
+        "exposurePlaceInfo": {
+          "region": "ASKU",
+          "exposureStartDate": null,
+          "exposureEndDate": null,
+          "hint": null
+        }
+      },
+      "labQuestion": {
+        "labAssigned": "NO",
+        "labInfo": null
+      }
+    },
+    "diseaseInfoCVDD": {
+      "contactToInfected": "UNKNOWN",
+      "vaccinationQuestion": {
+        "immunizationStatus": "INDETERMINATE",
+        "vaccinations": null
+      },
+      "infectionEnvironmentQuestion": {
+        "infectionEnvironmentExisting": "NO"
+      }
+    }
+  }
+}

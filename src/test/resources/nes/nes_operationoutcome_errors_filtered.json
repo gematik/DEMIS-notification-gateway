@@ -1,0 +1,20 @@
+{
+  "resourceType": "OperationOutcome",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"/>"
+  },
+  "issue": [ {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "Composition.section:laboratoryReport: max allowed = 0, but found 1 (from https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratorySARSCoV2) (validating against https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratorySARSCoV2|1.0.1 [NotificationLaboratorySARSCoV2])"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "noNumbersInFamilyName: 'Der Nachname der betroffenen Person darf keine Zahlen enthalten.' Rule 'Der Nachname der betroffenen Person darf keine Zahlen enthalten.' Failed"
+  }, {
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "noNumbersInGivenName: 'Die Vornamen der betroffenen Person dürfen keine Zahlen enthalten.' Rule 'Die Vornamen der betroffenen Person dürfen keine Zahlen enthalten.' Failed"
+  }]
+}

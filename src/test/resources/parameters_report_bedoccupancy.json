@@ -1,0 +1,150 @@
+{
+    "resourceType": "Parameters",
+    "parameter": [ {
+        "name": "content",
+        "resource": {
+            "resourceType": "Bundle",
+            "id": "79885dbb-a56b-473a-b1ba-6862f84b699e",
+            "meta": {
+                "lastUpdated": "2022-08-31T13:38:38.511+02:00",
+                "profile": [ "https://demis.rki.de/fhir/StructureDefinition/ReportBundle" ]
+            },
+            "identifier": {
+                "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
+                "value": "ae8e56aa-1620-4997-9ab4-1396d632cbb4"
+            },
+            "type": "document",
+            "timestamp": "2022-08-31T13:38:38.511+02:00",
+            "entry": [ {
+                "fullUrl": "https://demis.rki.de/fhir/Composition/4872eb5c-4eca-403e-a96f-cd9e047b8098",
+                "resource": {
+                    "resourceType": "Composition",
+                    "id": "4872eb5c-4eca-403e-a96f-cd9e047b8098",
+                    "meta": {
+                        "profile": [ "https://demis.rki.de/fhir/StructureDefinition/ReportBedOccupancy" ]
+                    },
+                    "identifier": {
+                        "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+                        "value": "61188cb5-dcb1-432f-a47a-559e4dd2a85a"
+                    },
+                    "status": "final",
+                    "type": {
+                        "coding": [ {
+                            "system": "http://loinc.org",
+                            "code": "80563-0",
+                            "display": "Report"
+                        } ]
+                    },
+                    "category": [ {
+                        "coding": [ {
+                            "system": "https://demis.rki.de/fhir/CodeSystem/reportCategory",
+                            "code": "bedOccupancyReport",
+                            "display": "Bettenbelegungsstatistik"
+                        } ]
+                    } ],
+                    "subject": {
+                        "identifier": {
+                            "system": "https://demis.rki.de/fhir/NamingSystem/InekStandortId",
+                            "value": "123456"
+                        }
+                    },
+                    "date": "2022-08-31T13:38:38+02:00",
+                    "author": [ {
+                        "reference": "PractitionerRole/ebd2f76c-c3a7-4926-b2d3-eeaceb84abea"
+                    } ],
+                    "title": "Bericht (Krankenhausbettenbelegungsstatistik)",
+                    "section": [ {
+                        "code": {
+                            "coding": [ {
+                                "system": "https://demis.rki.de/fhir/CodeSystem/reportSection",
+                                "code": "statisticInformationBedOccupancySection",
+                                "display": "Abschnitt 'Statistische Informationen zur Krankenhausbettenbelegung'"
+                            } ]
+                        },
+                        "entry": [ {
+                            "reference": "QuestionnaireResponse/ee7dff27-fe08-4349-80a0-e394a48ea571"
+                        } ]
+                    } ]
+                }
+            }, {
+                "fullUrl": "https://demis.rki.de/fhir/Organization/ed622130-eb98-498f-b492-c0458d48861a",
+                "resource": {
+                    "resourceType": "Organization",
+                    "id": "ed622130-eb98-498f-b492-c0458d48861a",
+                    "meta": {
+                        "profile": [ "https://demis.rki.de/fhir/StructureDefinition/NotifierFacility" ]
+                    },
+                    "type": [ {
+                        "coding": [ {
+                            "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                            "code": "hospital",
+                            "display": "Krankenhaus"
+                        } ]
+                    } ],
+                    "name": "TEST Organisation",
+                    "telecom": [ {
+                        "system": "phone",
+                        "value": "01234567"
+                    } ],
+                    "address": [ {
+                        "line": [ "Straße 1" ],
+                        "city": "Buchhorst",
+                        "postalCode": "21481",
+                        "country": "20422"
+                    } ],
+                    "contact": [ {
+                        "name": {
+                            "text": "Anna Ansprechpartner",
+                            "family": "Ansprechpartner",
+                            "given": [ "Anna" ]
+                        }
+                    } ]
+                }
+            }, {
+                "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/ebd2f76c-c3a7-4926-b2d3-eeaceb84abea",
+                "resource": {
+                    "resourceType": "PractitionerRole",
+                    "id": "ebd2f76c-c3a7-4926-b2d3-eeaceb84abea",
+                    "meta": {
+                        "profile": [ "https://demis.rki.de/fhir/StructureDefinition/NotifierRole" ]
+                    },
+                    "organization": {
+                        "reference": "Organization/ed622130-eb98-498f-b492-c0458d48861a"
+                    }
+                }
+            }, {
+                "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/ee7dff27-fe08-4349-80a0-e394a48ea571",
+                "resource": {
+                    "resourceType": "QuestionnaireResponse",
+                    "id": "ee7dff27-fe08-4349-80a0-e394a48ea571",
+                    "meta": {
+                        "profile": [ "https://demis.rki.de/fhir/StructureDefinition/StatisticInformationBedOccupancy" ]
+                    },
+                    "questionnaire": "https://demis.rki.de/fhir/Questionnaire/StatisticQuestionsBedOccupancy",
+                    "status": "completed",
+                    "item": [ {
+                        "linkId": "numberOperableBedsGeneralWardAdults",
+                        "answer": [ {
+                            "valueInteger": 30
+                        } ]
+                    }, {
+                        "linkId": "numberOccupiedBedsGeneralWardAdults",
+                        "answer": [ {
+                            "valueInteger": 22
+                        } ]
+                    }, {
+                        "linkId": "numberOperableBedsGeneralWardChildren",
+                        "answer": [ {
+                            "valueInteger": 5
+                        } ]
+                    }, {
+                        "linkId": "numberOccupiedBedsGeneralWardChildren",
+                        "answer": [ {
+                            "valueInteger": 2
+                        } ]
+                    } ]
+                }
+            } ]
+        }
+    } ]
+}

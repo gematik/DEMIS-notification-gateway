@@ -1,0 +1,45 @@
+{
+  "notifierFacility": {
+    "locationID": "123456",
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "existsBsnr": true,
+      "bsnr": "123456789"
+    },
+    "address": {
+      "street": "Straße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "additionalInfo": null,
+      "addressType": "current"
+    },
+    "contact": {
+      "salutation": "Mrs",
+      "lastname": "Ansprechpartner",
+      "firstname": "Anna Beate Carolin",
+      "prefix": "Dr."
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      },
+      {
+        "contactType": "email",
+        "value": "anna@ansprechpartner.de"
+      }
+    ]
+  },
+  "bedOccupancyQuestion": {
+    "occupiedBeds": {
+      "adultsNumberOfBeds": 22,
+      "childrenNumberOfBeds": 2
+    },
+    "operableBeds": {
+      "adultsNumberOfBeds": 30,
+      "childrenNumberOfBeds": 5
+    }
+  }
+}

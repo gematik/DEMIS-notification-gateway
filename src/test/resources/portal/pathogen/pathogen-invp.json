@@ -1,0 +1,32 @@
+{
+  "codeDisplay": {
+    "code": "invp",
+    "display": "Influenzavirus; Meldepflicht nur für den direkten Nachweis",
+    "designations": [
+      {
+        "language": "de",
+        "value": "Influenzavirus"
+      }
+    ]
+  },
+  "methods": [
+    {
+      "code": "67122001",
+      "display": "Acid fast stain method (procedure)"
+    },
+    {
+      "code": "127785005",
+      "display": "Administration of substance to produce immunity, either active or passive (procedure)"
+    }
+  ],
+  "materials": [
+    {
+      "code": "258607008",
+      "display": "Bronchoalveolar lavage fluid sample (specimen)"
+    },
+    {
+      "code": "309174004",
+      "display": "Bronchial biopsy sample (specimen)"
+    }
+  ]
+}

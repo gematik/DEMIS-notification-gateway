@@ -1,0 +1,118 @@
+{
+  "pathogen": "cvdp",
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "MarienkrankenhausTEST-ONLY",
+      "existsBsnr": false
+    },
+    "address": {
+      "street": "TestStr",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Berlin",
+      "country": "20422",
+      "additionalInfo": null,
+      "addressType": "current"
+    },
+    "contact": {
+      "salutation": "Mr",
+      "lastname": "MarienkrankenhausTEST-ONLY",
+      "firstname": "test",
+      "prefix": null
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      }
+    ]
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "MALE",
+      "firstname": "Patient",
+      "lastname": "nice",
+      "birthDate": "1980-06-04"
+    },
+    "currentAddress": {
+      "street": "",
+      "houseNumber": "",
+      "zip": 12345,
+      "city": null,
+      "country": "20422",
+      "additionalInfo": null,
+      "addressType": "current"
+    },
+    "contacts": [],
+    "primaryAddress": {
+      "street": "TestStr",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": null,
+      "country": "20422",
+      "addressType": "primary"
+    }
+  },
+  "disease": {
+    "diseaseInfoCommon": {
+      "deathQuestion": {
+        "dead": "YES",
+        "deathDate": "2022-03-14T23:00:00.000Z"
+      },
+      "labQuestion": {
+        "labAssigned": "UNKNOWN",
+        "labInfo": null
+      },
+      "military": "UNKNOWN",
+      "infectionProtectionFacilityQuestion": {
+        "infectionProtectionFacilityExisting": "UNKNOWN"
+      },
+      "hospitalizationQuestion": {
+        "hospitalized": "YES",
+        "hospitalizedEncounterInfo": {
+          "hospitalizationStartDate": "2022-03-22",
+          "intensiveCare": false,
+          "additionalInfo": ""
+        }
+      },
+      "exposurePlaceQuestion": {
+        "exposurePlaceKnown": "UNKNOWN",
+        "exposurePlaceInfo": null
+      },
+      "organDonor": "UNKNOWN",
+      "additionalInfo": null
+    },
+    "diseaseInfoCVDD": {
+      "contactToInfected": "UNKNOWN",
+      "vaccinationQuestion": {
+        "immunizationStatus": "YES",
+        "vaccinations": [
+          {
+            "vaccine": "UNKNOWN",
+            "vaccinationDate": "2001",
+            "additionalInfo": "this is an info for 'not asked'"
+          },
+          {
+            "vaccine": "INDETERMINATE",
+            "vaccinationDate": "2022",
+            "additionalInfo": "this is an info for 'asked but unknown'"
+          }
+        ]
+      },
+      "infectionEnvironmentQuestion": {
+        "infectionEnvironmentExisting": "UNKNOWN"
+      }
+    },
+    "conditionInfo": {
+      "symptomQuestion": {
+        "symptomStatus": "YES",
+        "symptoms": [
+          "ACUTE_RESPIRATORY_DISTRESS_SYNDROME",
+          "MUSCLE_PAIN",
+          "LOSS_OF_TASTE",
+          "OTHER_COVID_19_SYMPTOMS"
+        ]
+      }
+    }
+  }
+}

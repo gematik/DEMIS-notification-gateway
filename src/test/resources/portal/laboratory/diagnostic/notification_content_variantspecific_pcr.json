@@ -1,0 +1,51 @@
+{
+    "pathogen": "cvdp",
+    "notifierFacility": {
+        "facilityInfo": {
+            "institutionName": "TEST Organisation",
+            "existsBsnr": false
+        },
+        "address": {
+            "street": "Straße",
+            "houseNumber": "1",
+            "zip": "21481",
+            "city": "Buchhorst",
+            "country": "20422",
+            "additionalInfo": null
+        },
+        "contact": {
+            "salutation": null,
+            "lastname": "Ansprechpartner",
+            "firstname": "Anna",
+            "prefix": null
+        },
+        "contacts": [
+            {
+                "contactType": "phone",
+                "value": "01234567"
+            }
+        ]
+    },
+    "notifiedPerson": {
+        "info": {
+            "gender": "FEMALE",
+            "firstname": "Bertha",
+            "lastname": "Betroffen",
+            "birthDate": "1999-06-09"
+        },
+        "currentAddress": {
+            "street": null,
+            "houseNumber": null,
+            "zip": "21481",
+            "city": "Buchhorst",
+            "country": "20422",
+            "addressType": "current"
+        },
+        "contacts": []
+    },
+    "diagnostic": {
+        "testType": "VARIANT_SPECIFIC_PCR",
+        "receivedDate": "2022-01-27T10:45:11.000Z",
+        "comment": ""
+    }
+}

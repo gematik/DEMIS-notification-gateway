@@ -1,0 +1,359 @@
+openapi: 3.0.3
+info:
+  title: notification-gateway
+  version: 3.0.0
+  description: 'API specification of all exposed paths by the notification-gateway'
+  contact:
+    name: gematik GmbH
+    email: demis-entwicklung@gematik.de
+    url: "https://www.gematik.de"
+externalDocs:
+  description: Demis knowledge database
+  url: https://wiki.gematik.de/display/DSKB/DEMIS-Wissensdatenbank
+servers:
+  - url: 'http://localhost:9042/notification-gateway'
+    description: Localhost server
+tags:
+  - name: services
+  - name: reports
+  - name: configurations
+  - name: notifications
+
+paths:
+  /api/ng/configs/portal:
+    get:
+      summary: Returns all portal configuration items.
+      tags:
+        - configurations
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'see #de.gematik.demis.notificationgateway.domain.portal.PortalConfigProperties'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+  /api/ng/services/hospital-locations:
+    get:
+      summary: Returns all hospital locations based on the IK number extracted from the token.
+      tags:
+        - services
+      security:
+        - bearerAuth: [ ]
+        - remoteIP: []
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  description: 'see ./schemas-spec.yml#OKResponse'
+        401:
+          description: The request will not be processed due to invalid authentication
+            credentials.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        403:
+          description: The request will not be processed due to insufficient rights.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+  /api/ng/reports/bedOccupancy:
+    post:
+      summary: Create a bedOccupancy notification that will be send to the specified target
+      tags:
+        - reports
+      security:
+        - bearerAuth: [ ]
+        - remoteIP: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'see ./schemas-spec.yml#BedOccupancy'
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'see ./schemas-spec.yml#OKResponse'
+        400:
+          description: The request will not be processed due to a client error.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        401:
+          description: The request will not be processed due to invalid authentication
+            credentials.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        403:
+          description: The request will not be processed due to insufficient rights.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        406:
+          description: The server is unwilling to process the content (honeypot case).
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        422:
+          description: The server understands the content type of the request entity,
+            but it was unable to process the contained instructions
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+  /api/ng/notification/laboratory:
+    post:
+      summary: Create a laboratory notification that will be send to the specified target
+      tags:
+        - notifications
+      security:
+        - remoteIP: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'see ./schemas-spec.yml#QuickTest'
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'see ./schemas-spec.yml#OKResponse'
+        400:
+          description: The request will not be processed due to a client error.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        406:
+          description: The server is unwilling to process the content (honeypot case).
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        422:
+          description: The server understands the content type of the request entity,
+            but it was unable to process the contained instructions
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+  /api/ng/notification/pathogen:
+    get:
+      summary: Returns a codeDisplay representation of all defined pathogens.
+      tags:
+        - notifications
+      security: []
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  description: 'see ./schemas-spec.yml#CodeDisplay'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+    post:
+      summary: Create a pathogen notification that will be send to the specified target
+      tags:
+        - notifications
+      security:
+        - remoteIP: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'see ./schemas-spec.yml#PathogenTest'
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'see ./schemas-spec.yml#OKResponse'
+        400:
+          description: The request will not be processed due to a client error.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        406:
+          description: The server is unwilling to process the content (honeypot case).
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        422:
+          description: The server understands the content type of the request entity,
+            but it was unable to process the contained instructions
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+  /api/ng/notification/pathogen/{code}:
+    get:
+      summary: Returns a representation of the specified pathogen.
+      tags:
+        - notifications
+      security: []
+      parameters:
+        - name: code
+          in: path
+          description: The pathogen code
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  description: 'see ./schemas-spec.yml#PathogenData'
+        404:
+          description: The server can't find the requested resource
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+  /api/ng/notification/hospitalization:
+    post:
+      summary: Create a hospitalization notification that will be send to the specified target
+      tags:
+        - notifications
+      security:
+        - bearerAuth: []
+        - remoteIP: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'see ./schemas-spec.yml#Hospitalization'
+      responses:
+        200:
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'see ./schemas-spec.yml#OKResponse'
+        400:
+          description: The request will not be processed due to a client error.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        401:
+          description: The request will not be processed due to invalid authentication
+            credentials.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        403:
+          description: The request will not be processed due to insufficient rights.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        406:
+          description: The server is unwilling to process the content (honeypot case).
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        422:
+          description: The server understands the content type of the request entity,
+            but it was unable to process the contained instructions
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+        500:
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                description: 'see ./schemas-spec.yml#ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: jwt
+    remoteIP:
+      type: apiKey
+      in: header
+      name: x-real-ip
+      description: All requests must include the `x-real-ip` header containing your ip address.

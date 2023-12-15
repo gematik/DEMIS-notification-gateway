@@ -1,0 +1,34 @@
+{
+  "notifierFacility": {
+    "locationID": "123456",
+    "facilityInfo": {
+      "institutionName": "TEST Organisation"
+    },
+    "address": {
+      "street": "Straße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "additionalInfo": null
+    },
+    "contact": {
+      "salutation": null,
+      "lastname": "Ansprechpartner",
+      "firstname": "Anna",
+      "prefix": null
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      }
+    ]
+  },
+  "bedOccupancyQuestion": {
+    "occupiedBeds": {
+      "adultsNumberOfBeds": 3,
+      "childrenNumberOfBeds": 0
+    }
+  }
+}

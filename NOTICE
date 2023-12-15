@@ -1,0 +1,389 @@
+Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+European Commission – subsequent versions of the EUPL (the "Licence").
+You may not use this work except in compliance with the Licence.
+
+You find a copy of the Licence in the "Licence" file or at
+https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+In case of changes by gematik find details in the "Readme" file.
+
+See the Licence for the specific language governing permissions and limitations under the Licence.
+
+This project includes:
+  Apache Commons BeanUtils under Apache License, Version 2.0
+  Apache Commons Codec under Apache License, Version 2.0
+  Apache Commons Collections under Apache License, Version 2.0
+  Apache Commons Compress under Apache License, Version 2.0
+  Apache Commons CSV under Apache License, Version 2.0
+  Apache Commons Exec under Apache License, Version 2.0
+  Apache Commons FileUpload under Apache-2.0
+  Apache Commons IO under Apache License, Version 2.0
+  Apache Commons Lang under Apache License, Version 2.0
+  Apache Commons Logging under The Apache Software License, Version 2.0
+  Apache Commons Net under Apache License, Version 2.0
+  Apache Commons Text under Apache-2.0
+  Apache Commons Validator under Apache License, Version 2.0
+  Apache FontBox under Apache License, Version 2.0
+  Apache FreeMarker under Apache License, Version 2.0
+  Apache Groovy under The Apache Software License, Version 2.0
+  Apache HttpClient under Apache License, Version 2.0
+  Apache HttpClient Mime under Apache License, Version 2.0
+  Apache HttpComponents Core HTTP/1.1 under Apache License, Version 2.0
+  Apache HttpComponents Core HTTP/2 under Apache License, Version 2.0
+  Apache HttpCore under Apache License, Version 2.0
+  Apache Log4j API under Apache License, Version 2.0
+  Apache Log4j to SLF4J Adapter under Apache License, Version 2.0
+  Apache PDFBox under Apache License, Version 2.0
+  Apache XmpBox under Apache License, Version 2.0
+  asm under BSD-3-Clause
+  ASM based accessors helper used by json-smart under The Apache Software License, Version 2.0
+  AspectJ Runtime under Eclipse Public License - v 2.0
+  AspectJ Weaver under Eclipse Public License - v 2.0
+  AssertJ fluent assertions under Apache License, Version 2.0
+  Asynchronous Http Client under The Apache Software License, Version 2.0
+  Asynchronous Http Client Netty Utils under The Apache Software License, Version 2.0
+  Auto Common Libraries under Apache 2.0
+  autolink-java under MIT License
+  Automaton under BSD
+  AutoService under Apache 2.0
+  AutoService Processor under Apache 2.0
+  Awaitility under Apache 2.0
+  Bouncy Castle ASN.1 Extension and Utility APIs under Bouncy Castle Licence
+  Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
+  Bouncy Castle Provider under Bouncy Castle Licence
+  Brave under The Apache Software License, Version 2.0
+  Brave Context: SLF4J under The Apache Software License, Version 2.0
+  Brave Instrumentation: Apache HttpAsyncClient v4.0+ under The Apache Software License, Version 2.0
+  Brave Instrumentation: Apache HttpClient v4.4+ under The Apache Software License, Version 2.0
+  Brave Instrumentation: Http Adapters under The Apache Software License, Version 2.0
+  Brave Instrumentation: JMS under The Apache Software License, Version 2.0
+  Brave Instrumentation: Kafka Clients under The Apache Software License, Version 2.0
+  Brave Instrumentation: Kafka Streams under The Apache Software License, Version 2.0
+  Brave Instrumentation: Messaging Adapters under The Apache Software License, Version 2.0
+  Brave Instrumentation: MongoDB under The Apache Software License, Version 2.0
+  Brave Instrumentation: Rpc Adapters under The Apache Software License, Version 2.0
+  Brave Instrumentation: Spring RabbitMQ under The Apache Software License, Version 2.0
+  Brave Propagation: Amazon Web Services (AWS) under The Apache Software License, Version 2.0
+  Byte Buddy (without dependencies) under Apache License, Version 2.0
+  Byte Buddy agent under Apache License, Version 2.0
+  Caffeine cache under Apache License, Version 2.0
+  Checker Qual under The MIT License
+  ClassGraph under The MIT License (MIT)
+  ClassMate under Apache License, Version 2.0
+  Commons Digester under The Apache Software License, Version 2.0
+  config under Apache-2.0
+  Cucumber CiEnvironment under MIT License
+  Cucumber Expressions under MIT License
+  Cucumber HTML Formatter under MIT License
+  Cucumber JUnit XML Formatter under MIT License
+  Cucumber Messages under MIT License
+  Cucumber Tag Expressions under MIT License
+  Cucumber-JVM: Core under MIT License
+  Cucumber-JVM: Docstring under MIT License
+  Cucumber-JVM: Gherkin under MIT License
+  Cucumber-JVM: Gherkin Messages under MIT License
+  Cucumber-JVM: Java under MIT License
+  Cucumber-JVM: JUnit 4 under MIT License
+  Cucumber-JVM: Plugin under MIT License
+  Cucumber-JVN: DataTable under MIT License
+  DEMIS Commons Library under Apache Software License 2.0
+  DEMIS Notification-Gateway under Licensed under the EUPL 1.2
+  docker-java under The Apache Software License, Version 2.0
+  docker-java-api under The Apache Software License, Version 2.0
+  docker-java-core under The Apache Software License, Version 2.0
+  docker-java-transport under The Apache Software License, Version 2.0
+  docker-java-transport-httpclient5 under The Apache Software License, Version 2.0
+  Ehcache under The Apache Software License, Version 2.0
+  error-prone annotations under Apache 2.0
+  Failsafe under Apache License, Version 2.0
+  Feign Core under The Apache Software License, Version 2.0
+  Feign SLF4J under The Apache Software License, Version 2.0
+  fhir-parser-library under EUPL 1.2
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
+  flexmark-all under BSD 2-Clause License
+  flexmark-ext-youtube-embedded under BSD 2-Clause License
+  flexmark-java ast utilities under BSD 2-Clause License
+  flexmark-java builder utilities under BSD 2-Clause License
+  flexmark-java collection utilities under BSD 2-Clause License
+  flexmark-java core under BSD 2-Clause License
+  flexmark-java data utilities under BSD 2-Clause License
+  flexmark-java dependency utilities under BSD 2-Clause License
+  flexmark-java extension for abbreviations in text under BSD 2-Clause License
+  flexmark-java extension for admonition syntax under BSD 2-Clause License
+  flexmark-java extension for attributes under BSD 2-Clause License
+  flexmark-java extension for autolinking under BSD 2-Clause License
+  flexmark-java extension for converting | to aside tags under BSD 2-Clause License
+  flexmark-java extension for definition under BSD 2-Clause License
+  flexmark-java extension for emoji shortcuts under BSD 2-Clause License
+  flexmark-java extension for enumerated reference under BSD 2-Clause License
+  flexmark-java extension for escaped_character under BSD 2-Clause License
+  flexmark-java extension for footnotes under BSD 2-Clause License
+  flexmark-java extension for generating GitHub style task list items under BSD 2-Clause License
+  flexmark-java extension for GitHub issue syntax under BSD 2-Clause License
+  flexmark-java extension for GitHub user syntax under BSD 2-Clause License
+  flexmark-java extension for GitLab Flavoured Markdown under BSD 2-Clause License
+  flexmark-java extension for HTML5 media tags under BSD 2-Clause License
+  flexmark-java extension for ins under BSD 2-Clause License
+  flexmark-java extension for jekyll tag parsing under BSD 2-Clause License
+  flexmark-java extension for jekyll_front_matter under BSD 2-Clause License
+  flexmark-java extension for jira_converter under BSD 2-Clause License
+  flexmark-java extension for markdown to pdf conversion under BSD 2-Clause License
+  flexmark-java extension for processing macros under BSD 2-Clause License
+  flexmark-java extension for strikethrough under BSD 2-Clause License
+  flexmark-java extension for superscript under BSD 2-Clause License
+  flexmark-java extension for tables under BSD 2-Clause License
+  flexmark-java extension for toc under BSD 2-Clause License
+  flexmark-java extension for typographic under BSD 2-Clause License
+  flexmark-java extension for wiki links under BSD 2-Clause License
+  flexmark-java extension for xwiki application specific macros under BSD 2-Clause License
+  flexmark-java extension for YAML front matter under BSD 2-Clause License
+  flexmark-java extension for YouTrack conversion under BSD 2-Clause License
+  flexmark-java extension to generate anchor links for headers under BSD 2-Clause License
+  flexmark-java format utilities under BSD 2-Clause License
+  flexmark-java HTML to Markdown extensible converter under BSD 2-Clause License
+  flexmark-java html utilities under BSD 2-Clause License
+  flexmark-java misc utilities under BSD 2-Clause License
+  flexmark-java options utilities under BSD 2-Clause License
+  flexmark-java pegdown profile under BSD 2-Clause License
+  flexmark-java sequence utilities under BSD 2-Clause License
+  flexmark-java utilities under BSD 2-Clause License
+  flexmark-java visitor utilities under BSD 2-Clause License
+  FluentLenium Core under Apache 2
+  Generex under The Apache Software License, Version 2.0
+  Gherkin under MIT License
+  Gson under Apache-2.0
+  Guava InternalFutureFailureAccess and InternalFutures under The Apache Software License, Version 2.0
+  Guava ListenableFuture only under The Apache Software License, Version 2.0
+  Guava: Google Core Libraries for Java under Apache License, Version 2.0
+  Hamcrest under BSD License 3
+  HAPI FHIR - Client Framework under Apache Software License 2.0
+  HAPI FHIR - Core Library under Apache Software License 2.0
+  HAPI FHIR Structures - FHIR R4 under Apache Software License 2.0
+  HdrHistogram under Public Domain, per Creative Commons CC0 or BSD-2-Clause
+  Hibernate Validator Engine under Apache License 2.0
+  HtmlUnit under Apache License, Version 2.0
+  HtmlUnit Core JS under Mozilla Public License, Version 2.0
+  HtmlUnit CSS Parser under Apache License, Version 2.0
+  HtmlUnit NekoHtml under Apache License, Version 2.0
+  htmlunit-driver under The Apache Software License, Version 2.0
+  HtmlUnit-XPath under Apache License, Version 2.0
+  ICU4J under Unicode/ICU License
+  imgscalr - A Java Image Scaling Library under ASF 2.0
+  IntelliJ IDEA Annotations under The Apache Software License, Version 2.0
+  io.ous:jtoml under The Apache Software License, Version 2.0
+  J2ObjC Annotations under Apache License, Version 2.0
+  Jackson datatype: jdk8 under The Apache Software License, Version 2.0
+  Jackson datatype: JSR310 under The Apache Software License, Version 2.0
+  Jackson-annotations under The Apache Software License, Version 2.0
+  Jackson-core under The Apache Software License, Version 2.0
+  jackson-databind under The Apache Software License, Version 2.0
+  Jackson-module-parameter-names under The Apache Software License, Version 2.0
+  Jakarta Activation under EDL 1.0
+  Jakarta Activation API jar under EDL 1.0
+  Jakarta Annotations API under EPL 2.0 or GPL2 w/ CPE
+  Jakarta Bean Validation API under Apache License 2.0
+  Jakarta JSON Processing API under Eclipse Public License 2.0 or GNU General Public License, version 2 with the GNU Classpath Exception
+  Jakarta XML Binding API under Eclipse Distribution License - v 1.0
+  Java Faker under The Apache Software License, Version 2.0
+  Java Native Access under LGPL-2.1-or-later or Apache-2.0
+  java-client under Apache License, Version 2.0
+  JavaBeans Activation Framework API jar under CDDL/GPLv2+CE
+  JavaBeans(TM) Activation Framework under COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+  jaxb-api under CDDL 1.1 or GPL2 w/ CPE
+  JBoss Logging 3 under Apache License, version 2.0
+  JCIP Annotations under Apache License under Apache License, Version 2.0
+  JCL 1.2 implemented over SLF4J under Apache License, Version 2.0
+  jcommander under Apache License, Version 2.0
+  Jetty :: Asynchronous HTTP Client under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Http Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: IO Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Utilities under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Websocket :: API under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Websocket :: Client under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Websocket :: Common under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  JHLabs Image Processing Filters under Apache License, Version 2.0
+  Jimfs under The Apache Software License, Version 2.0
+  Joda-Time under Apache License, Version 2.0
+  JSON library from Android SDK under Apache License 2.0
+  JSON Small and Fast Parser under The Apache Software License, Version 2.0
+  json-path under Apache 2.0
+  JSONassert under The Apache Software License, Version 2.0
+  JsonNullable Jackson module under Apache License 2.0
+  JSR107 API and SPI under Apache License, Version 2.0
+  JUL to SLF4J bridge under MIT License
+  JUnit under Eclipse Public License 1.0
+  JUnit Jupiter (Aggregator) under Eclipse Public License v2.0
+  JUnit Jupiter API under Eclipse Public License v2.0
+  JUnit Jupiter Engine under Eclipse Public License v2.0
+  JUnit Jupiter Params under Eclipse Public License v2.0
+  JUnit Platform Commons under Eclipse Public License v2.0
+  JUnit Platform Engine API under Eclipse Public License v2.0
+  jxl under GNU Lesser General Public License
+  Kotlin Stdlib under The Apache License, Version 2.0
+  Kotlin Stdlib Common under The Apache License, Version 2.0
+  LatencyUtils under Public Domain, per Creative Commons CC0
+  Logback Classic Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
+  Logback Core Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
+  Logstash Logback Encoder under Apache License, Version 2.0 or MIT License
+  MapStruct Core under The Apache Software License, Version 2.0
+  micrometer-core under The Apache Software License, Version 2.0
+  micrometer-registry-prometheus under The Apache Software License, Version 2.0
+  mockito-core under The MIT License
+  mockito-junit-jupiter under The MIT License
+  MXParser under Indiana University Extreme! Lab Software License
+  Netty Reactive Streams Implementation under Apache License, Version 2.0
+  Netty/Buffer under Apache License, Version 2.0
+  Netty/Codec under Apache License, Version 2.0
+  Netty/Codec/HTTP under Apache License, Version 2.0
+  Netty/Codec/Socks under Apache License, Version 2.0
+  Netty/Common under Apache License, Version 2.0
+  Netty/Handler under Apache License, Version 2.0
+  Netty/Handler/Proxy under Apache License, Version 2.0
+  Netty/Resolver under Apache License, Version 2.0
+  Netty/Transport under Apache License, Version 2.0
+  Netty/Transport/Classes/Epoll under Apache License, Version 2.0
+  Netty/Transport/Classes/KQueue under Apache License, Version 2.0
+  Netty/Transport/Native/Epoll under Apache License, Version 2.0
+  Netty/Transport/Native/KQueue under Apache License, Version 2.0
+  Netty/Transport/Native/Unix/Common under Apache License, Version 2.0
+  ngWebDriver under The MIT license
+  Nimbus JOSE+JWT under The Apache Software License, Version 2.0
+  notification-builder-library under EUPL 1.2
+  Objenesis under Apache License, Version 2.0
+  okhttp under The Apache Software License, Version 2.0
+  Okio under The Apache Software License, Version 2.0
+  Old JAXB Core under CDDL+GPL License
+  Old JAXB Runtime under Eclipse Distribution License - v 1.0
+  Open Feign Forms Core under The Apache Software License, Version 2.0
+  Open Feign Forms Extension for Spring under The Apache Software License, Version 2.0
+  opencsv under Apache 2
+  Openhtmltopdf Core Renderer under GNU Lesser General Public License (LGPL), version 2.1 or later
+  Openhtmltopdf Jsoup to DOM Converter under GNU Lesser General Public License (LGPL), version 2.1 or later
+  Openhtmltopdf PDF Rendering (Apache PDF-BOX 2) under GNU Lesser General Public License (LGPL), version 2.1 or later
+  Openhtmltopdf RTL Support under GNU Lesser General Public License (LGPL), version 2.1 or later
+  OpenTelemetry Java under The Apache License, Version 2.0
+  org.apiguardian:apiguardian-api under The Apache License, Version 2.0
+  org.brotli:dec under MIT License
+  org.hl7.fhir.r4 under Apache Software License 2.0
+  org.hl7.fhir.utilities under Apache Software License 2.0
+  org.opentest4j:opentest4j under The Apache License, Version 2.0
+  org.seleniumhq.selenium:selenium-api under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-chrome-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-chromium-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-devtools-v100 under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-devtools-v101 under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-devtools-v85 under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-devtools-v99 under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-edge-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-firefox-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-http under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-ie-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-java under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-json under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-opera-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-remote-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-safari-driver under The Apache Software License, Version 2.0
+  org.seleniumhq.selenium:selenium-support under The Apache Software License, Version 2.0
+  org.xmlunit:xmlunit-core under The Apache Software License, Version 2.0
+  PDFBox-Graphics2d under Apache License, Version 2.0
+  project ':json-path' under The Apache Software License, Version 2.0
+  Project Lombok under The MIT License
+  Prometheus Java Simpleclient under The Apache Software License, Version 2.0
+  Prometheus Java Simpleclient Common under The Apache Software License, Version 2.0
+  Prometheus Java Span Context Supplier - Common under The Apache Software License, Version 2.0
+  Prometheus Java Span Context Supplier - OpenTelemetry under The Apache Software License, Version 2.0
+  Prometheus Java Span Context Supplier - OpenTelemetry Agent under The Apache Software License, Version 2.0
+  reactive-streams under MIT-0
+  REST Assured under Apache 2.0
+  rest-assured-common under Apache 2.0
+  salvation under Apache License, Version 2.0
+  Serenity Core under The Apache Software License, Version 2.0
+  Serenity Cucumber Integration under The Apache Software License, Version 2.0
+  Serenity Domain Model Classes under The Apache Software License, Version 2.0
+  Serenity JUnit Runner under The Apache Software License, Version 2.0
+  Serenity Report Resources under The Apache Software License, Version 2.0
+  Serenity Reporting Domain Model under The Apache Software License, Version 2.0
+  Serenity Reports under The Apache Software License, Version 2.0
+  Serenity Reports Configuration under The Apache Software License, Version 2.0
+  Serenity Rest Assured Integration under The Apache Software License, Version 2.0
+  Serenity Screenplay under The Apache Software License, Version 2.0
+  Serenity Screenplay RestAssured Integration under The Apache Software License, Version 2.0
+  Serenity Screenplay WebDriver Integration under The Apache Software License, Version 2.0
+  SLF4J API Module under MIT License
+  SnakeYAML under Apache License, Version 2.0
+  Spring AOP under Apache License, Version 2.0
+  Spring Beans under Apache License, Version 2.0
+  Spring Cloud Commons under Apache License, Version 2.0
+  Spring Cloud Context under Apache License, Version 2.0
+  Spring Cloud OpenFeign Core under Apache License, Version 2.0
+  Spring Cloud Sleuth API under Apache License, Version 2.0
+  Spring Cloud Sleuth AutoConfigure under Apache License, Version 2.0
+  Spring Cloud Sleuth Brave under Apache License, Version 2.0
+  Spring Cloud Sleuth Instrumentation under Apache License, Version 2.0
+  Spring Cloud Starter OpenFeign under Apache License, Version 2.0
+  Spring Cloud Starter Sleuth with Brave under Apache License, Version 2.0
+  Spring Commons Logging Bridge under Apache License, Version 2.0
+  Spring Context under Apache License, Version 2.0
+  Spring Core under Apache License, Version 2.0
+  Spring Expression Language (SpEL) under Apache License, Version 2.0
+  Spring Plugin - Core under Apache License, Version 2.0
+  Spring Plugin - Metadata Extension under Apache License, Version 2.0
+  Spring TestContext Framework under Apache License, Version 2.0
+  Spring Web under Apache License, Version 2.0
+  Spring Web MVC under Apache License, Version 2.0
+  spring-boot under Apache License, Version 2.0
+  spring-boot-actuator under Apache License, Version 2.0
+  spring-boot-actuator-autoconfigure under Apache License, Version 2.0
+  spring-boot-autoconfigure under Apache License, Version 2.0
+  spring-boot-configuration-processor under Apache License, Version 2.0
+  spring-boot-devtools under Apache License, Version 2.0
+  spring-boot-starter under Apache License, Version 2.0
+  spring-boot-starter-actuator under Apache License, Version 2.0
+  spring-boot-starter-aop under Apache License, Version 2.0
+  spring-boot-starter-json under Apache License, Version 2.0
+  spring-boot-starter-logging under Apache License, Version 2.0
+  spring-boot-starter-oauth2-resource-server under Apache License, Version 2.0
+  spring-boot-starter-security under Apache License, Version 2.0
+  spring-boot-starter-test under Apache License, Version 2.0
+  spring-boot-starter-tomcat under Apache License, Version 2.0
+  spring-boot-starter-validation under Apache License, Version 2.0
+  spring-boot-starter-web under Apache License, Version 2.0
+  spring-boot-test under Apache License, Version 2.0
+  spring-boot-test-autoconfigure under Apache License, Version 2.0
+  spring-cloud-starter under Apache License, Version 2.0
+  spring-security-config under Apache License, Version 2.0
+  spring-security-core under Apache License, Version 2.0
+  spring-security-crypto under Apache License, Version 2.0
+  spring-security-oauth2-core under Apache License, Version 2.0
+  spring-security-oauth2-jose under Apache License, Version 2.0
+  spring-security-oauth2-resource-server under Apache License, Version 2.0
+  spring-security-rsa under Apache 2.0
+  spring-security-test under Apache License, Version 2.0
+  spring-security-web under Apache License, Version 2.0
+  springfox-core under The Apache Software License, Version 2.0
+  springfox-schema under The Apache Software License, Version 2.0
+  springfox-spi under The Apache Software License, Version 2.0
+  springfox-spring-web under The Apache Software License, Version 2.0
+  springfox-spring-webflux under The Apache Software License, Version 2.0
+  springfox-spring-webmvc under The Apache Software License, Version 2.0
+  springfox-swagger-common under The Apache Software License, Version 2.0
+  springfox-swagger2 under The Apache Software License, Version 2.0
+  swagger-annotations under Apache License 2.0
+  swagger-models under Apache License 2.0
+  TagSoup under Apache License 2.0
+  tomcat-embed-core under Apache License, Version 2.0
+  tomcat-embed-el under Apache License, Version 2.0
+  tomcat-embed-websocket under Apache License, Version 2.0
+  txtmark under The Apache Software License, Version 2.0
+  WebDriverManager under Apache 2.0
+  XML Pull Parsing API under Public Domain
+  xml-path under Apache 2.0
+  XStream Core under BSD-3-Clause
+  Zipkin Core Library under The Apache Software License, Version 2.0
+  Zipkin Reporter Metrics by Micrometer under The Apache Software License, Version 2.0
+  Zipkin Reporter: Core under The Apache Software License, Version 2.0
+
+

@@ -1,0 +1,33 @@
+fullName: notification-gateway
+service:
+  type: ClusterIP
+  ports:
+    http: 8080
+istio:
+  enable: true
+  virtualService:
+    gateways: {}
+    http:
+      match:
+        - headers:
+            komfort-client:
+              exact: "false"
+          uri:
+            prefix: /
+      rewrite:
+        uri: /
+#      timeout: 15s
+      retries:
+        enable: false
+#        attempts: 3
+#        perTryTimeout: 5s
+#        retryOn: 503
+    hosts: {}
+  subsets:
+    main:
+      version: 1.0.0
+      weight: "100"
+# activate Traffic mirroring, also called shadowing with the following lines
+#      mirror:
+#        version: 1.1.0
+#        mirrorPercentage: 0

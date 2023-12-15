@@ -1,0 +1,178 @@
+{
+  "pathogen": "cvdp",
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "existsBsnr": false
+    },
+    "address": {
+      "street": "Straße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "additionalInfo": null
+    },
+    "contact": {
+      "salutation": null,
+      "lastname": "Ansprechpartner",
+      "firstname": "Anna",
+      "prefix": null
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      }
+    ]
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "FEMALE",
+      "firstname": "Bertha",
+      "lastname": "Betroffen",
+      "birthDate": null
+    },
+    "primaryAddress": {
+      "street": null,
+      "houseNumber": null,
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "addressType": "primary"
+    },
+    "contacts": []
+  },
+  "disease": {
+    "conditionInfo": {
+      "diagnosisDate": "2022-01-02",
+      "diseaseStart": "2022-01-01",
+      "note": "Textueller Hinweis",
+      "symptomQuestion": {
+        "symptomStatus": "YES",
+        "symptoms": [
+          "FEVER",
+          "SORE_THROAT_SYMPTOM",
+          "COUGH",
+          "PNEUMONIA",
+          "SNIFFLES",
+          "ACUTE_RESPIRATORY_DISTRESS_SYNDROME",
+          "PATIENT_VENTILATED",
+          "DYSPNEA",
+          "DIARRHEA",
+          "LOSS_OF_SENSE_OF_SMELL",
+          "LOSS_OF_TASTE",
+          "TACHYPNEA",
+          "TACHYCARDIA",
+          "GENERALLY_UNWELL",
+          "CHILL",
+          "HEADACHE",
+          "MUSCLE_PAIN",
+          "OTHER_COVID_19_SYMPTOMS"
+        ]
+      }
+    },
+    "diseaseInfoCommon": {
+      "deathQuestion": {
+        "dead": "YES",
+        "deathDate": "2022-01-22"
+      },
+      "hospitalizationQuestion": {
+        "hospitalized": "YES",
+        "hospitalizedEncounterInfo": {
+          "hospitalizationStartDate": "2022-01-05",
+          "intensiveCare": "true",
+          "intensiveCareStartDate": "2022-01-07",
+          "additionalInfo": "wichtige Zusatzinformation"
+        }
+      },
+      "infectionProtectionFacilityQuestion": {
+        "infectionProtectionFacilityExisting": "YES",
+        "infectionProtectionFacilityInfo": {
+          "role": "EMPLOYMENT",
+          "facilityName": "Einrichtungsname",
+          "address": {
+            "street": "Straße",
+            "houseNumber": "123",
+            "zip": "21481",
+            "city": "Buchhorst",
+            "country": "20422"
+          },
+          "contactsInfo": {
+            "phone": {
+              "contactType": "phone",
+              "value": "0123456789"
+            },
+            "email": {
+              "contactType": "email",
+              "value": "mail@einrichtung.de"
+            }
+          },
+          "startDate": "2021-12-01",
+          "endDate": "2022-01-05"
+        }
+      },
+      "labQuestion": {
+        "labAssigned": "YES",
+        "labInfo": {
+          "name": "Labor",
+          "address": {
+            "street": "Laborstraße",
+            "houseNumber": "345",
+            "zip": "21481",
+            "city": "Buchhorst",
+            "country": "20422"
+          }
+        }
+      },
+      "military": "SOLDIER",
+      "organDonor": "YES",
+      "exposurePlaceQuestion": {
+        "exposurePlaceKnown": "YES",
+        "exposurePlaceInfo": {
+          "region": "21000316",
+          "exposureStartDate": "2021-12-20",
+          "exposureEndDate": "2021-12-28",
+          "hint": "Anmerkung"
+        }
+      },
+      "additionalInfo": "Zusatzinformationen zu den meldetatbestandsübergreifenden klinischen und epidemiologischen Angaben"
+    },
+    "diseaseInfoCVDD": {
+      "contactToInfected": "INDETERMINATE",
+      "vaccinationQuestion": {
+        "immunizationStatus": "YES",
+        "vaccinations": [
+          {
+            "vaccine": "COMIRNATY",
+            "vaccinationDate": "2021",
+            "additionalInfo": "Zusatzinfo1"
+          },
+          {
+            "vaccine": "COMIRNATY",
+            "vaccinationDate": "2021-07",
+            "additionalInfo": "Zusatzinfo2"
+          },
+          {
+            "vaccine": "INDETERMINATE",
+            "vaccinationDate": "2021-11-30",
+            "additionalInfo": "Zusatzinfo3"
+          },
+          {
+            "vaccine": "OTHER",
+            "vaccinationDate": "2021-12-25",
+            "additionalInfo": "Zusatzinfo4"
+          }
+        ]
+      },
+      "infectionEnvironmentQuestion": {
+        "infectionEnvironmentExisting": "YES",
+        "infectionEnvironmentInfo": {
+          "infectionEnvironmentKind": "3",
+          "infectionEnvironmentStartDate": "2021-12-28",
+          "infectionEnvironmentEndDate": "2021-12-30"
+        }
+      }
+    }
+  }
+}

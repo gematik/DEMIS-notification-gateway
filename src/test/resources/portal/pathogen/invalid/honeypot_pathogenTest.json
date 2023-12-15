@@ -1,0 +1,114 @@
+{
+  "pathogenDTO": {
+    "codeDisplay": {
+      "code": "invp",
+      "display": "Influenzavirus; Meldepflicht nur für den direkten Nachweis",
+      "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory",
+      "designations": []
+    },
+    "diagnostic": {
+      "extractionDate": "2022-12-01",
+      "receivedDate": "2022-12-01",
+      "material": {
+        "code": "258607008",
+        "display": "Bronchoalveolar lavage fluid sample (specimen)",
+        "system": "http://snomed.info/sct",
+        "designations": []
+      },
+      "pathogen": {
+        "code": "407479009",
+        "display": "Influenza A virus (organism)",
+        "system": "http://snomed.info/sct",
+        "designations": []
+      },
+      "methodPathogenList": [
+        {
+          "method": {
+            "code": "67122001",
+            "display": "Acid fast stain method (procedure)",
+            "system": "http://snomed.info/sct",
+            "designations": []
+          },
+          "analyt": null,
+          "result": "POS"
+        }
+      ],
+      "reportStatus": "final",
+      "interpretation": "blablabla",
+      "initialNotificationId": "0123456789"
+    }
+  },
+  "notifiedPerson": {
+    "ordinaryAddress": {
+      "street": "Seestraße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Berlin",
+      "country": "20422",
+      "addressType": "current",
+      "additionalInfo": "Hinterhaus A"
+    },
+    "currentAddress": {
+      "street": "Seestraße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Berlin",
+      "country": "20422",
+      "addressType": "current",
+      "additionalInfo": "Hinterhaus A"
+    },
+    "primaryAddress": {
+      "street": "Seestraße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Berlin",
+      "country": "20422",
+      "addressType": "current",
+      "additionalInfo": "Hinterhaus A"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "home",
+        "value": "string"
+      }
+    ],
+    "info": {
+      "firstname": "string",
+      "lastname": "string",
+      "gender": "UNKNOWN",
+      "birthDate": "2021-01-30"
+    }
+  },
+  "notifierFacility": {
+    "oneTimeCode": "12345",
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "home",
+        "value": "string"
+      }
+    ],
+    "address": {
+      "street": "Seestraße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Berlin",
+      "country": "20422",
+      "addressType": "current",
+      "additionalInfo": "Hinterhaus A"
+    },
+    "contact": {
+      "salutation": "Mr",
+      "prefix": "string",
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "facilityInfo": {
+      "institutionName": "A",
+      "bsnr": "810481329",
+      "existsBsnr": true
+    }
+  },
+  "pathogen": "cvdp"
+}

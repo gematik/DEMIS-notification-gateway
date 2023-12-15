@@ -1,0 +1,152 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "bundle",
+      "resource": {
+        "resourceType": "Bundle",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/ReceiptBundle"
+          ]
+        },
+        "type": "collection",
+        "entry": [
+          {
+            "fullUrl": "https://demis.rki.de/fhir/Composition/cb9fd35e-84a1-4f56-aa98-6ac0d7090ac3",
+            "resource": {
+              "resourceType": "Composition",
+              "meta": {
+                "profile": [
+                  "https://demis.rki.de/fhir/StructureDefinition/NotificationReceipt"
+                ]
+              },
+              "status": "final",
+              "type": {
+                "coding": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "80563-0",
+                    "display": "Report"
+                  }
+                ]
+              },
+              "date": "2022-09-09T10:47:09+02:00",
+              "author": [
+                {
+                  "reference": "Organization/DEMIS"
+                }
+              ],
+              "title": "Meldevorgangsquittung",
+              "section": [
+                {
+                  "title": "Empfänger",
+                  "code": {
+                    "text": "Empfänger"
+                  },
+                  "entry": [
+                    {
+                      "reference": "Organization/1."
+                    }
+                  ]
+                },
+                {
+                  "title": "PDF Quittung",
+                  "code": {
+                    "text": "PDF Quittung"
+                  },
+                  "entry": [
+                    {
+                      "reference": "Binary/47a5a590-1679-4d4f-86a0-125c76b5f390"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "fullUrl": "https://demis.rki.de/fhir/Organization/DEMIS",
+            "resource": {
+              "resourceType": "Organization",
+              "id": "DEMIS",
+              "name": "DEMIS",
+              "contact": [
+                {
+                  "telecom": [
+                    {
+                      "system": "email",
+                      "value": "demis@rki.de"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "fullUrl": "https://demis.rki.de/fhir/Organization/1.",
+            "resource": {
+              "resourceType": "Organization",
+              "id": "1.",
+              "identifier": [
+                {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/reportingSite",
+                  "value": "1."
+                }
+              ],
+              "name": "Robert Koch-Institut",
+              "telecom": [
+                {
+                  "system": "email",
+                  "value": "demis@rki.de"
+                }
+              ],
+              "address": [
+                {
+                  "line": [
+                    "Nordufer 20"
+                  ],
+                  "city": "Berlin",
+                  "postalCode": "13353",
+                  "country": "20422"
+                }
+              ]
+            }
+          },
+          {
+            "fullUrl": "https://demis.rki.de/fhir/Binary/47a5a590-1679-4d4f-86a0-125c76b5f390",
+            "resource": {
+              "resourceType": "Binary",
+              "id": "47a5a590-1679-4d4f-86a0-125c76b5f390",
+              "contentType": "application/pdf",
+              "data": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "operationOutcome",
+      "resource": {
+        "resourceType": "OperationOutcome",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/ProcessNotificationResponse"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">http://www.w3.org/1999/xhtml</div>"
+        },
+        "issue": [
+          {
+            "severity": "information",
+            "code": "informational",
+            "details": {
+              "text": "All OK"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

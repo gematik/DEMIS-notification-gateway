@@ -1,0 +1,435 @@
+{
+    "resourceType": "Parameters",
+    "parameter": [
+        {
+            "name": "content",
+            "resource": {
+                "resourceType": "Bundle",
+                "meta": {
+                    "lastUpdated": "2022-02-24T11:41:25.487+01:00",
+                    "profile": [
+                        "https://demis.rki.de/fhir/StructureDefinition/NotificationBundleLaboratory"
+                    ]
+                },
+                "identifier": {
+                    "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
+                    "value": "7715ca20-934d-4b90-abb3-7f8d470e4458"
+                },
+                "type": "document",
+                "timestamp": "2022-02-24T11:41:25.487+01:00",
+                "entry": [
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/Composition/f7aced2c-8f1b-4b5d-8696-f9ae49d2883e",
+                        "resource": {
+                            "resourceType": "Composition",
+                            "id": "f7aced2c-8f1b-4b5d-8696-f9ae49d2883e",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory"
+                                ]
+                            },
+                            "identifier": {
+                                "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+                                "value": "98960a61-7e07-4f9c-b709-7bf69a8ccf4e"
+                            },
+                            "status": "final",
+                            "type": {
+                                "coding": [
+                                    {
+                                        "system": "http://loinc.org",
+                                        "code": "34782-3",
+                                        "display": "Infectious disease Note"
+                                    }
+                                ]
+                            },
+                            "category": [
+                                {
+                                    "coding": [
+                                        {
+                                            "system": "http://loinc.org",
+                                            "code": "11502-2",
+                                            "display": "Laboratory report"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "subject": {
+                                "reference": "Patient/1447d972-653f-4b90-ac75-5aa9c13a30e4"
+                            },
+                            "date": "2022-01-26T22:03:52+01:00",
+                            "author": [
+                                {
+                                    "reference": "PractitionerRole/ef8c52f8-2d02-462d-a802-442bd7d7912a"
+                                }
+                            ],
+                            "title": "Erregernachweismeldung",
+                            "section": [
+                                {
+                                    "code": {
+                                        "coding": [
+                                            {
+                                                "system": "http://loinc.org",
+                                                "code": "11502-2",
+                                                "display": "Laboratory report"
+                                            }
+                                        ]
+                                    },
+                                    "entry": [
+                                        {
+                                            "reference": "DiagnosticReport/58483436-14a8-4dfc-a3ec-0864c89153af"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/Patient/1447d972-653f-4b90-ac75-5aa9c13a30e4",
+                        "resource": {
+                            "resourceType": "Patient",
+                            "id": "1447d972-653f-4b90-ac75-5aa9c13a30e4",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+                                ]
+                            },
+                            "name": [
+                                {
+                                    "use": "official",
+                                    "family": "Power",
+                                    "given": [
+                                        "Max"
+                                    ]
+                                }
+                            ],
+                            "telecom": [
+                                {
+                                    "system": "phone",
+                                    "value": "012345767",
+                                    "use": "work"
+                                }
+                            ],
+                            "gender": "male",
+                            "birthDate": "2022-01-26",
+                            "address": [
+                                {
+                                    "extension": [
+                                        {
+                                            "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                                            "valueCoding": {
+                                                "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
+                                                "code": "current",
+                                                "display": "Derzeitiger Aufenthaltsort"
+                                            }
+                                        }
+                                    ],
+                                    "line": [
+                                        "Seestraße 1"
+                                    ],
+                                    "_line": [
+                                        {
+                                            "extension": [
+                                                {
+                                                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                                                    "valueString": "Seestraße"
+                                                },
+                                                {
+                                                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                                                    "valueString": "1"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "city": "Berlin",
+                                    "postalCode": "12345",
+                                    "country": "20422"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/Organization/9cc61945-1f89-4002-8524-ac8eb15f65a7",
+                        "resource": {
+                            "resourceType": "Organization",
+                            "id": "9cc61945-1f89-4002-8524-ac8eb15f65a7",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/NotifierFacility"
+                                ]
+                            },
+                            "identifier": [
+                                {
+                                    "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR",
+                                    "value": "248123512"
+                                }
+                            ],
+                            "type": [
+                                {
+                                    "coding": [
+                                        {
+                                            "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                                            "code": "othPrivatLab",
+                                            "display": "Sonstige private Untersuchungsstelle"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "name": "TEST Organisation",
+                            "telecom": [
+                                {
+                                    "system": "phone",
+                                    "value": "012345767"
+                                }
+                            ],
+                            "address": [
+                                {
+                                    "line": [
+                                        "Marketplace 1"
+                                    ],
+                                    "_line": [
+                                        {
+                                            "extension": [
+                                                {
+                                                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                                                    "valueString": "Marketplace"
+                                                },
+                                                {
+                                                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                                                    "valueString": "1"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "city": "Wurstburg",
+                                    "postalCode": "12345",
+                                    "country": "20422"
+                                }
+                            ],
+                            "contact": [
+                                {
+                                    "name": {
+                                        "text": "Frau Dr. Melder Melderson",
+                                        "family": "Melderson",
+                                        "given": [
+                                            "Melder"
+                                        ],
+                                        "prefix": [
+                                            "Dr."
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/ef8c52f8-2d02-462d-a802-442bd7d7912a",
+                        "resource": {
+                            "resourceType": "PractitionerRole",
+                            "id": "ef8c52f8-2d02-462d-a802-442bd7d7912a",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/NotifierRole"
+                                ]
+                            },
+                            "organization": {
+                                "reference": "Organization/9cc61945-1f89-4002-8524-ac8eb15f65a7"
+                            }
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/Organization/8e9910cc-fc5a-4ee3-a836-e48bbbdb81a2",
+                        "resource": {
+                            "resourceType": "Organization",
+                            "id": "8e9910cc-fc5a-4ee3-a836-e48bbbdb81a2",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/SubmittingFacility"
+                                ]
+                            },
+                            "type": [
+                                {
+                                    "coding": [
+                                        {
+                                            "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                                            "code": "physicianOffice",
+                                            "display": "Arztpraxis"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "name": "TEST Organisation",
+                            "telecom": [
+                                {
+                                    "system": "phone",
+                                    "value": "012345767"
+                                }
+                            ],
+                            "address": [
+                                {
+                                    "line": [
+                                        "Marketplace 1"
+                                    ],
+                                    "_line": [
+                                        {
+                                            "extension": [
+                                                {
+                                                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                                                    "valueString": "Marketplace"
+                                                },
+                                                {
+                                                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                                                    "valueString": "1"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "city": "Wurstburg",
+                                    "postalCode": "12345",
+                                    "country": "20422"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/77c191b3-7f07-406d-8568-52be2ff52e29",
+                        "resource": {
+                            "resourceType": "PractitionerRole",
+                            "id": "77c191b3-7f07-406d-8568-52be2ff52e29",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/SubmittingRole"
+                                ]
+                            },
+                            "organization": {
+                                "reference": "Organization/8e9910cc-fc5a-4ee3-a836-e48bbbdb81a2"
+                            }
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/DiagnosticReport/58483436-14a8-4dfc-a3ec-0864c89153af",
+                        "resource": {
+                            "resourceType": "DiagnosticReport",
+                            "id": "58483436-14a8-4dfc-a3ec-0864c89153af",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/LaboratoryReportCVDP"
+                                ]
+                            },
+                            "status": "final",
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory",
+                                        "code": "cvdp",
+                                        "display": "Severe-Acute-Respiratory-Syndrome-Coronavirus-2 (SARS-CoV-2)"
+                                    }
+                                ]
+                            },
+                            "subject": {
+                                "reference": "Patient/1447d972-653f-4b90-ac75-5aa9c13a30e4"
+                            },
+                            "issued": "2022-01-26T22:03:52.000+01:00",
+                            "result": [
+                                {
+                                    "reference": "Observation/6a2d5732-ca13-4ea0-bdd7-63b3f176c15f"
+                                }
+                            ],
+                            "conclusionCode": [
+                                {
+                                    "coding": [
+                                        {
+                                            "system": "https://demis.rki.de/fhir/CodeSystem/conclusionCode",
+                                            "code": "pathogenDetected",
+                                            "display": "Meldepflichtiger Erreger nachgewiesen"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/Observation/6a2d5732-ca13-4ea0-bdd7-63b3f176c15f",
+                        "resource": {
+                            "resourceType": "Observation",
+                            "id": "6a2d5732-ca13-4ea0-bdd7-63b3f176c15f",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionCVDP"
+                                ]
+                            },
+                            "status": "final",
+                            "category": [
+                                {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                            "code": "laboratory",
+                                            "display": "Laboratory"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://loinc.org",
+                                        "code": "94746-5",
+                                        "display": "SARS-CoV-2 (COVID-19) RNA [Cycle Threshold #] in Specimen by NAA with probe detection"
+                                    }
+                                ]
+                            },
+                            "subject": {
+                                "reference": "Patient/1447d972-653f-4b90-ac75-5aa9c13a30e4"
+                            },
+                            "valueString": "PCR-Schnelltest positiv",
+                            "interpretation": [
+                                {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                            "code": "POS"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "specimen": {
+                                "reference": "Specimen/9cdd4b2a-4501-4886-99a2-ae4e37da3890"
+                            }
+                        }
+                    },
+                    {
+                        "fullUrl": "https://demis.rki.de/fhir/Specimen/9cdd4b2a-4501-4886-99a2-ae4e37da3890",
+                        "resource": {
+                            "resourceType": "Specimen",
+                            "id": "9cdd4b2a-4501-4886-99a2-ae4e37da3890",
+                            "meta": {
+                                "profile": [
+                                    "https://demis.rki.de/fhir/StructureDefinition/SpecimenCVDP"
+                                ]
+                            },
+                            "status": "available",
+                            "type": {
+                                "coding": [
+                                    {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "309164002",
+                                        "display": "Upper respiratory swab sample (specimen)"
+                                    }
+                                ]
+                            },
+                            "subject": {
+                                "reference": "Patient/1447d972-653f-4b90-ac75-5aa9c13a30e4"
+                            },
+                            "receivedTime": "2022-01-26T22:03:52+01:00",
+                            "collection": {
+                                "collector": {
+                                    "reference": "PractitionerRole/77c191b3-7f07-406d-8568-52be2ff52e29"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

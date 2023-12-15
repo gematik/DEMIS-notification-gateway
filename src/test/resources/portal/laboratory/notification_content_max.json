@@ -1,0 +1,82 @@
+{
+    "pathogen": "cvdp",
+    "notifierFacility": {
+        "facilityInfo": {
+            "institutionName": "TEST Organisation",
+            "existsBsnr": true,
+            "bsnr": "123456789"
+        },
+        "address": {
+            "street": "Straße",
+            "houseNumber": "1",
+            "zip": "21481",
+            "city": "Buchhorst",
+            "country": "20422",
+            "additionalInfo": null,
+            "addressType": "current"
+        },
+        "contact": {
+            "salutation": "Mrs",
+            "lastname": "Ansprechpartner",
+            "firstname": "Anna Beate Carolin",
+            "prefix": "Dr."
+        },
+        "contacts": [
+            {
+                "contactType": "phone",
+                "value": "01234567"
+            },
+            {
+                "contactType": "email",
+                "value": "anna@ansprechpartner.de"
+            }
+        ]
+    },
+    "notifiedPerson": {
+        "info": {
+            "gender": "FEMALE",
+            "firstname": "Bertha-Luise Hanna  Karin",
+            "lastname": "Betroffen",
+            "birthDate": "1999-06-09"
+        },
+        "currentAddress": {
+            "street": "Betroffenenstraße",
+            "houseNumber": "1",
+            "zip": "21481",
+            "city": "Buchhorst",
+            "country": "20422",
+            "addressType": "current"
+        },
+        "contacts": [
+            {
+                "contactType": "phone",
+                "value": "01234567"
+            },
+            {
+                "contactType": "email",
+                "value": "bertha@betroffen.de"
+            }
+        ],
+        "primaryAddress": {
+            "street": "Berthastraße",
+            "houseNumber": "123",
+            "zip": "12345",
+            "city": "Betroffenenstadt",
+            "country": "20422",
+            "addressType": "primary"
+        },
+        "ordinaryAddress": {
+            "street": "Andere Straße",
+            "houseNumber": "3",
+            "zip": "11223",
+            "city": "Stadt",
+            "country": "20422",
+            "addressType": "ordinary"
+        }
+    },
+    "diagnostic": {
+        "testType": "ANTIGEN_RAPID_TEST",
+        "receivedDate": "2022-01-27T10:45:11.000Z",
+        "comment": ""
+    }
+}

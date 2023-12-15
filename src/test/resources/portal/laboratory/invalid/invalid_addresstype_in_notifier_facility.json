@@ -1,0 +1,61 @@
+{
+    "pathogen": "cvdp",
+    "notifierFacility": {
+        "facilityInfo": {
+            "institutionName": "TEST Organisation",
+            "existsBsnr": true,
+            "bsnr": "248123512"
+        },
+        "address": {
+            "street": "Marketplace",
+            "houseNumber": "1",
+            "zip": "13353",
+            "city": "Wurstburg",
+            "country": "20422",
+            "additionalInfo": null,
+            "addressType": "INVALID"
+        },
+        "contact": {
+            "salutation": "Mrs",
+            "lastname": "Melderson",
+            "firstname": "Melder",
+            "prefix": "Dr."
+        },
+        "contacts": [
+            {
+                "contactType": "phone",
+                "value": "012345767"
+            }
+        ]
+    },
+    "notifiedPerson": {
+        "info": {
+            "firstname": "Max",
+            "lastname": "Power",
+            "birthDate": "2022-01-26",
+            "gender": "MALE"
+        },
+        "currentAddress": {
+            "zip": "21481",
+            "country": "20422",
+            "street": "Seestraße",
+            "additionalInfo": null,
+            "city": "Berlin",
+            "houseNumber": "1",
+            "addressType": "current"
+        },
+        "contacts": [
+            {
+                "contactType": "phone",
+                "value": "012345767",
+                "usage": "work"
+            }
+        ]
+    },
+    "diagnostic": {
+        "receivedDate": "2022-01-26T21:03:52.000Z",
+        "comment": null,
+        "testType": "PCR_RAPID_TEST",
+        "voc": null
+    }
+}

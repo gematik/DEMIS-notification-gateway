@@ -1,0 +1,56 @@
+[
+  {
+    "id": 987654,
+    "ik": "987654321",
+    "label": "Testkrankenhaus - gematik GmbH",
+    "postalCode": "10117",
+    "city": "Berlin",
+    "line": "Friedrichstraße",
+    "houseNumber": "136"
+  },
+  {
+    "id": 654321,
+    "ik": "987654321",
+    "label": "Test-standort-1 - gematik GmbH",
+    "postalCode": "10557",
+    "city": "Berlin",
+    "line": "Konrad-Adenauer-Straße",
+    "houseNumber": "1"
+  },
+  {
+    "id": 765432,
+    "ik": "987654321",
+    "label": "Test-standort-2 (RKI) - gematik GmbH",
+    "postalCode": "13353",
+    "city": "Berlin",
+    "line": "Nordufer",
+    "houseNumber": "20"
+  },
+  {
+    "id": 876543,
+    "ik": "987654321",
+    "label": "Test-standort-2 (BMG) - gematik GmbH",
+    "postalCode": "10117",
+    "city": "Berlin",
+    "line": "Friedrichstraße",
+    "houseNumber": "108"
+  },
+  {
+    "id": 876544,
+    "ik": "987654321",
+    "label": "Test-Standort-3 (Sachsen) - gematik GmbH",
+    "postalCode": "01067",
+    "city": "Dresden",
+    "line": "Neumarkt",
+    "houseNumber": "1"
+  },
+  {
+    "id": 876545,
+    "ik": "987654321",
+    "label": "Test-Standort-4 (Sonderzeichen) \"|&@'\\/`?+*[]{};.,§$€%^°= ;) :D ~ # -.- ^^ - ?! gematik GmbH",
+    "postalCode": "01067",
+    "city": "Ort\"|&@'\\/`?+*[]{};.,§$€%^°= ;) :D ~ # -.- ^^ - ?!",
+    "line": "Straße\"|&@'\\/`?+*[]{};.,§$€%^°= ;) :D ~ # -.- ^^ - ?!",
+    "houseNumber": "1"
+  }
+]

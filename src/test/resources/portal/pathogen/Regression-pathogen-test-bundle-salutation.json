@@ -1,0 +1,550 @@
+{
+  "resourceType": "Bundle",
+  "id": "555-42-23-5",
+  "meta": {
+    "profile": [
+      "https://demis.rki.de/fhir/StructureDefinition/NotificationBundleLaboratory"
+    ]
+  },
+  "identifier": {
+    "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
+    "value": "555-42-23-6"
+  },
+  "type": "document",
+  "timestamp": "2024-03-14T14:45:00.000+01:00",
+  "entry": [
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-14",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "555-42-23-14",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory"
+          ]
+        },
+        "identifier": {
+          "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+          "value": "555-42-23-13"
+        },
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "34782-3",
+              "display": "Infectious disease Note"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "11502-2",
+                "display": "Laboratory report"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "date": "2024-03-14T14:45:00+01:00",
+        "author": [
+          {
+            "reference": "PractitionerRole/555-42-23-2"
+          }
+        ],
+        "title": "Erregernachweismeldung",
+        "relatesTo": [
+          {
+            "code": "appends",
+            "targetReference": {
+              "type": "Composition",
+              "identifier": {
+                "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+                "value": "ß0623804680234"
+              }
+            }
+          }
+        ],
+        "section": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "11502-2",
+                  "display": "Laboratory report"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "DiagnosticReport/555-42-23-12"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-7",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "555-42-23-7",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+          ]
+        },
+        "name": [
+          {
+            "text": "Bertha Betroffen",
+            "family": "Betroffen",
+            "given": [
+              "Bertha"
+            ]
+          }
+        ],
+        "gender": "female",
+        "address": [
+          {
+            "extension": [
+              {
+                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
+                  "code": "current",
+                  "display": "Derzeitiger Aufenthaltsort"
+                }
+              }
+            ],
+            "city": "Buchhorst",
+            "postalCode": "21481",
+            "country": "20422"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/555-42-23-2",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "555-42-23-2",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierRole"
+          ]
+        },
+        "organization": {
+          "reference": "Organization/555-42-23-1"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-1",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-1",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierFacility"
+          ]
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                "code": "othPrivatLab",
+                "display": "Sonstige private Untersuchungsstelle"
+              }
+            ]
+          }
+        ],
+        "name": "TEST Organisation",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01234567"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Straße 1"
+            ],
+            "city": "Buchhorst",
+            "postalCode": "21481",
+            "country": "20422"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Frau Anna Ansprechpartner",
+              "family": "Ansprechpartner",
+              "given": [
+                "Anna"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/555-42-23-4",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SubmittingRole"
+          ]
+        },
+        "organization": {
+          "reference": "Organization/555-42-23-3"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-3",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-3",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SubmittingFacility"
+          ]
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                "code": "othPrivatLab",
+                "display": "Sonstige private Untersuchungsstelle"
+              }
+            ]
+          }
+        ],
+        "name": "Krankenhaus",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+49 0123 123123"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Magic Street 123b"
+            ],
+            "city": "Berlin",
+            "postalCode": "12345",
+            "country": "Germany"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Kontakt @ Station",
+              "family": "@ Station",
+              "given": [
+                "Kontakt"
+              ]
+            },
+            "address": {
+              "line": [
+                "Station"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Specimen/555-42-23-8",
+      "resource": {
+        "resourceType": "Specimen",
+        "id": "555-42-23-8",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SpecimenINVP"
+          ]
+        },
+        "type": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "119376003",
+              "display": "Tissue specimen (specimen)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "receivedTime": "2022-02-01T00:00:00+01:00",
+        "collection": {
+          "collector": {
+            "reference": "PractitionerRole/555-42-23-4"
+          },
+          "collectedDateTime": "2020-12-10T00:00:00+01:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-9",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-9",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionINVP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41852-5",
+              "display": "Microorganism or agent identified in Specimen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "81665004",
+              "display": "Hepatitis B virus (organism)"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "67122001",
+              "display": "Acid fast stain method (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-8"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-10",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionINVP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41852-5",
+              "display": "Microorganism or agent identified in Specimen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "409611004",
+              "display": "Aerobic blood culture (procedure)"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "67122001",
+              "display": "Acid fast stain method (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-8"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-11",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-11",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionINVP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41852-5",
+              "display": "Microorganism or agent identified in Specimen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "409611004",
+              "display": "Aerobic blood culture (procedure)"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "NEG"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "127785005",
+              "display": "Administration of substance to produce immunity, either active or passive (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-8"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/DiagnosticReport/555-42-23-12",
+      "resource": {
+        "resourceType": "DiagnosticReport",
+        "id": "555-42-23-12",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/LaboratoryReportINVP"
+          ]
+        },
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory",
+              "code": "invp",
+              "display": "Influenzavirus; Meldepflicht nur für den direkten Nachweis"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "issued": "2024-03-14T14:45:00.000+01:00",
+        "result": [
+          {
+            "reference": "Observation/555-42-23-9"
+          },
+          {
+            "reference": "Observation/555-42-23-10"
+          },
+          {
+            "reference": "Observation/555-42-23-11"
+          }
+        ],
+        "conclusion": "Interpretation",
+        "conclusionCode": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/conclusionCode",
+                "code": "pathogenDetected"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

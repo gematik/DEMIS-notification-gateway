@@ -10,4 +10,9 @@
         <artifactId>notification-builder-library</artifactId>
         <license>EUPL 1.2</license>
     </artifact>
+    <artifact>
+        <groupId>de.gematik.demis</groupId>
+        <artifactId>service-base</artifactId>
+        <license>EUPL 1.2</license>
+    </artifact>
 </license-lookup>

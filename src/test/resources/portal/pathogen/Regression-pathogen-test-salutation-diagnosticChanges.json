@@ -1,0 +1,115 @@
+{
+  "pathogen": "invp",
+  "pathogenDTO": {
+    "codeDisplay": {
+      "code": "invp",
+      "display": "Influenzavirus; Meldepflicht nur für den direkten Nachweis",
+      "designations": []
+    },
+    "diagnostic": {
+      "receivedDate": "2022-02-01",
+      "material": {
+        "code": "119376003",
+        "display": "Tissue specimen (specimen)"
+      },
+      "pathogen": {
+        "code": "81665004",
+        "display": "Hepatitis B virus (organism)"
+      },
+      "methodPathogenList": [
+        {
+          "method": {
+            "code": "67122001",
+            "display": "Acid fast stain method (procedure)"
+          },
+          "analyt": {
+            "code": "409611004",
+            "display": "Aerobic blood culture (procedure)"
+          },
+          "result": "POS"
+        },
+        {
+          "method": {
+            "code": "127785005",
+            "display": "Administration of substance to produce immunity, either active or passive (procedure)"
+          },
+          "analyt": {
+            "code": "409611004",
+            "display": "Aerobic blood culture (procedure)"
+          },
+          "result": "NEG"
+        }
+      ],
+      "reportStatus": "final",
+      "interpretation": "Interpretation",
+      "initialNotificationId": "ß0623804680234",
+      "extractionDate": "2020-12-10"
+    }
+  },
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "bsnr": "123456",
+      "existsBsnr": false
+    },
+    "address": {
+      "street": "Straße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "additionalInfo": null
+    },
+    "contact": {
+      "salutation": "Mrs",
+      "lastname": "Ansprechpartner",
+      "firstname": "Anna",
+      "prefix": null
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      }
+    ]
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "FEMALE",
+      "firstname": "Bertha",
+      "lastname": "Betroffen",
+      "birthDate": null
+    },
+    "currentAddress": {
+      "street": null,
+      "houseNumber": null,
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "addressType": "current"
+    },
+    "contacts": []
+  },
+  "submittingFacility": {
+    "contact": {
+      "firstname": "Kontakt",
+      "lastname": "@ Station",
+      "salutation": null
+    },
+    "facilityInfo": {
+      "institutionName": "Krankenhaus",
+      "departmentName": "Station"
+    },
+    "address": {
+      "zip": "12345",
+      "country": "Germany",
+      "city": "Berlin",
+      "houseNumber": "123b",
+      "street": "Magic Street"
+    },
+    "contacts": [{
+      "contactType": "phone",
+      "value": "+49 0123 123123"
+    }]
+  }
+}

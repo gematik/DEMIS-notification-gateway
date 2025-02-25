@@ -1,0 +1,187 @@
+{
+  "notificationCategory": {
+    "initialNotificationId": "12345",
+    "laboratoryOrderId": "1a2b3c",
+    "pathogen": {
+      "code": "21927003",
+      "designations": [
+        {
+          "language": "de-DE",
+          "value": "Bacillus anthracis"
+        },
+        {
+          "language": "en-US",
+          "value": "Bacillus anthracis (organism)"
+        }
+      ],
+      "display": "Bacillus anthracis (organism)"
+    },
+    "reportStatus": "final"
+  },
+  "notifiedPerson": {
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "012345767"
+      },
+      {
+        "contactType": "email",
+        "value": "testerino@test.de"
+      }
+    ],
+    "currentAddress": {
+      "additionalInfo": "Das Einsenderinstitut",
+      "addressType": "submittingFacility",
+      "city": "Einsendercity",
+      "country": "DE",
+      "houseNumber": "1",
+      "street": "Am Einsenderdamm",
+      "zip": "21481"
+    },
+    "info": {
+      "birthDate": "2024-11-20",
+      "firstname": "Max",
+      "gender": "MALE",
+      "lastname": "Power"
+    },
+    "ordinaryAddress": null,
+    "residenceAddress": {
+      "addressType": "primary",
+      "city": "Berlin",
+      "country": "DE",
+      "houseNumber": "1",
+      "street": "Wohnsitzstraße",
+      "zip": "21481"
+    }
+  },
+  "notifierFacility": {
+    "address": {
+      "additionalInfo": null,
+      "addressType": "current",
+      "city": "Frühling",
+      "country": "DE",
+      "houseNumber": "1",
+      "street": "Im Himmelreich",
+      "zip": "21481"
+    },
+    "contact": {
+      "firstname": "Melderina",
+      "lastname": "Melderson",
+      "prefix": "Dr",
+      "salutation": "Mr"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "0182736912388889"
+      },
+      {
+        "contactType": "email",
+        "value": "testerino@test.de"
+      }
+    ],
+    "facilityInfo": {
+      "bsnr": "248123512",
+      "existsBsnr": true,
+      "institutionName": "TEST Organisation"
+    }
+  },
+  "pathogen": "invp",
+  "pathogenDTO": {
+    "codeDisplay": {
+      "code": "invp",
+      "designations": [
+        {
+          "language": "de",
+          "value": "Influenzavirus"
+        }
+      ],
+      "display": "Influenzavirus; Meldepflicht nur für den direkten Nachweis"
+    },
+    "diagnostic": {
+      "extractionDate": "2024-11-20",
+      "material": {
+        "code": "258529004",
+        "designations": [
+          {
+            "language": "en-US",
+            "value": "Throat swab (specimen)"
+          },
+          {
+            "language": "de-DE",
+            "value": "Rachenabstrich"
+          }
+        ],
+        "display": "Throat swab (specimen)"
+      },
+      "methodPathogenList": [
+        {
+          "method": {
+            "code": "121276004",
+            "designations": [
+              {
+                "language": "en-US",
+                "value": "Antigen assay (procedure)"
+              },
+              {
+                "language": "de-DE",
+                "value": "Antigennachweis"
+              }
+            ],
+            "display": "Antigen assay (procedure)"
+          },
+          "result": "POS"
+        }
+      ],
+      "pathogen": {
+        "code": "407479009",
+        "designations": [
+          {
+            "language": "en-US",
+            "value": "Influenza A virus (organism)"
+          },
+          {
+            "language": "de-DE",
+            "value": "Influenza A-Virus"
+          }
+        ],
+        "display": "Influenza A virus (organism)"
+      },
+      "receivedDate": "2024-11-20",
+      "reportStatus": "preliminary",
+      "resistanceGeneList": [],
+      "resistanceList": []
+    }
+  },
+  "submittingFacility": {
+    "address": {
+      "city": "Einsendercity",
+      "country": "DE",
+      "houseNumber": "1",
+      "street": "Am Einsenderdamm",
+      "zip": "21481"
+    },
+    "contact": {
+      "firstname": "Einsenderina",
+      "lastname": "Einsenderson",
+      "prefix": "Dr",
+      "salutation": "Mrs"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "012345678"
+      },
+      {
+        "contactType": "email",
+        "value": "einsender@einsenderinstitut.de"
+      }
+    ],
+    "facilityInfo": {
+      "departmentName": "Station 9a",
+      "institutionName": "Das Einsenderinstitut"
+    }
+  }
+}

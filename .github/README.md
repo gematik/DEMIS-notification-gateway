@@ -12,6 +12,16 @@ DEMIS core services.
 It's main purpose is to create FHIR bundles from the user input from the portal and send them to the
 corresponding DEMIS core service, such as NES (notification entry service) and RPS (report processing service).
 
+The notification gateway builds FHIR documents. These are sent to the DEMIS core FHIR interfaces. Supported use cases
+are:
+
+- pathogen notification (authentication required, but can be disabled)
+- disease notification (authentication required)
+- bed-occupancy report (authentication required)
+
+Also, the gateways provides access to hospital location data. (no authentication required)
+
+
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -69,18 +79,11 @@ For usage or perform the tests, sample data must be added to the files:
 * src/main/resources/application.properties.template
   * The following values has to be set:
     * token.client.secret.lab
-    * token.client.secret.hospital
     * truststore.password
     * auth.cert.password
     * testuser.auth.cert.password
 * src/main/resources/certs/nginx.truststore.template
-    * Needs to be filled with a CA-Certificate and an End-Entity-Certificate which is issued by the CA. 
-* src/test/resources/app.properties.template
-    * The following values has to be set:
-      * 0.idp.lab.authcertkeystore
-      * 0.idp.lab.authcertpassword
-      * 0.idp.hospital.authcertkeystore
-      * 0.idp.hospital.authcertpassword
+    * Needs to be filled with a CA-Certificate and an End-Entity-Certificate which is issued by the CA.
 
 In addition for authentication, the two keystores DEMIS.p12 (for fetching a token) and Testuser.p12 (for testuser) are required and should be stored under src/main/resources/certs.
 Afterwards, please remove the ".template" suffix so that the files can be used in the code.
@@ -88,6 +91,11 @@ Afterwards, please remove the ".template" suffix so that the files can be used i
 # Usage
 
 ## Build
+When you checkout the repository you have to generate class from the Open-API specification. Usually this is done in
+Maven automatically. However, if you are using IntelliJ you have to go to the Maven-Tab and select
+**Generate Sources and Update Folders For All Projects**. See https://stackoverflow.com/a/46812593
+
+
 To build the project locally using Maven, you can use the following goals:
 
 ```
@@ -102,7 +110,7 @@ mvn clean install -Pdocker
 ```
 Please note that you should replace x.y.z with the actual version number of the project.
 
-it will be available as `europe-west3-docker.pkg.dev/gematik-all-infra-prod/demis-dev/notification-gateway:latest`
+it will be available as `notification-gateway:latest`
 
 ## Tests
 
@@ -113,10 +121,9 @@ mvn clean verify
 
 The tests by default use the offline JWT Token Decoder. In the `application-test.properties` the option `jwt.offline.decoder.enabled` is set to true, so during the tests, instead of contacting the Ulbirch IDP, an offline class will be used.
 ```
+
 ## Run
 To run the gateway locally in an embedded Tomcat server, start the [NotificationGatewayApplication.java](../src/main/java/de/gematik/demis/notificationgateway/NotificationGatewayApplication.java).
-
-By default, all requests are sent to the [DEV-environment](https://gsltucd01.ltu.int.gematik.de:8001).
 
 Alternatively, you can use the [application-local.properties](../src/main/resources/application-local.properties) file in combination with the [demis-localhost.yml](https://gitlab.prod.ccs.gematik.solutions/git/demis/demis/-/blob/master/demis_localhost.yml) configuration.
 
@@ -132,15 +139,26 @@ The data model is maintained here:
 If you have problems with unfound classes in the code after calling `mvn clean compile`, try the
 reload / update folders button in your Maven tab.
 
-## Configuration
+## Swagger
 
-| Configuration File                                               | Description                                                                                                   |
-|-----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| [application.properties](../src/main/resources/application.properties) | Contains the configuration settings for the project.                                                        |
-| [demis-configuration](https://gitlab.prod.ccs.gematik.solutions/git/demis/demis-configuration)               | The demis-configuration project contains the properties for different environments. These properties are replaced during the build process for the specified environment. |
+When running locally, swagger can be found at:
 
+http://localhost:8080/swagger-ui/index.html
 
 Each configuration property can also be overridden with the definition of environment variables, following the SpringBoot convention (name in uppercase, snake case - e.g. from `http.connection.timeout.ms` to `HTTP_CONNECTION_TIMEOUT_MS`).
+
+## Configuration
+
+The Spring application properties of the service.
+
+| Feature                                         | Parameter                                 | Description                                                                                                       | Default | Example values |
+|-------------------------------------------------|-------------------------------------------|-------------------------------------------------------------------------------------------------------------------|---------|----------------|
+| HSL data queries                                | HOSPITAL_LOCATION_SERVICE_URL_ENABLED     | On-off switch for unauthenticated HLS data queries                                                                | false   | true, false    |
+| pathogen notification                           | PATHOGEN_AUTHENTICATION_REQUIRED          | Support unauthenticated pathogen notifications                                                                    | true    | true, false    |
+| new layout on notification category page        | FEATURE_FLAG_SPECIMEN_PREPARATION_ENABLED | new layout on notification category page, some input and drop downs move from diagnostic to notification category | false   | true, false    |
+| new layout for notified person on pathogen page | FEATURE_FLAG_NEW_NOTIFIED_PERSON_ENABLED  | new layout for notified person on pathogen page, some refactoring of input data location and backend handling     | false   | true, false    |
+| multiple specimen                               | FEATURE_FLAG_MULTIPLE_SPECIMEN_ENABLED    | activates new multi specimen processing                                                                           | false   | true, false    |
+| new layout for notified person on disease page  | FEATURE_FLAG_DISEASE_ADDRESS_PATIENT      | new layout for notified person on disease page, some refactoring of input data location and backend handling      | false   | true, false    |
 
 # Endpoints
 
@@ -162,8 +180,8 @@ Here you can find
 - the CORS configuration
 - authentication settings for all endpoints
 
-The endpoints specified above (i.e. test, hospitalization and bed occupancy) can be invoked after authentication or anonymously (no authentication available in Spring Context). Currently, there are 2 distinct options for authentication available: IBM Komfort-Client and Federated Identity Providers (e.g. Authenticator, BundID, MeinUnternehmenskonto).  
-[AuthenticationManagerResolver](../src/main/java/de/gematik/demis/notificationgateway/security/AuthenticationManagerResolver.java) plays a crucial role for these flows. Namely, it registers dedicated token decoders for Komfort-Client and DEMIS issued tokens. 
+The endpoints specified above (i.e. test, hospitalization and bed occupancy) can be invoked after authentication or anonymously (no authentication available in Spring Context). Currently, there is 2 distinct options for authentication available: Certificate-based and Federated Identity Providers (e.g. Authenticator, BundID, MeinUnternehmenskonto).  
+[AuthenticationManagerResolver](../src/main/java/de/gematik/demis/notificationgateway/security/AuthenticationManagerResolver.java) plays a crucial role for these flows. Namely, it registers dedicated token decoders DEMIS issued tokens. 
 
 In order to facilitate the sending of notifications to DEMIS-Core for the principals of Federated IDPs a custom AuthenticationManager was implemented [FederatedIdentityProviderAuthenticationManager](../src/main/java/de/gematik/demis/notificationgateway/security/fidp/FederatedIdentityProviderAuthenticationManager.java), 
 which ensures the Authentication object in Spring Security Context.

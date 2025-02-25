@@ -18,50 +18,70 @@
 
 package de.gematik.demis.notificationgateway.utils;
 
+/*-
+ * #%L
+ * DEMIS Notification-Gateway
+ * %%
+ * Copyright (C) 2025 gematik GmbH
+ * %%
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+ * European Commission – subsequent versions of the EUPL (the "Licence").
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You find a copy of the Licence in the "Licence" file or at
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+ * In case of changes by gematik find details in the "Readme" file.
+ *
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ * #L%
+ */
+
 import ca.uhn.fhir.context.FhirContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.demis.notificationgateway.common.dto.BedOccupancy;
-import de.gematik.demis.notificationgateway.common.dto.Hospitalization;
+import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.PathogenData;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.r4.model.Bundle;
+import org.assertj.core.api.Assertions;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Parameters;
 
 @Slf4j
-public class FileUtils {
+public final class FileUtils {
 
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().findAndRegisterModules();
   private static final String TEST_RESOURCE_PATH = "src/test/resources";
 
-  public static QuickTest createQuickTest(String filePath) throws JsonProcessingException {
-    final String jsonString = FileUtils.loadJsonFromFile(filePath);
-
-    return OBJECT_MAPPER.readValue(jsonString, QuickTest.class);
+  private FileUtils() {
+    throw new UnsupportedOperationException("Utility class");
   }
 
-  public static Hospitalization createHospitalization(String filePath)
-      throws JsonProcessingException {
-    final String jsonString = FileUtils.loadJsonFromFile(filePath);
+  public static QuickTest createQuickTest(String filePath) throws JsonProcessingException {
+    return unmarshal(filePath, QuickTest.class);
+  }
 
-    return OBJECT_MAPPER.readValue(jsonString, Hospitalization.class);
+  public static DiseaseNotification createDiseaseNotification(String filePath) {
+    try {
+      return unmarshal(filePath, DiseaseNotification.class);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Error while reading file: " + filePath, e);
+    }
   }
 
   public static BedOccupancy createBedOccupancy(String filePath) throws JsonProcessingException {
-    final String jsonString = FileUtils.loadJsonFromFile(filePath);
-
-    return OBJECT_MAPPER.readValue(jsonString, BedOccupancy.class);
-  }
-
-  public static Bundle createBundleFromFile(String filePath) {
-    final String bundleJsonString = FileUtils.loadJsonFromFile(filePath);
-    return (Bundle) FhirContext.forR4().newJsonParser().parseResource(bundleJsonString);
+    return unmarshal(filePath, BedOccupancy.class);
   }
 
   public static Parameters createParametersFromFile(String filePath) {
@@ -76,9 +96,12 @@ public class FileUtils {
   }
 
   public static PathogenData createPathogenData(String filePath) throws JsonProcessingException {
-    final String jsonString = FileUtils.loadJsonFromFile(filePath);
+    return unmarshal(filePath, PathogenData.class);
+  }
 
-    return OBJECT_MAPPER.readValue(jsonString, PathogenData.class);
+  public static <O> O unmarshal(String filePath, Class<O> clazz) throws JsonProcessingException {
+    final String jsonString = FileUtils.loadJsonFromFile(filePath);
+    return OBJECT_MAPPER.readValue(jsonString, clazz);
   }
 
   /**
@@ -94,12 +117,29 @@ public class FileUtils {
       filePath = checkLeadingBackslash(filePath);
       filePath = TEST_RESOURCE_PATH + filePath;
 
-      return Files.readString(Paths.get(filePath));
+      return Files.readString(Paths.get(filePath), StandardCharsets.UTF_8);
 
     } catch (IOException | IllegalArgumentException e) {
       log.error("Unable to read file input", e);
     }
     return null;
+  }
+
+  /**
+   * Compare JSON texts on the level of JSON nodes
+   *
+   * @param expected expected JSON
+   * @param actual actual JSON
+   * @param message message or <code>null</code>
+   */
+  public static void assertEqualJson(String expected, String actual, String message) {
+    try {
+      JsonNode expectedJson = OBJECT_MAPPER.readTree(expected);
+      JsonNode actualJson = OBJECT_MAPPER.readTree(actual);
+      Assertions.assertThat(actualJson).as(message).isEqualTo(expectedJson);
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException("Failed to read JSON data!", e);
+    }
   }
 
   private static String checkLeadingBackslash(String path) {

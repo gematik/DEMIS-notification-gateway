@@ -1,93 +1,180 @@
 {
-  "pathogen": "invp",
-  "pathogenDTO": {
-    "codeDisplay": {
-      "code": "invp",
-      "display": "Influenzavirus; Meldepflicht nur für den direkten Nachweis",
-      "designations": []
-    },
-    "diagnostic": {
-      "receivedDate": "2022-02-01",
-      "material": {
-        "code": "119376003",
-        "display": "Tissue specimen (specimen)"
-      },
-      "pathogen": {
-        "code": "81665004",
-        "display": "Hepatitis B virus (organism)"
-      },
-      "methodPathogenList": [
-        {
-          "method": {
-            "code": "67122001",
-            "display": "Acid fast stain method (procedure)"
-          },
-          "analyt": {
-            "code": "409611004",
-            "display": "Aerobic blood culture (procedure)"
-          },
-          "result": "POS"
-        },
-        {
-          "method": {
-            "code": "127785005",
-            "display": "Administration of substance to produce immunity, either active or passive (procedure)"
-          },
-          "analyt": {
-            "code": "409611004",
-            "display": "Aerobic blood culture (procedure)"
-          },
-          "result": "NEG"
-        }
-      ],
-      "reportStatus": "final",
-      "interpretation": "Interpretation",
-      "initialNotificationId": "ß0623804680234",
-      "extractionDate": "2020-12-10"
-    }
-  },
   "notifierFacility": {
     "facilityInfo": {
       "institutionName": "TEST Organisation",
-      "bsnr": "123456",
-      "existsBsnr": false
+      "bsnr": "248123512",
+      "existsBsnr": true
     },
     "address": {
-      "street": "Straße",
-      "houseNumber": "1",
       "zip": "21481",
-      "city": "Buchhorst",
-      "country": "20422",
-      "additionalInfo": null
+      "country": "DE",
+      "street": "Im Himmelreich",
+      "additionalInfo": null,
+      "city": "Frühling",
+      "houseNumber": "1",
+      "addressType": "current"
     },
     "contact": {
       "salutation": null,
-      "lastname": "Ansprechpartner",
-      "firstname": "Anna",
-      "prefix": null
+      "prefix": null,
+      "firstname": "Melderina",
+      "lastname": "Melderson"
     },
     "contacts": [
       {
         "contactType": "phone",
-        "value": "01234567"
+        "usage": "work",
+        "value": "0182736912388889"
+      },
+      {
+        "contactType": "email",
+        "value": "testerino@test.de"
       }
     ]
   },
   "notifiedPerson": {
     "info": {
-      "gender": "FEMALE",
-      "firstname": "Bertha",
-      "lastname": "Betroffen",
-      "birthDate": null
+      "firstname": "Max",
+      "lastname": "Power",
+      "birthDate": "2024-11-21",
+      "gender": "MALE"
     },
     "currentAddress": {
-      "street": null,
-      "houseNumber": null,
       "zip": "21481",
-      "city": "Buchhorst",
-      "country": "20422",
+      "country": "DE",
+      "street": "Seestraße",
+      "additionalInfo": null,
+      "city": "Berlin",
+      "houseNumber": "1",
       "addressType": "current"
     },
+    "ordinaryAddress": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Seestraße",
+      "additionalInfo": null,
+      "city": "Berlin",
+      "houseNumber": "1",
+      "addressType": "ordinary"
+    },
+    "primaryAddress": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Seestraße",
+      "additionalInfo": null,
+      "city": "Berlin",
+      "houseNumber": "1",
+      "addressType": "primary"
+    },
     "contacts": []
+  },
+  "submittingFacility": {
+    "facilityInfo": {
+      "institutionName": "Das Einsenderinstitut",
+      "departmentName": "Station 9a"
+    },
+    "address": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Am Einsenderdamm",
+      "city": "Einsendercity",
+      "houseNumber": "1"
+    },
+    "contact": {
+      "salutation": "Mrs",
+      "prefix": "Dr",
+      "firstname": "Einsenderina",
+      "lastname": "Einsenderson"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "01231232"
+      }
+    ]
+  },
+  "pathogen": "banp",
+  "notificationCategory": {
+    "pathogen": {
+      "code": "21927003",
+      "display": "Bacillus anthracis (organism)",
+      "designations": [
+        {
+          "language": "de-DE",
+          "value": "Bacillus anthracis"
+        },
+        {
+          "language": "en-US",
+          "value": "Bacillus anthracis (organism)"
+        }
+      ]
+    },
+    "reportStatus": "final",
+    "initialNotificationId": "12345",
+    "laboratoryOrderId": "1a2b3c"
+  },
+  "pathogenDTO": {
+    "codeDisplay": {
+      "code": "banp",
+      "display": "Bacillus anthracis",
+      "designations": [
+        {
+          "language": "de-DE",
+          "value": "Bacillus anthracis"
+        }
+      ]
+    },
+    "diagnostic": {
+      "extractionDate": "2022-02-19",
+      "receivedDate": "2022-02-20",
+      "material": {
+        "code": "119339001",
+        "display": "Stool specimen (specimen)",
+        "designations": [
+          {
+            "language": "en-US",
+            "value": "Stool specimen (specimen)"
+          },
+          {
+            "language": "de-DE",
+            "value": "Stuhlprobe"
+          }
+        ]
+      },
+      "methodPathogenList": [
+        {
+          "method": {
+            "code": "117040002",
+            "display": "Nucleic acid sequencing (procedure)",
+            "designations": [
+              {
+                "language": "en-US",
+                "value": "Nucleic acid sequencing (procedure)"
+              },
+              {
+                "language": "de-DE",
+                "value": "DNA-Sequenzierung"
+              }
+            ]
+          },
+          "analyt": {
+            "code": "409499007",
+            "display": "Protective antigen of anthrax toxin (substance)",
+            "designations": [
+              {
+                "language": "de-DE",
+                "value": "Anthrax Protektives Antigen (PA)"
+              },
+              {
+                "language": "en-US",
+                "value": "Protective antigen of anthrax toxin (substance)"
+              }
+            ]
+          },
+          "result": "POS"
+        }
+      ]
+    }
   }
 }

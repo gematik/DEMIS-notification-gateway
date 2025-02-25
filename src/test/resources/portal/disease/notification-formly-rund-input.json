@@ -1,0 +1,174 @@
+{
+  "status": {
+    "category": "rund",
+    "status": "final"
+  },
+  "notifierFacility": {
+    "address": {
+      "country": "DE",
+      "street": "Donaustrasse",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Riedlingen"
+    },
+    "contact": {
+      "firstname": "Test",
+      "lastname": "Person"
+    },
+    "contacts": [
+      {
+        "contactType": "email",
+        "value": "t.person@gmail.com"
+      },
+      {
+        "contactType": "email",
+        "value": "test.person@kh-rie.de"
+      },
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "01234567"
+      }
+    ],
+    "facilityInfo": {
+      "existsBsnr": true,
+      "bsnr": "123456789",
+      "institutionName": "Kreiskrankenhaus Riedlingen",
+      "organizationType": "hospital"
+    }
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "MALE",
+      "firstname": "Marta",
+      "lastname": "Analytika",
+      "birthDate": ""
+    },
+    "primaryAddress": {
+      "country": "DE",
+      "zip": "37648"
+    },
+    "contacts": []
+  },
+  "condition": {
+    "recordedDate": "",
+    "onset": "",
+    "note": "",
+    "evidence": []
+  },
+  "common": {
+    "questionnaire": "common",
+    "item": [
+      {
+        "linkId": "isDead",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+              "breadcrumb": "NoInformation|unknown"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "militaryAffiliation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+              "breadcrumb": "NoInformation|unknown"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "labSpecimenTaken",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+              "breadcrumb": "NoInformation|unknown"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "hospitalized",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+              "breadcrumb": "NoInformation|unknown"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "infectProtectFacility",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+              "breadcrumb": "NoInformation|unknown"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "placeExposure",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+              "breadcrumb": "NoInformation|unknown"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "organDonation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+              "breadcrumb": "NoInformation|unknown"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "additionalInformation",
+        "answer": [
+          {
+            "valueString": ""
+          }
+        ]
+      }
+    ]
+  },
+  "disease": {
+    "questionnaire": "rund",
+    "item": []
+  }
+}

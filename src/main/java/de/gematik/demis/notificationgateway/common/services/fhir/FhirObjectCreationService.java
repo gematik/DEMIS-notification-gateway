@@ -18,22 +18,38 @@
 
 package de.gematik.demis.notificationgateway.common.services.fhir;
 
-import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.STRUCTURE_DEFINITION_ADDRESS_USE;
-import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.STRUCTURE_DEFINITION_ADXP_HOUSE_NUMBER;
-import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.STRUCTURE_DEFINITION_ADXP_STREET_NAME;
+/*-
+ * #%L
+ * DEMIS Notification-Gateway
+ * %%
+ * Copyright (C) 2025 gematik GmbH
+ * %%
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+ * European Commission – subsequent versions of the EUPL (the "Licence").
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You find a copy of the Licence in the "Licence" file or at
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+ * In case of changes by gematik find details in the "Readme" file.
+ *
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ * #L%
+ */
 
+import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.*;
+
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo.UsageEnum;
-import de.gematik.demis.notificationgateway.common.dto.ContactsInfo;
 import de.gematik.demis.notificationgateway.common.dto.FacilityAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.utils.ConfiguredCodeSystems;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -41,9 +57,9 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
+import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -86,6 +102,59 @@ public class FhirObjectCreationService {
         address.getZip(),
         address.getCity(),
         address.getCountry());
+  }
+
+  public Optional<Address> createAddress(NotifiedPersonAddressInfo personAddress) {
+    if (personAddress == null) {
+      return Optional.empty();
+    }
+    final Address fhirAddress = createAddress(personAddress, false);
+    final Coding addressUse = getAddressUseCoding(personAddress.getAddressType());
+    if (addressUse != null) {
+      fhirAddress.addExtension().setUrl(STRUCTURE_DEFINITION_ADDRESS_USE).setValue(addressUse);
+    }
+    return Optional.of(fhirAddress);
+  }
+
+  /**
+   * Creates an Address resource based on the provided NotifiedPersonAddressInfo and Organization.
+   * If the NotifiedPersonAddressInfo is null, an empty Optional is returned. The created Address
+   * will include an extension for the address use coding based on the address type.
+   *
+   * @param addressInfo the notified person address information
+   * @param organization the organization associated with the address
+   * @return an Optional containing the created Address resource, or an empty Optional if
+   *     addressInfo is null
+   */
+  public Optional<Address> createAddress(
+      final NotifiedPersonAddressInfo addressInfo, final Organization organization) {
+    if (addressInfo == null) {
+      return Optional.empty();
+    }
+    final Address fhirAddress =
+        new AddressDataBuilder().withOrganizationReferenceExtension(organization).build();
+    final Coding addressUse = getAddressUseCoding(addressInfo.getAddressType());
+    if (addressUse != null) {
+      fhirAddress.addExtension().setUrl(STRUCTURE_DEFINITION_ADDRESS_USE).setValue(addressUse);
+    }
+    return Optional.of(fhirAddress);
+  }
+
+  /**
+   * This method translates the portal-disease frontend types to the internal code system.
+   *
+   * @param addressType the address type from the portal-disease frontend
+   * @return a Coding object representing the FHIR address type
+   */
+  private Coding getAddressUseCoding(final AddressType addressType) {
+    AddressType.fromValue(addressType.getValue());
+    final String referencedCodingValue =
+        switch (addressType) {
+          case SUBMITTING_FACILITY, OTHER_FACILITY, PRIMARY_AS_CURRENT -> "current";
+          default -> addressType.getValue();
+        };
+
+    return ConfiguredCodeSystems.getInstance().getAddressUseCoding(referencedCodingValue);
   }
 
   public Address createAddress(
@@ -146,20 +215,5 @@ public class FhirObjectCreationService {
       contactPoint.setUse(ContactPointUse.fromCode(usage.getValue()));
     }
     return contactPoint;
-  }
-
-  public List<ContactPoint> createContactPoints(@Nullable ContactsInfo contactInfo) {
-    if (contactInfo == null) {
-      return Collections.emptyList();
-    }
-
-    return Stream.of(contactInfo.getPhone(), contactInfo.getEmail())
-        .filter(Objects::nonNull)
-        .map(
-            c ->
-                new ContactPoint()
-                    .setSystem(ContactPointSystem.fromCode(c.getContactType().getValue()))
-                    .setValue(c.getValue()))
-        .collect(Collectors.toList());
   }
 }

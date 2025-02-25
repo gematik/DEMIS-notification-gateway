@@ -1,0 +1,1153 @@
+{
+  "notifierFacility": {
+    "address": {
+      "country": "20422",
+      "street": "Donaustrasse",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Riedlingen"
+    },
+    "contact": {
+      "firstname": "Wolfgang",
+      "lastname": "Oederaner"
+    },
+    "contacts": [
+      {
+        "contactType": "email",
+        "value": "w.oederaner@web.de"
+      },
+      {
+        "contactType": "email",
+        "value": "h.leiserstrom@web.de"
+      },
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "01234567"
+      }
+    ],
+    "facilityInfo": {
+      "existsBsnr": true,
+      "bsnr": "123456789",
+      "institutionName": "Kreiskrankenhaus Riedlingen",
+      "organizationType": "dayHospital"
+    }
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "MALE",
+      "firstname": "Max",
+      "lastname": "Masen",
+      "birthDate": "1974-07-19T00:00:00.000Z"
+    },
+    "primaryAddress": {
+      "country": "20422",
+      "zip": "21481",
+      "street": "Herbertstraße",
+      "houseNumber": "14",
+      "city": "Oederingen"
+    },
+    "contacts": [
+    ]
+  },
+  "status": {
+    "category": "msvd",
+    "status": "error",
+    "note": "Der Patient entwickelte während des Aufenthalts in der Augenklinik spontan Beschwerden.",
+    "initialNotificationId": "init-notification-42"
+  },
+  "condition": {
+    "recordedDate": "2024-03-04T00:00:00.000Z",
+    "onset": "2024-01-31T00:00:00.000Z",
+    "note": "Hinweis zu Symptomen: Husten und Fieber.",
+    "evidence": [
+      {
+        "code": "49727002",
+        "display": "Husten",
+        "designations": [
+          {
+            "language": "de",
+            "value": "Husten"
+          },
+          {
+            "language": "en-US",
+            "value": "Cough (finding)"
+          }
+        ],
+        "system": "http://snomed.info/sct"
+      },
+      {
+        "code": "386661006",
+        "display": "Fieber",
+        "designations": [
+          {
+            "language": "en-US",
+            "value": "Fever (finding)"
+          },
+          {
+            "language": "de",
+            "value": "Fieber"
+          }
+        ],
+        "system": "http://snomed.info/sct"
+      }
+    ]
+  },
+  "common": {
+    "questionnaire": "common",
+    "item": [
+      {
+        "linkId": "isDead",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "deathDate",
+                "answer": [
+                  {
+                    "valueDate": "05.03.2024"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "militaryAffiliation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "civilPersonActiveInBundeswehr",
+              "display": "Zivilperson tätig/untergebracht in Einrichtung der BW",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/militaryAffiliation"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "labSpecimenTaken",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "labSpecimenLab",
+                "answer": [
+                  {
+                    "item": [
+                      {
+                        "linkId": "Organization",
+                        "item": [
+                          {
+                            "linkId": "name",
+                            "answer": [
+                              {
+                                "valueString": "QuickTest Laboratories Oederingen"
+                              }
+                            ]
+                          },
+                          {
+                            "linkId": "address",
+                            "item": [
+                              {
+                                "linkId": "street",
+                                "answer": [
+                                  {
+                                    "valueString": "Portalstraße"
+                                  }
+                                ]
+                              },
+                              {
+                                "linkId": "houseNumber",
+                                "answer": [
+                                  {
+                                    "valueString": "44"
+                                  }
+                                ]
+                              },
+                              {
+                                "linkId": "postalCode",
+                                "answer": [
+                                  {
+                                    "valueString": "33452"
+                                  }
+                                ]
+                              },
+                              {
+                                "linkId": "city",
+                                "answer": [
+                                  {
+                                    "valueString": "Oederingen (Alt-Burgk)"
+                                  }
+                                ]
+                              },
+                              {
+                                "linkId": "country",
+                                "answer": [
+                                  {
+                                    "valueCoding": {
+                                      "code": "DE",
+                                      "display": "Deutschland",
+                                      "designations": [
+                                      ],
+                                      "system": "https://demis.rki.de/fhir/CodeSystem/translationIso3166"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "linkId": "contact",
+                            "item": [
+                              {
+                                "linkId": "name",
+                                "item": [
+                                  {
+                                    "linkId": "prefix",
+                                    "answer": [
+                                      {
+                                        "valueString": "Herr"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "given",
+                                    "answer": [
+                                      {
+                                        "valueString": "Laslo"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "family",
+                                    "answer": [
+                                      {
+                                        "valueString": "Labora"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "linkId": "telecom",
+                            "item": [
+                              {
+                                "linkId": "phone",
+                                "answer": [
+                                  {
+                                    "valueString": "+123456789"
+                                  }
+                                ]
+                              },
+                              {
+                                "linkId": "email",
+                                "answer": [
+                                  {
+                                    "valueString": "labora@quicktest-labs.com"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "hospitalized",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "repeat-section-1",
+                "item": [
+                  {
+                    "linkId": "hospitalizedGroup",
+                    "item": [
+                      {
+                        "linkId": "hospitalizedEncounter",
+                        "answer": [
+                          {
+                            "item": [
+                              {
+                                "linkId": "Hospitalization",
+                                "item": [
+                                  {
+                                    "linkId": "serviceType",
+                                    "answer": [
+                                      {
+                                        "valueCoding": {
+                                          "code": "0436",
+                                          "display": "Intensivmedizin",
+                                          "designations": [
+                                          ],
+                                          "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "period",
+                                    "item": [
+                                      {
+                                        "linkId": "start",
+                                        "answer": [
+                                          {
+                                            "valueDate": "03.03.2024"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "end",
+                                        "answer": [
+                                          {
+                                            "valueDate": ""
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "serviceProvider",
+                                    "answer": [
+                                      {
+                                        "item": [
+                                          {
+                                            "linkId": "Organization",
+                                            "item": [
+                                              {
+                                                "linkId": "name",
+                                                "answer": [
+                                                  {
+                                                    "valueString": "Krankenhaus Oederingen"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "address",
+                                                "item": [
+                                                  {
+                                                    "linkId": "street",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "Müllerstraße"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "houseNumber",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "99"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "postalCode",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "44557"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "city",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "Oederingen"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "country",
+                                                    "answer": [
+                                                      {
+                                                        "valueCoding": {
+                                                          "code": "DE",
+                                                          "display": "Deutschland",
+                                                          "designations": [
+                                                          ],
+                                                          "system": "https://demis.rki.de/fhir/CodeSystem/translationIso3166"
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "contact",
+                                                "item": [
+                                                  {
+                                                    "linkId": "name",
+                                                    "item": [
+                                                      {
+                                                        "linkId": "prefix",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Dr.Prof."
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "linkId": "given",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Carl"
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "linkId": "family",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Neumann"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "telecom",
+                                                "item": [
+                                                  {
+                                                    "linkId": "phone",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "+123458888"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "email",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "kontakt@khoederingen.com"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "hospitalizedGroup",
+                    "item": [
+                      {
+                        "linkId": "hospitalizedEncounter",
+                        "answer": [
+                          {
+                            "item": [
+                              {
+                                "linkId": "Hospitalization",
+                                "item": [
+                                  {
+                                    "linkId": "serviceType",
+                                    "answer": [
+                                      {
+                                        "valueCoding": {
+                                          "code": "2700",
+                                          "display": "Augenheilkunde",
+                                          "designations": [
+                                          ],
+                                          "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "period",
+                                    "item": [
+                                      {
+                                        "linkId": "start",
+                                        "answer": [
+                                          {
+                                            "valueDate": "30.01.2024"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "end",
+                                        "answer": [
+                                          {
+                                            "valueDate": "02.03.2024"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "serviceProvider",
+                                    "answer": [
+                                      {
+                                        "item": [
+                                          {
+                                            "linkId": "Organization",
+                                            "item": [
+                                              {
+                                                "linkId": "name",
+                                                "answer": [
+                                                  {
+                                                    "valueString": "Augenklinik Oederingen"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "address",
+                                                "item": [
+                                                  {
+                                                    "linkId": "street",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "Herrenstraße"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "houseNumber",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "44"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "postalCode",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "44560"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "city",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "Oederingen (Neu-Burgk)"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "country",
+                                                    "answer": [
+                                                      {
+                                                        "valueCoding": {
+                                                          "code": "DE",
+                                                          "display": "Deutschland",
+                                                          "designations": [
+                                                          ],
+                                                          "system": "https://demis.rki.de/fhir/CodeSystem/translationIso3166"
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "contact",
+                                                "item": [
+                                                  {
+                                                    "linkId": "name",
+                                                    "item": [
+                                                      {
+                                                        "linkId": "prefix",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Dr."
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "linkId": "given",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Patricia"
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "linkId": "family",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Brille"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "telecom",
+                                                "item": [
+                                                  {
+                                                    "linkId": "phone",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "+49 351-4446877"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "email",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "termine@augenpraxis.de"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "infectProtectFacility",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "repeat-section-2",
+                "item": [
+                  {
+                    "linkId": "infectProtectFacilityGroup",
+                    "item": [
+                      {
+                        "linkId": "infectProtectFacilityType",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "code": "childDayNursery",
+                              "display": "Kindertagespflege",
+                              "designations": [
+                                {
+                                  "language": "en-US",
+                                  "value": "Child day nursery"
+                                },
+                                {
+                                  "language": "de-DE",
+                                  "value": "Kindertagespflege"
+                                }
+                              ],
+                              "system": "https://demis.rki.de/fhir/CodeSystem/organizationType"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityBegin",
+                        "answer": [
+                          {
+                            "valueDate": "01.02.2019"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityEnd",
+                        "answer": [
+                          {
+                            "valueDate": "20.01.2024"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityRole",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "code": "care",
+                              "display": "Betreuung",
+                              "designations": [
+                              ],
+                              "system": "https://demis.rki.de/fhir/CodeSystem/organizationAssociation"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityOrganization",
+                        "answer": [
+                          {
+                            "item": [
+                              {
+                                "linkId": "Organization",
+                                "item": [
+                                  {
+                                    "linkId": "name",
+                                    "answer": [
+                                      {
+                                        "valueString": "Kita Wanderzwerge Oederingen"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "address",
+                                    "item": [
+                                      {
+                                        "linkId": "street",
+                                        "answer": [
+                                          {
+                                            "valueString": "Fleischerstrasse"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "houseNumber",
+                                        "answer": [
+                                          {
+                                            "valueString": "5"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "postalCode",
+                                        "answer": [
+                                          {
+                                            "valueString": "44444"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "city",
+                                        "answer": [
+                                          {
+                                            "valueString": "Oederingen (Bingen)"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "country",
+                                        "answer": [
+                                          {
+                                            "valueCoding": {
+                                              "code": "DE",
+                                              "display": "Deutschland",
+                                              "designations": [
+                                              ],
+                                              "system": "https://demis.rki.de/fhir/CodeSystem/translationIso3166"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "contact",
+                                    "item": [
+                                      {
+                                        "linkId": "name",
+                                        "item": [
+                                          {
+                                            "linkId": "prefix",
+                                            "answer": [
+                                              {
+                                                "valueString": ""
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "linkId": "given",
+                                            "answer": [
+                                              {
+                                                "valueString": "Margot"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "linkId": "family",
+                                            "answer": [
+                                              {
+                                                "valueString": "Metzger"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "telecom",
+                                    "item": [
+                                      {
+                                        "linkId": "phone",
+                                        "answer": [
+                                          {
+                                            "valueString": "+999999999999"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "email",
+                                        "answer": [
+                                          {
+                                            "valueString": "metzger@wanderzwerge.com"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "placeExposure",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "repeat-section-3",
+                "item": [
+                  {
+                    "linkId": "placeExposureGroup",
+                    "item": [
+                      {
+                        "linkId": "placeExposureBegin",
+                        "answer": [
+                          {
+                            "valueDate": "24.12.2023"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureEnd",
+                        "answer": [
+                          {
+                            "valueDate": "15.01.2024"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureRegion",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "code": "NASK",
+                              "display": "nicht erhoben",
+                              "designations": [
+                                {
+                                  "language": "de",
+                                  "value": "nicht erhoben"
+                                }
+                              ],
+                              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureHint",
+                        "answer": [
+                          {
+                            "valueString": "Wandergruppe hatte Teilnehmer, die später ähnliche Symptome zeigten."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "placeExposureGroup",
+                    "item": [
+                      {
+                        "linkId": "placeExposureBegin",
+                        "answer": [
+                          {
+                            "valueDate": "10.01.2024"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureEnd",
+                        "answer": [
+                          {
+                            "valueDate": "20.01.2024"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureRegion",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "code": "21000140",
+                              "display": "Schweiz",
+                              "system": "https://demis.rki.de/fhir/CodeSystem/geographicRegion"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureHint",
+                        "answer": [
+                          {
+                            "valueString": "Auch im Urlaub gab es Begegnungen mit Wanderern, die ähnliche Symptome zeigten."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "organDonation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "additionalInformation",
+        "answer": [
+          {
+            "valueString": "Die Übergabe erfolgte während des Schichtwechsels zur Frühschicht."
+          }
+        ]
+      }
+    ]
+  },
+  "disease": {
+    "questionnaire": "msvd",
+    "item": [
+      {
+        "linkId": "immunization",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "repeat-section-4",
+                "item": [
+                  {
+                    "linkId": "immunizationRef",
+                    "answer": [
+                      {
+                        "item": [
+                          {
+                            "linkId": "Immunization",
+                            "item": [
+                              {
+                                "linkId": "vaccineCode",
+                                "answer": [
+                                  {
+                                    "valueCoding": {
+                                      "code": "2251000221101",
+                                      "display": "Masern- Mumps-Röteln- Varizellen Lebendvirusimpfstoff (Priorix-Tetra, ProQuad)",
+                                      "designations": [
+                                        {
+                                          "language": "en-US",
+                                          "value": "Vaccine product containing only live attenuated Measles morbillivirus and Mumps orthorubulavirus and Rubella virus and Human alphaherpesvirus 3 antigens (medicinal product)"
+                                        }
+                                      ],
+                                      "system": "http://snomed.info/sct"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "linkId": "occurrence",
+                                "answer": [
+                                  {
+                                    "valueDate": "10.12.2023"
+                                  }
+                                ]
+                              },
+                              {
+                                "linkId": "note",
+                                "answer": [
+                                  {
+                                    "valueString": "impfhinweis"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "onsetOfExanthem",
+        "answer": [
+          {
+            "valueDate": "10.11.2018"
+          }
+        ]
+      },
+      {
+        "linkId": "pregnancy",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "pregnancyWeek",
+                "answer": [
+                  {
+                    "valueCoding": {
+                      "code": "NASK",
+                      "display": "nicht erhoben",
+                      "designations": [
+                        {
+                          "language": "de",
+                          "value": "nicht erhoben"
+                        }
+                      ],
+                      "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "outbreak",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": [
+              ],
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "outbreakNote",
+                "answer": [
+                  {
+                    "valueString": "Es ist bekannt, dass es in diesem Zeitbruch einen örtlichen Ausbruch gegeben hat."
+                  }
+                ]
+              },
+              {
+                "linkId": "outbreakNotificationId",
+                "answer": [
+                  {
+                    "valueReference": "msvd-1234-5678"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

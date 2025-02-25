@@ -68,6 +68,18 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Deployment labels
+*/}}
+{{- define "notification-gateway.deploymentLabels" -}}
+{{ if .Values.istio.enable -}}
+istio-validate-jwt: "{{ .Values.istio.validateJwt | required ".Values.istio.validateJwt is required" }}"
+{{- with .Values.deploymentLabels }}
+{{ toYaml . }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "notification-gateway.serviceAccountName" -}}
@@ -76,62 +88,6 @@ Create the name of the service account to use
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
-{{- end }}
-
-{{/*
-Get ConfigMap name from values
-*/}}
-{{- define "notification-gateway.configMapName" -}}
-{{- if not .Values.config.configMap.useDefault }}
-{{- print (.Values.config.configMap.name | required ".Values.config.configMap.name is required.") }}
-{{- else }}
-{{- print "config-" (include "notification-gateway.fullversionname" .) }}
-{{- end }}
-{{- end }}
-
-{{/*
-Get Persistence Volume Claim name from values
-*/}}
-{{- define "notification-gateway.pvcName" -}}
-{{- if not .Values.config.volumeClaim.useDefault }}
-{{- print (.Values.config.volumeClaim.name | required ".Values.config.volumeClaim.name is required.") }}
-{{- else }}
-{{- print "pvc-" (include "notification-gateway.fullversionname" .) }}
-{{- end }}
-{{- end }}
-
-{{/*
-Get Persistence Volume  name from values
-*/}}
-{{- define "notification-gateway.pvName" -}}
-{{- print "pv-" (include "notification-gateway.fullversionname" .) }}
-{{- end }}
-
-{{/*
-Get Default Secret name 
-*/}}
-{{- define "notification-gateway.defaultSecretName" -}}
-{{- print "secret-" (include "notification-gateway.fullversionname" .) }}
-{{- end }}
-
-{{/*
-Get Password Secret name from Values
-*/}}
-{{- define "notification-gateway.passwordSecretName" -}}
-{{- if and (not .Values.config.secret.passwords.name) (not .Values.config.secret.useDefault) }}
-{{- fail ".Values.config.secret.passwords.name is required" }}
-{{- end }}
-{{- print .Values.config.secret.passwords.name }}
-{{- end }}
-
-{{/*
-Get Keystores Secret name from Values
-*/}}
-{{- define "notification-gateway.keystoresSecretName" -}}
-{{- if and (not .Values.config.secret.keystores.name) (not .Values.config.secret.useDefault) }}
-{{- fail ".Values.config.secret.keystores.name is required" }}
-{{- end }}
-{{- print .Values.config.secret.keystores.name }}
 {{- end }}
 
 {{/*

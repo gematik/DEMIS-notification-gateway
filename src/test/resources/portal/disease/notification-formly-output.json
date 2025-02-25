@@ -1,0 +1,1030 @@
+{
+  "resourceType": "Bundle",
+  "id": "555-42-23-4",
+  "meta": {
+    "profile": [
+      "https://demis.rki.de/fhir/StructureDefinition/NotificationBundleDisease"
+    ]
+  },
+  "identifier": {
+    "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
+    "value": "555-42-23-5"
+  },
+  "type": "document",
+  "timestamp": "2024-03-14T14:45:00.000+01:00",
+  "entry": [
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-18",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "555-42-23-18",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotificationDiseaseMSVD"
+          ]
+        },
+        "identifier": {
+          "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+          "value": "init-notification-42"
+        },
+        "status": "amended",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "34782-3",
+              "display": "Infectious disease Note"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/notificationType",
+                "code": "6.1_2",
+                "display": "Meldung gemäß IfSG §6 Absatz 1, 2"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/555-42-23-3"
+        },
+        "date": "2024-03-14T14:45:00+01:00",
+        "author": [
+          {
+            "reference": "PractitionerRole/555-42-23-2"
+          }
+        ],
+        "title": "Meldung gemäß §6 Absatz 1, 2 IfSG",
+        "section": [
+          {
+            "title": "disease",
+            "code": {
+              "coding": [
+                {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
+                  "code": "diagnosis",
+                  "display": "Diagnose"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "Condition/555-42-23-6"
+              }
+            ]
+          },
+          {
+            "title": "Meldetatbestandsübergreifende klinische und epidemiologische Angaben",
+            "code": {
+              "coding": [
+                {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
+                  "code": "generalClinAndEpiInformation",
+                  "display": "Meldetatbestandsübergreifende klinische und epidemiologische Angaben"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "QuestionnaireResponse/555-42-23-15"
+              }
+            ]
+          },
+          {
+            "title": "Meldetatbestandsspezifische klinische und epidemiologische Angaben",
+            "code": {
+              "coding": [
+                {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
+                  "code": "specificClinAndEpiInformation",
+                  "display": "Meldetatbestandsspezifische klinische und epidemiologische Angaben"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "QuestionnaireResponse/555-42-23-17"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-3",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "555-42-23-3",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+          ]
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Masen",
+            "given": [
+              "Max"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1974-07-19",
+        "address": [
+          {
+            "line": [
+              "Herbertstraße 14"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Herbertstraße"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "14"
+                  }
+                ]
+              }
+            ],
+            "city": "Oederingen",
+            "postalCode": "21481",
+            "country": "20422"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Condition/555-42-23-6",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "555-42-23-6",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/DiseaseMSVD"
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "entered-in-error"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "https://demis.rki.de/fhir/CodeSystem/notificationDiseaseCategory",
+              "code": "msvd"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-3"
+        },
+        "onsetDateTime": "2024-01-31",
+        "recordedDate": "2024-03-04",
+        "evidence": [
+          {
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "49727002",
+                    "display": "Husten"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "386661006",
+                    "display": "Fieber"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "note": [
+          {
+            "text": "Der Patient entwickelte während des Aufenthalts in der Augenklinik spontan Beschwerden."
+          },
+          {
+            "text": "Hinweis zu Symptomen: Husten und Fieber."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/555-42-23-2",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "555-42-23-2",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierRole"
+          ]
+        },
+        "organization": {
+          "reference": "Organization/555-42-23-1"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-1",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-1",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierFacility"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR",
+            "value": "123456789"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                "code": "dayHospital",
+                "display": "Tagesklinik"
+              }
+            ]
+          }
+        ],
+        "name": "Kreiskrankenhaus Riedlingen",
+        "telecom": [
+          {
+            "system": "email",
+            "value": "w.oederaner@web.de"
+          },
+          {
+            "system": "email",
+            "value": "h.leiserstrom@web.de"
+          },
+          {
+            "system": "phone",
+            "value": "01234567",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Donaustrasse 1"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Donaustrasse"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "1"
+                  }
+                ]
+              }
+            ],
+            "city": "Riedlingen",
+            "postalCode": "21481",
+            "country": "20422"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Wolfgang Oederaner",
+              "family": "Oederaner",
+              "given": [
+                "Wolfgang"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-7",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-7",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/StructureDefinition/Organization"
+          ]
+        },
+        "name": "QuickTest Laboratories Oederingen",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+123456789"
+          },
+          {
+            "system": "email",
+            "value": "labora@quicktest-labs.com"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Portalstraße 44"
+            ],
+            "city": "Oederingen (Alt-Burgk)",
+            "postalCode": "33452",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Herr Laslo Labora",
+              "family": "Labora",
+              "given": [
+                "Laslo"
+              ],
+              "prefix": [
+                "Herr"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-9",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-9",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/StructureDefinition/Organization"
+          ]
+        },
+        "name": "Krankenhaus Oederingen",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+123458888"
+          },
+          {
+            "system": "email",
+            "value": "kontakt@khoederingen.com"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Müllerstraße 99"
+            ],
+            "city": "Oederingen",
+            "postalCode": "44557",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Dr.Prof. Carl Neumann",
+              "family": "Neumann",
+              "given": [
+                "Carl"
+              ],
+              "prefix": [
+                "Dr.Prof."
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-12",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-12",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/StructureDefinition/Organization"
+          ]
+        },
+        "name": "Augenklinik Oederingen",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+49 351-4446877"
+          },
+          {
+            "system": "email",
+            "value": "termine@augenpraxis.de"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Herrenstraße 44"
+            ],
+            "city": "Oederingen (Neu-Burgk)",
+            "postalCode": "44560",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Dr. Patricia Brille",
+              "family": "Brille",
+              "given": [
+                "Patricia"
+              ],
+              "prefix": [
+                "Dr."
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-14",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-14",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/StructureDefinition/Organization"
+          ]
+        },
+        "name": "Kita Wanderzwerge Oederingen",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+999999999999"
+          },
+          {
+            "system": "email",
+            "value": "metzger@wanderzwerge.com"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Fleischerstrasse 5"
+            ],
+            "city": "Oederingen (Bingen)",
+            "postalCode": "44444",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Margot Metzger",
+              "family": "Metzger",
+              "given": [
+                "Margot"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-8",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "555-42-23-8",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/Hospitalization"
+          ]
+        },
+        "status": "in-progress",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP"
+        },
+        "serviceType": {
+          "coding": [
+            {
+              "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType",
+              "code": "0436",
+              "display": "Intensivmedizin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-3"
+        },
+        "period": {
+          "start": "2024-03-03"
+        },
+        "serviceProvider": {
+          "reference": "Organization/555-42-23-9"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-11",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "555-42-23-11",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/Hospitalization"
+          ]
+        },
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP"
+        },
+        "serviceType": {
+          "coding": [
+            {
+              "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType",
+              "code": "2700",
+              "display": "Augenheilkunde"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-3"
+        },
+        "period": {
+          "start": "2024-01-30",
+          "end": "2024-03-02"
+        },
+        "serviceProvider": {
+          "reference": "Organization/555-42-23-12"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-15",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "555-42-23-15",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/DiseaseInformationCommon"
+          ]
+        },
+        "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsCommon",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/555-42-23-3"
+        },
+        "item": [
+          {
+            "linkId": "isDead",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "deathDate",
+                    "answer": [
+                      {
+                        "valueDate": "2024-03-05"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "militaryAffiliation",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/militaryAffiliation",
+                  "code": "civilPersonActiveInBundeswehr",
+                  "display": "Zivilperson tätig/untergebracht in Einrichtung der BW"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "labSpecimenTaken",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "labSpecimenLab",
+                    "answer": [
+                      {
+                        "valueReference": {
+                          "reference": "Organization/555-42-23-7"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "hospitalized",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "hospitalizedGroup",
+                    "item": [
+                      {
+                        "linkId": "hospitalizedEncounter",
+                        "answer": [
+                          {
+                            "valueReference": {
+                              "reference": "Encounter/555-42-23-8"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "hospitalizedGroup",
+                    "item": [
+                      {
+                        "linkId": "hospitalizedEncounter",
+                        "answer": [
+                          {
+                            "valueReference": {
+                              "reference": "Encounter/555-42-23-11"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "infectProtectFacility",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "infectProtectFacilityGroup",
+                    "item": [
+                      {
+                        "linkId": "infectProtectFacilityType",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                              "code": "childDayNursery",
+                              "display": "Kindertagespflege"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityBegin",
+                        "answer": [
+                          {
+                            "valueDate": "2019-02-01"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityEnd",
+                        "answer": [
+                          {
+                            "valueDate": "2024-01-20"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityRole",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "system": "https://demis.rki.de/fhir/CodeSystem/organizationAssociation",
+                              "code": "care",
+                              "display": "Betreuung"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "infectProtectFacilityOrganization",
+                        "answer": [
+                          {
+                            "valueReference": {
+                              "reference": "Organization/555-42-23-14"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "placeExposure",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "placeExposureGroup",
+                    "item": [
+                      {
+                        "linkId": "placeExposureBegin",
+                        "answer": [
+                          {
+                            "valueDate": "2023-12-24"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureEnd",
+                        "answer": [
+                          {
+                            "valueDate": "2024-01-15"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureRegion",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+                              "code": "NASK",
+                              "display": "nicht erhoben"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureHint",
+                        "answer": [
+                          {
+                            "valueString": "Wandergruppe hatte Teilnehmer, die später ähnliche Symptome zeigten."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "placeExposureGroup",
+                    "item": [
+                      {
+                        "linkId": "placeExposureBegin",
+                        "answer": [
+                          {
+                            "valueDate": "2024-01-10"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureEnd",
+                        "answer": [
+                          {
+                            "valueDate": "2024-01-20"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureRegion",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "system": "https://demis.rki.de/fhir/CodeSystem/geographicRegion",
+                              "code": "21000140",
+                              "display": "Schweiz"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "placeExposureHint",
+                        "answer": [
+                          {
+                            "valueString": "Auch im Urlaub gab es Begegnungen mit Wanderern, die ähnliche Symptome zeigten."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "organDonation",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "additionalInformation",
+            "answer": [
+              {
+                "valueString": "Die Übergabe erfolgte während des Schichtwechsels zur Frühschicht."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Immunization/555-42-23-16",
+      "resource": {
+        "resourceType": "Immunization",
+        "id": "555-42-23-16",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/ImmunizationInformationMSVD"
+          ]
+        },
+        "status": "completed",
+        "vaccineCode": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "2251000221101",
+              "display": "Masern- Mumps-Röteln- Varizellen Lebendvirusimpfstoff (Priorix-Tetra, ProQuad)"
+            }
+          ]
+        },
+        "patient": {
+          "reference": "Patient/555-42-23-3"
+        },
+        "occurrenceDateTime": "2023-12-10",
+        "note": [
+          {
+            "text": "impfhinweis"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-17",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "555-42-23-17",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/DiseaseInformationMSVD"
+          ]
+        },
+        "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsMSVD",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/555-42-23-3"
+        },
+        "item": [
+          {
+            "linkId": "immunization",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "immunizationRef",
+                    "answer": [
+                      {
+                        "valueReference": {
+                          "reference": "Immunization/555-42-23-16"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "onsetOfExanthem",
+            "answer": [
+              {
+                "valueDate": "2018-11-10"
+              }
+            ]
+          },
+          {
+            "linkId": "pregnancy",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "pregnancyWeek",
+                    "answer": [
+                      {
+                        "valueCoding": {
+                          "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+                          "code": "NASK",
+                          "display": "nicht erhoben"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "outbreak",
+            "answer": [
+              {
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
+                  "code": "yes",
+                  "display": "Ja"
+                },
+                "item": [
+                  {
+                    "linkId": "outbreakNote",
+                    "answer": [
+                      {
+                        "valueString": "Es ist bekannt, dass es in diesem Zeitbruch einen örtlichen Ausbruch gegeben hat."
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "outbreakNotificationId",
+                    "answer": [
+                      {
+                        "valueReference": {
+                          "reference": "msvd-1234-5678"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

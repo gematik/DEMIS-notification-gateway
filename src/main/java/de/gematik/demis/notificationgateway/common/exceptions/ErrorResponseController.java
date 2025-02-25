@@ -18,6 +18,28 @@
 
 package de.gematik.demis.notificationgateway.common.exceptions;
 
+/*-
+ * #%L
+ * DEMIS Notification-Gateway
+ * %%
+ * Copyright (C) 2025 gematik GmbH
+ * %%
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+ * European Commission – subsequent versions of the EUPL (the "Licence").
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You find a copy of the Licence in the "Licence" file or at
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+ * In case of changes by gematik find details in the "Readme" file.
+ *
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ * #L%
+ */
+
 import static de.gematik.demis.notificationgateway.common.constants.MessageConstants.INSTANTIATION_ERROR_OCCURRED;
 import static de.gematik.demis.notificationgateway.common.constants.MessageConstants.VALIDATION_ERROR_OCCURRED;
 import static de.gematik.demis.notificationgateway.common.constants.WebConstants.NOT_AVAILABLE;
@@ -33,26 +55,22 @@ import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import de.gematik.demis.exceptions.TokenException;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
 import de.gematik.demis.notificationgateway.common.dto.ValidationError;
 import de.gematik.demis.notificationgateway.common.enums.InternalCoreError;
-import feign.FeignException;
-import feign.Request;
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import de.gematik.demis.service.base.error.ServiceCallException;
+import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -77,18 +95,29 @@ public class ErrorResponseController {
 
   private final ObjectMapper objectMapper;
 
-  @ExceptionHandler({FeignException.class, BaseServerResponseException.class})
+  private static HttpStatus resolveCoreExceptionStatus(int exceptionStatus) {
+    final HttpStatus coreStatus = HttpStatus.resolve(exceptionStatus);
+    if (coreStatus != null && coreStatus.value() == 501) {
+      return NOT_IMPLEMENTED;
+    } else if (coreStatus == null || coreStatus.is5xxServerError()) {
+      return INTERNAL_SERVER_ERROR;
+    } else {
+      return coreStatus;
+    }
+  }
+
+  @ExceptionHandler({BaseServerResponseException.class, ServiceCallException.class})
   public ResponseEntity<ErrorResponse> handleCoreException(
       final Exception exception, final HttpServletRequest request) {
-    ErrorResponse errorResponse;
-    if (exception instanceof FeignException) {
-      errorResponse = handleFeignException((FeignException) exception);
-    } else {
-      errorResponse =
-          handleBaseServerResponseException((BaseServerResponseException) exception, request);
-    }
+    final ErrorResponse errorResponse =
+        switch (exception) {
+          case ServiceCallException sce -> handleServiceCallException(sce);
+          case BaseServerResponseException bse -> handleBaseServerResponseException(bse, request);
+          default ->
+              throw new IllegalStateException(
+                  "Unexpected exception type: " + exception.getClass().getName());
+        };
     logResponseStatusCodeAndErrorMessage(errorResponse.getStatusCode(), exception);
-
     return ResponseEntity.status(errorResponse.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(errorResponse);
@@ -109,18 +138,23 @@ public class ErrorResponseController {
     final String path = request.getRequestURI();
     final int statusCode = BAD_REQUEST.value();
     final ErrorResponse errorResponse = createErrorResponse(path, statusCode, message);
-    if (exception instanceof MethodArgumentNotValidException) {
-      message = VALIDATION_ERROR_OCCURRED;
-      handleMethodArgumentNotValidException(
-          (MethodArgumentNotValidException) exception, errorResponse);
-    } else if (exception instanceof HttpMessageNotReadableException) {
-      message = handleHttpMessageNotReadableException(exception, errorResponse);
-    } else if (exception instanceof ConstraintViolationException) {
-      message = handleConstraintViolationException((ConstraintViolationException) exception);
+    switch (exception) {
+      case MethodArgumentNotValidException methodArgumentNotValidException:
+        message = VALIDATION_ERROR_OCCURRED;
+        handleMethodArgumentNotValidException(methodArgumentNotValidException, errorResponse);
+        break;
+      case HttpMessageNotReadableException httpMessageNotReadableException:
+        message = handleHttpMessageNotReadableException(exception, errorResponse);
+        break;
+      case ConstraintViolationException constraintViolationException:
+        message = handleConstraintViolationException(constraintViolationException);
+        break;
+      default:
+        // do not change message
+        break;
     }
     logResponseStatusCodeAndErrorMessage(statusCode, exception);
     errorResponse.setMessage(message);
-
     return ResponseEntity.status(BAD_REQUEST)
         .contentType(MediaType.APPLICATION_JSON)
         .body(errorResponse);
@@ -150,6 +184,21 @@ public class ErrorResponseController {
     final ErrorResponse errorResponse = createErrorResponse(path, statusCode, message);
 
     return ResponseEntity.status(NOT_ACCEPTABLE)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(errorResponse);
+  }
+
+  @ExceptionHandler(AuthException.class)
+  public ResponseEntity<ErrorResponse> handleAuthException(
+      final Exception exception, final HttpServletRequest request) {
+    String message = exception.getMessage();
+    HttpStatus unauthorized = UNAUTHORIZED;
+    final int statusCode = unauthorized.value();
+    final String path = request.getRequestURI();
+    logResponseStatusCodeAndErrorMessage(statusCode, exception);
+    final ErrorResponse errorResponse = createErrorResponse(path, statusCode, message);
+
+    return ResponseEntity.status(unauthorized)
         .contentType(MediaType.APPLICATION_JSON)
         .body(errorResponse);
   }
@@ -195,7 +244,7 @@ public class ErrorResponseController {
     final OperationOutcome outcome = (OperationOutcome) exception.getOperationOutcome();
     if (outcome != null) {
       final List<ValidationError> validationErrors =
-          outcome.getIssue().stream().map(this::createValidationError).collect(Collectors.toList());
+          outcome.getIssue().stream().map(this::createValidationError).toList();
       errorResponse.setValidationErrors(validationErrors);
     }
 
@@ -221,10 +270,8 @@ public class ErrorResponseController {
         ((HttpMessageNotReadableException) exception).getMostSpecificCause().getLocalizedMessage();
 
     final Throwable cause = exception.getCause();
-    if (cause instanceof ValueInstantiationException) {
-      final ValueInstantiationException valueInstantiationException =
-          (ValueInstantiationException) cause;
-      final List<Reference> path = valueInstantiationException.getPath();
+    if (cause instanceof ValueInstantiationException vie) {
+      final List<Reference> path = vie.getPath();
       final String field =
           path.isEmpty()
               ? NOT_AVAILABLE
@@ -248,33 +295,14 @@ public class ErrorResponseController {
   private void handleMethodArgumentNotValidException(
       MethodArgumentNotValidException exception, ErrorResponse errorResponse) {
     List<ValidationError> validationErrors =
-        exception.getFieldErrors().stream()
-            .map(this::createValidationError)
-            .collect(Collectors.toList());
+        exception.getFieldErrors().stream().map(this::createValidationError).toList();
     errorResponse.setValidationErrors(validationErrors);
   }
 
-  private ErrorResponse handleFeignException(FeignException feignException) {
-    final HttpStatus httpStatus = resolveCoreExceptionStatus(feignException.status());
-    String message = resolveCoreExceptionMessage(httpStatus, feignException.getMessage());
-    final Optional<ByteBuffer> responseOptional = feignException.responseBody();
-    final Request request = feignException.request();
-    ErrorResponse defaultErrorResponse =
-        createErrorResponse(request.url(), httpStatus.value(), message);
-    if (responseOptional.isEmpty()) {
-      return defaultErrorResponse;
-    }
-    try {
-      final ByteBuffer byteBuffer = responseOptional.get();
-      final JsonNode jsonNode = objectMapper.readTree(byteBuffer.array());
-      return createErrorResponse(
-          jsonNode.findPath("path").asText(),
-          httpStatus.value(),
-          jsonNode.findPath("error").asText());
-    } catch (IOException e) {
-      message = new String(responseOptional.get().array());
-      return defaultErrorResponse.message(message);
-    }
+  private ErrorResponse handleServiceCallException(ServiceCallException exception) {
+    HttpStatus status = resolveCoreExceptionStatus(exception.getHttpStatus());
+    String message = resolveCoreExceptionMessage(status, exception.getMessage());
+    return createErrorResponse(null, status.value(), message);
   }
 
   private ValidationError createValidationError(FieldError fieldError) {
@@ -297,17 +325,6 @@ public class ErrorResponseController {
         Strings.isBlank(fieldError.getDefaultMessage())
             ? "unknown error"
             : fieldError.getDefaultMessage();
-  }
-
-  private static HttpStatus resolveCoreExceptionStatus(int exceptionStatus) {
-    final HttpStatus coreStatus = HttpStatus.resolve(exceptionStatus);
-    if (coreStatus != null && coreStatus.value() == 501) {
-      return NOT_IMPLEMENTED;
-    } else if (coreStatus == null || coreStatus.is5xxServerError()) {
-      return INTERNAL_SERVER_ERROR;
-    } else {
-      return coreStatus;
-    }
   }
 
   private String resolveCoreExceptionMessage(HttpStatus httpStatus, String defaultMessage) {

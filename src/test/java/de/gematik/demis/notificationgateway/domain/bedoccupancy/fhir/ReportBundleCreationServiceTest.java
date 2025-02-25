@@ -18,6 +18,28 @@
 
 package de.gematik.demis.notificationgateway.domain.bedoccupancy.fhir;
 
+/*-
+ * #%L
+ * DEMIS Notification-Gateway
+ * %%
+ * Copyright (C) 2025 gematik GmbH
+ * %%
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+ * European Commission – subsequent versions of the EUPL (the "Licence").
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You find a copy of the Licence in the "Licence" file or at
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+ * In case of changes by gematik find details in the "Readme" file.
+ *
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ * #L%
+ */
+
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.CODE_SYSTEM_REPORT_CATEGORY;
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.CODE_SYSTEM_REPORT_SECTION;
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.NAMING_SYSTEM_INEK_STANDORT_ID;
@@ -35,11 +57,12 @@ import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.BedOccupancy;
 import de.gematik.demis.notificationgateway.common.dto.FacilityAddressInfo;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -68,7 +91,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(properties = {"feature.flag.specimen.preparation.enabled=false"})
 class ReportBundleCreationServiceTest {
 
   @Autowired private ReportBundleCreationService reportBundleCreationService;
@@ -163,11 +186,11 @@ class ReportBundleCreationServiceTest {
     final BundleEntryComponent reportBedOccupancyEntry = entryList.get(0);
     assertTrue(reportBedOccupancyEntry.hasFullUrl());
 
-    final BundleEntryComponent notifierFacilityEntry = entryList.get(1);
-    assertTrue(notifierFacilityEntry.hasFullUrl());
-
-    final BundleEntryComponent notifierRoleEntry = entryList.get(2);
+    final BundleEntryComponent notifierRoleEntry = entryList.get(1);
     assertTrue(notifierRoleEntry.hasFullUrl());
+
+    final BundleEntryComponent notifierFacilityEntry = entryList.get(2);
+    assertTrue(notifierFacilityEntry.hasFullUrl());
 
     final BundleEntryComponent statisticInformationBedOccupancyEntry = entryList.get(3);
     assertTrue(statisticInformationBedOccupancyEntry.hasFullUrl());
@@ -228,8 +251,12 @@ class ReportBundleCreationServiceTest {
 
     final List<Reference> authors = reportBedOccupancy.getAuthor();
     assertEquals(1, authors.size());
-    final Reference author = authors.get(0);
-    assertEquals(notifierRole, author.getResource());
+    IBaseResource actualNotifierRole = authors.getFirst().getResource();
+    assertEquals(
+        notifierRole.getId(),
+        actualNotifierRole.getIdElement().getValue(),
+        "notifier role ID is not equal");
+    assertEquals(notifierRole, actualNotifierRole, "Author is not the notifier role");
 
     assertEquals("Bericht (Krankenhausbettenbelegungsstatistik)", reportBedOccupancy.getTitle());
 

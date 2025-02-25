@@ -1,0 +1,164 @@
+{
+  "category": "msvd",
+  "notifiedPerson": {
+    "info": {
+      "gender": "FEMALE",
+      "firstname": "Bertha-Luise Hanna Karin",
+      "lastname": "Betroffen",
+      "birthDate": "1999-06-09"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      },
+      {
+        "contactType": "email",
+        "value": "bertha@betroffen.de"
+      }
+    ],
+    "primaryAddress": {
+      "street": "Berthastraße",
+      "houseNumber": "123",
+      "zip": "12345",
+      "city": "Betroffenenstadt",
+      "country": "20422",
+      "addressType": "primary"
+    }
+  },
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "existsBsnr": true,
+      "bsnr": "123456789"
+    },
+    "address": {
+      "street": "Krankenhausstraße",
+      "houseNumber": "1",
+      "zip": "21481",
+      "city": "Buchhorst",
+      "country": "20422",
+      "additionalInfo": null,
+      "addressType": "current"
+    },
+    "contact": {
+      "salutation": "Mrs",
+      "lastname": "Ansprechpartner",
+      "firstname": "Anna Beate Carolin",
+      "prefix": "Dr."
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "01234567"
+      },
+      {
+        "contactType": "email",
+        "value": "anna@ansprechpartner.de"
+      }
+    ]
+  },
+  "condition": {
+    "recordedDate": "2022-01-02",
+    "onset": "2022-01-01",
+    "note": "Textueller Hinweis",
+    "evidence": [
+      {
+        "code": "233604007",
+        "display": "Lungenentzündung (Pneumonie)",
+        "system": "https://demis.rki.de/fhir/ValueSet/evidenceMSVD"
+      },
+      {
+        "code": "386661006",
+        "display": "Fieber",
+        "system": "https://demis.rki.de/fhir/ValueSet/evidenceMSVD"
+      }
+    ]
+  },
+  "common": {
+    "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsCommon",
+    "item": [
+      {
+        "linkId": "organDonor",
+        "answer": [
+          {
+            "valueBoolean": true
+          }
+        ]
+      }
+    ]
+  },
+  "disease": {
+    "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsMSVD",
+    "item": [
+      {
+        "linkId": "immunization",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            }
+          }
+        ],
+        "item": [
+          {
+            "linkId": "immunizationRef",
+            "answer": [
+              {
+                "item": [
+                  {
+                    "linkId": "Immunization",
+                    "item": [
+                      {
+                        "linkId": "vaccineCode",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "system": "https://demis.rki.de/fhir/ValueSet/vaccineMSVD",
+                              "code": "871766009",
+                              "display": "monovalenter Masern-Impfstoff (Ma)"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "occurrence",
+                        "answer": [
+                          {
+                            "valueDateTime": "2006-08-24T11:30+02:00"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "language",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "code": "de",
+                              "display": "German",
+                              "system": "http://hl7.org/fhir/ValueSet/languages"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "note",
+                        "answer": [
+                          {
+                            "valueString": "Impfung 1. Masernimpfung hat unter Schlechtwetterlage stattgefunden."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

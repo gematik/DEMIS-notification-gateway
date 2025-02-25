@@ -1,7 +1,7 @@
-openapi: 3.0.2
+openapi: 3.0.3
 info:
   title: Notification Neue Version
-  version: 3.0.0
+  version: 3.1.0
   description: 'schemas definition for all components (DTO) used to proceed a notification.'
 servers:
   - url: 'http://localhost:8080/v1'
@@ -14,15 +14,14 @@ components:
         - info
       type: object
       properties:
+        residenceAddress:
+          $ref: '#/components/schemas/NotifiedPersonAddressInfo'
         ordinaryAddress:
           $ref: '#/components/schemas/NotifiedPersonAddressInfo'
-          description: Gewöhnlicher Aufenthaltsort
         currentAddress:
           $ref: '#/components/schemas/NotifiedPersonAddressInfo'
-          description: Derzeitiger Aufenthaltsort
         primaryAddress:
           $ref: '#/components/schemas/NotifiedPersonAddressInfo'
-          description: Hauptwohnung
         contacts:
           description: Kontaktmöglichkeiten
           type: array
@@ -30,9 +29,6 @@ components:
             $ref: '#/components/schemas/ContactPointInfo'
         info:
           $ref: '#/components/schemas/NotifiedPersonBasicInfo'
-          description: basic information of the notified person
-        oneTimeCode:
-          $ref: '#/components/schemas/OneTimeCode'
     NotifierFacility:
       description: Melder-Einrichtung
       required:
@@ -52,12 +48,43 @@ components:
           $ref: '#/components/schemas/FacilityAddressInfo'
         contact:
           $ref: '#/components/schemas/PractitionerInfo'
-          description: Ansprechperson
         facilityInfo:
           $ref: '#/components/schemas/FacilityInfo'
-          description: Informationen zur Melder-Einrichtung
         oneTimeCode:
           $ref: '#/components/schemas/OneTimeCode'
+    SubmitterFacility:
+      description: Einsender-Einrichtung
+      required:
+        - address
+        - contact
+        - facilityInfo
+        - contacts
+      type: object
+      properties:
+        contacts:
+          description: Kontaktmöglichkeiten
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPointInfo'
+        address:
+          $ref: '#/components/schemas/FacilityAddressInfo'
+        contact:
+          $ref: '#/components/schemas/PractitionerInfo'
+          description: Ansprechperson
+        facilityInfo:
+          $ref: '#/components/schemas/SubmittingFacilityInfo'
+          description: Informationen zur Melder-Einrichtung
+    SubmittingFacilityInfo:
+      description: Informationen zur Einsender-Einrichtung
+      required:
+        - institutionName
+      type: object
+      properties:
+        institutionName:
+          type: string
+        departmentName:
+          type: string
     ContactPointInfo:
       required:
         - contactType
@@ -78,40 +105,6 @@ components:
           type: string
         value:
           type: string
-    Diagnosis:
-      required:
-        - receivedDate
-        - testType
-      type: object
-      properties:
-        receivedDate:
-          format: date-time
-          type: string
-        comment:
-          type: string
-        testType:
-          description: "Test type of the Sars-Cov-2:\r\n\r\nAntigenschnelltest\r\nPCR-Schnelltest\r\nNukleinsäurenachweis, z.B. PCR\r\nVariantenspezifische PCR\r\nSequenzierung"
-          enum:
-            - ANTIGEN_RAPID_TEST
-            - PCR_RAPID_TEST
-            - NUCLEIC_ACID_CERTIFICATE
-            - VARIANT_SPECIFIC_PCR
-            - SEQUENCING
-          type: string
-          readOnly: true
-        voc:
-          writeOnly: false
-          description: 'VOC: Variant of Concern.'
-          enum:
-            - ALPHA
-            - BETA
-            - GAMMA
-            - DELTA
-            - OMIKRON
-          type: string
-          readOnly: true
-        oneTimeCode:
-          $ref: '#/components/schemas/OneTimeCode'
     Period:
       description: 'Time range defined by start and end date/time https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/81271'
       type: object
@@ -148,7 +141,6 @@ components:
           type: string
         period:
           $ref: '#/components/schemas/Period'
-          description: Time period when name was/is in use
     PractitionerInfo:
       required:
         - firstname
@@ -198,12 +190,14 @@ components:
           example: '2021-01-30'
     FacilityInfo:
       title: Root Type for FacilityInfo
-      description: Contains facility name and Betriebsstättennummer (if available)
+      description: Contains facility type (optional), name and Betriebsstättennummer (if available)
       required:
         - institutionName
       type: object
       properties:
         institutionName:
+          type: string
+        organizationType:
           type: string
         bsnr:
           type: string
@@ -211,6 +205,7 @@ components:
           type: boolean
       example:
         institutionName: A
+        organizationType: 'hospital'
         bsnr: '810481329'
         existsBsnr: true
     Notification:
@@ -221,49 +216,30 @@ components:
         notificationType:
           description: Meldungstyp
           enum:
-            - QUICK_TEST
-            - HOSPITALIZATION
             - BED_OCCUPANCY
             - PATHOGEN_TEST
-            - SEQUENCE_NOTIFICATION
           type: string
-        quickTest:
-          $ref: '#/components/schemas/QuickTest'
-          description: Labormeldung
-        hospitalization:
-          $ref: '#/components/schemas/Hospitalization'
-          description: Hospitalisierungsmeldung
         bedOccupancy:
           $ref: '#/components/schemas/BedOccupancy'
-          description: Bettenbelegungsmeldung
         pathogenTest:
           $ref: '#/components/schemas/PathogenTest'
-          description: Erregermeldung
-        sequenceNotification:
-          $ref: '#/components/schemas/SequenceNotification'
-          description: Upload Molekularsequenz
-    Hospitalization:
+    NotificationContent:
+      required:
+        - notifiedPerson
+        - notifierFacility
       type: object
-      allOf:
-        - required:
-            - disease
-          type: object
-          properties:
-            disease:
-              $ref: '#/components/schemas/Disease'
-              description: Erkrankung
-        - $ref: '#/components/schemas/NotificationContent'
-    QuickTest:
-      title: Root Type for Sars-Cov-2-Notification
-      type: object
-      allOf:
-        - required:
-            - diagnostic
-          type: object
-          properties:
-            diagnostic:
-              $ref: '#/components/schemas/Diagnosis'
-        - $ref: '#/components/schemas/NotificationContent'
+      properties:
+        notifiedPerson:
+          $ref: '#/components/schemas/NotifiedPerson'
+        notifierFacility:
+          $ref: '#/components/schemas/NotifierFacility'
+        submittingFacility:
+          $ref: '#/components/schemas/SubmitterFacility'
+        pathogen:
+          description: pathogen entspricht dem Kurzcode (bspw. cvdp) eines Erregers.
+          type: string
+        notificationCategory:
+          $ref: '#/components/schemas/NotificationLaboratoryCategory'
     PathogenTest:
       title: root type for pathogen notification
       type: object
@@ -275,441 +251,6 @@ components:
             pathogenDTO:
               $ref: '#/components/schemas/PathogenDTO'
         - $ref: '#/components/schemas/NotificationContent'
-    Disease:
-      required:
-        - diseaseInfoCommon
-        - diseaseInfoCVDD
-        - conditionInfo
-      type: object
-      properties:
-        diseaseInfoCommon:
-          $ref: '#/components/schemas/DiseaseInfoCommon'
-          description: Krankheitsübergreifende Angaben zur Erkrankung
-        diseaseInfoCVDD:
-          $ref: '#/components/schemas/DiseaseInfoCVDD'
-          description: COVID-19-spezifische Angaben zur Erkrankung
-        conditionInfo:
-          $ref: '#/components/schemas/ConditionInfo'
-          description: Informationen zur Erkrankung
-    DiseaseInfoCommon:
-      description: Krankheitsübergreifende Angaben zur Erkrankung
-      required:
-        - military
-        - organDonor
-        - labQuestion
-        - hospitalizationQuestion
-        - deathQuestion
-        - infectionProtectionFacilityQuestion
-        - exposurePlaceQuestion
-      type: object
-      properties:
-        military:
-          description: Zugehörigkeit zur Bundeswehr
-          default: UNKNOWN
-          enum:
-            - INDETERMINATE
-            - UNKNOWN
-            - SOLDIER
-            - CIVILIAN_IN_MILITARY_FACILITY
-            - UNRELATED_TO_MILITARY
-          type: string
-        organDonor:
-          description: 'Spender für eine Blut-, Organ-, Gewebe- oder Zellspende in den letzten sechs Monaten'
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-        additionalInfo:
-          description: Wichtige Zusatzinformationen
-          type: string
-        labQuestion:
-          $ref: '#/components/schemas/LabQuestion'
-          description: Frage zum beauftragten Labor
-        hospitalizationQuestion:
-          $ref: '#/components/schemas/HospitalizationQuestion'
-          description: Frage zur Hospitalisierung
-        deathQuestion:
-          $ref: '#/components/schemas/DeathQuestion'
-          description: Wenn die Person tot ist dann diese Objekt sollte Datum des Todes haben.
-        infectionProtectionFacilityQuestion:
-          $ref: '#/components/schemas/InfectionProtectionFacilityQuestion'
-          description: infection protection facility question
-        exposurePlaceQuestion:
-          $ref: '#/components/schemas/ExposurePlaceQuestion'
-          description: Container-Objekt für Expositionsort
-        oneTimeCode:
-          $ref: '#/components/schemas/OneTimeCode'
-    DiseaseInfoCVDD:
-      description: COVID-19-spezifische Angaben zur Erkrankung
-      required:
-        - contactToInfected
-        - vaccinationQuestion
-        - infectionEnvironmentQuestion
-      type: object
-      properties:
-        contactToInfected:
-          description: Kontakt mit einem bestätigten Fall in den 14 Tagen vor Erkrankungsbeginn
-          default: UNKNOWN
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-        vaccinationQuestion:
-          $ref: '#/components/schemas/VaccinationQuestion'
-          description: enthält die informationen über Impfstatus und vorhandene Impfungen.
-        infectionEnvironmentQuestion:
-          $ref: '#/components/schemas/InfectionEnvironmentQuestion'
-          description: enthält die Informationen über wahrscheinliche Infektionsumfeld.
-        oneTimeCode:
-          $ref: '#/components/schemas/OneTimeCode'
-    LabInfo:
-      required:
-        - name
-        - address
-      type: object
-      properties:
-        name:
-          description: Name des Labors
-          type: string
-        address:
-          $ref: '#/components/schemas/NotifiedPersonAddressInfo'
-          description: Adresse
-    VaccinationInfo:
-      required:
-        - vaccine
-      type: object
-      properties:
-        vaccine:
-          description: Impfstoff
-          default: UNKNOWN
-          enum:
-            - MODERNA
-            - JANSSEN
-            - COMIRNATY
-            - VAXZEVRIA
-            - NUVAXOVID
-            - VALNEVA
-            - OTHER
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-        vaccinationDate:
-          description: 'Impfdatum im Format yyyy, mm.yyyy, m.yyyy, dd.mm.yyyy, d.m.yyyy'
-          type: string
-        additionalInfo:
-          description: Zusatzinformationen
-          type: string
-    ConditionInfo:
-      description: Informationen zur Erkrankung
-      required:
-        - symptomQuestion
-      type: object
-      properties:
-        diagnosisDate:
-          format: date
-          description: Datum der Diagnosestellung
-          type: string
-        diseaseStart:
-          format: date
-          description: Erkrankungsbeginn
-          type: string
-        note:
-          description: Diagnosehinweise
-          type: string
-        symptomQuestion:
-          $ref: '#/components/schemas/SymptomQuestion'
-          description: Symptome Frage und Symptome der Erkrankung
-        oneTimeCode:
-          $ref: '#/components/schemas/OneTimeCode'
-    HospitalizationEncounterInfo:
-      description: Informationen zum Krankenhausaufenthalt
-      required:
-        - hospitalizationStartDate
-        - intensiveCare
-      type: object
-      properties:
-        hospitalizationStartDate:
-          format: date
-          description: Aufnahmedatum
-          type: string
-        hospitalizationEndDate:
-          format: date
-          description: Entlassdatum
-          type: string
-        intensiveCare:
-          description: Person auf Intensivstation aufgenommen
-          type: boolean
-        intensiveCareStartDate:
-          format: date
-          description: Datum der Aufnahme auf Intensivstation
-          type: string
-        additionalInfo:
-          description: Zusatzinformationen
-          type: string
-    NotificationContent:
-      required:
-        - pathogen
-        - notifiedPerson
-        - notifierFacility
-      type: object
-      properties:
-        notifiedPerson:
-          $ref: '#/components/schemas/NotifiedPerson'
-          description: Betroffene Person
-        notifierFacility:
-          $ref: '#/components/schemas/NotifierFacility'
-          description: Melder-Einrichtung
-        pathogen:
-          description: Krankheitserreger
-          type: string
-    InfectionEnvironmentInfo:
-      description: Informationen zum Infektionsumfeld
-      required:
-        - infectionEnvironmentEndDate
-        - infectionEnvironmentKind
-        - infectionEnvironmentStartDate
-      type: object
-      properties:
-        infectionEnvironmentKind:
-          description: 'Code für Infektionsumfeld gemäß https://simplifier.net/demisarztmeldung/infectionenvironmentsettingcvdd'
-          type: string
-        infectionEnvironmentStartDate:
-          format: date
-          description: Beginn Infektionsumfeld
-          type: string
-        infectionEnvironmentEndDate:
-          format: date
-          description: Ende Infektionsumfeld
-          type: string
-    LabQuestion:
-      description: Alle Informationen zur Frage der Laborbeauftragung
-      required:
-        - labAssigned
-      type: object
-      properties:
-        labInfo:
-          $ref: '#/components/schemas/LabInfo'
-          description: Informationen zum beauftragten Labor
-        labAssigned:
-          description: Laborbeauftragung erfolgt
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-    VaccinationQuestion:
-      description: Enthält Info über Impfstatus und vorhandene Impfungen.
-      required:
-        - immunizationStatus
-      type: object
-      properties:
-        immunizationStatus:
-          description: Informationen zum Impfstatus der Person vorliegend
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-          readOnly: false
-        vaccinations:
-          description: |-
-            Diese Objekt enthält einen Array von Vaccinations Info, es kann leer sein.
-          minItems: 0
-          type: array
-          items:
-            $ref: '#/components/schemas/VaccinationInfo'
-    HospitalizationQuestion:
-      description: enthält Info über Hospitalisierungs Frage.
-      required:
-        - hospitalized
-      type: object
-      properties:
-        hospitalized:
-          description: Aufnahme ins Krankenhaus erfolgt
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-        hospitalizedEncounterInfo:
-          $ref: '#/components/schemas/HospitalizationEncounterInfo'
-          description: Informationen zum Krankenhausaufenthalt
-    SymptomQuestion:
-      description: Enthält Info über Symptom status.
-      required:
-        - symptomStatus
-      type: object
-      properties:
-        symptomStatus:
-          description: Informationen zum symptomStatus der Person vorliegend
-          default: 'NO'
-          enum:
-            - 'YES'
-            - 'NO'
-          type: string
-          readOnly: false
-        symptoms:
-          description: Symptome der Erkrankung
-          type: array
-          items:
-            $ref: '#/components/schemas/Symptom'
-    Symptom:
-      description: Symptoms
-      type: string
-      enum:
-        - FEVER
-        - SORE_THROAT_SYMPTOM
-        - COUGH
-        - PNEUMONIA
-        - SNIFFLES
-        - ACUTE_RESPIRATORY_DISTRESS_SYNDROME
-        - PATIENT_VENTILATED
-        - DYSPNEA
-        - DIARRHEA
-        - LOSS_OF_SENSE_OF_SMELL
-        - LOSS_OF_TASTE
-        - TACHYPNEA
-        - TACHYCARDIA
-        - GENERALLY_UNWELL
-        - CHILL
-        - HEADACHE
-        - MUSCLE_PAIN
-        - OTHER_COVID_19_SYMPTOMS
-    DeathQuestion:
-      description: Enthält Info über Tod.
-      required:
-        - dead
-      type: object
-      properties:
-        dead:
-          description: Person verstorben
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-        deathDate:
-          format: date
-          description: Datum des Todes
-          type: string
-    InfectionProtectionFacilityQuestion:
-      description: Enthält Information über Infektionsschutz Einrichtung.
-      required:
-        - infectionProtectionFacilityExisting
-      type: object
-      properties:
-        infectionProtectionFacilityInfo:
-          $ref: '#/components/schemas/InfectionProtectionFacilityInfo'
-          description: 'Informationen bzgl. Tätigkeit, Betreuung oder Unterbringung in einer in den §§ 23 Abs. 3 IfSG oder 36 Abs. 1 oder 2 IfSG genannten Einrichtungen'
-        infectionProtectionFacilityExisting:
-          description: 'Person ist in einer in den §§ 23 Abs. 3 IfSG oder 36 Abs. 1 oder 2 IfSG genannten Einrichtungen tätig, betreut oder untergebracht'
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-    InfectionProtectionFacilityInfo:
-      description: 'Informationen bzgl. Tätigkeit, Betreuung oder Unterbringung in einer in den §§ 23 Abs. 3 IfSG oder 36 Abs. 1 oder 2 IfSG genannten Einrichtungen'
-      required:
-        - role
-        - address
-      type: object
-      properties:
-        role:
-          description: Beziehung der Person zur Einrichtung
-          enum:
-            - EMPLOYMENT
-            - CARE
-            - ACCOMMODATION
-          type: string
-        facilityName:
-          description: Name der Einrichtung
-          type: string
-        address:
-          $ref: '#/components/schemas/NotifiedPersonAddressInfo'
-          description: Adresse
-        startDate:
-          format: date
-          description: Beginn der Tätigkeit/Betreuung/Unterbringung
-          type: string
-        endDate:
-          format: date
-          description: Ende der Tätigkeit/Betreuung/Unterbringung
-          type: string
-        contactsInfo:
-          $ref: '#/components/schemas/ContactsInfo'
-          description: Kontaktmöglichkeiten (ein Telefon und eine Email)
-    ContactsInfo:
-      description: Enthält ein Telefon und eine Email-Adresse als ContactPointInfo Objekte.
-      type: object
-      properties:
-        phone:
-          $ref: '#/components/schemas/ContactPointInfo'
-        email:
-          $ref: '#/components/schemas/ContactPointInfo'
-    ExposurePlaceQuestion:
-      description: Informationen über den wahrscheinlichen Expositionsort
-      required:
-        - exposurePlaceKnown
-      type: object
-      properties:
-        exposurePlaceInfo:
-          $ref: '#/components/schemas/ExposurePlaceInfo'
-          description: Informationen über den Expositionsort
-        exposurePlaceKnown:
-          description: wahrscheinlicher Expositionsort bekannt
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-    ExposurePlaceInfo:
-      description: Informationen über den wahrscheinlichen Expositionsort
-      required:
-        - region
-      type: object
-      properties:
-        region:
-          description: 'Geografische Region gemäß https://simplifier.net/demisarztmeldung/answersetgeographicregion'
-          type: string
-        exposureStartDate:
-          format: date
-          description: Beginn des Aufenthalts am wahrscheinlichen Expositionsort/Datum des Aufenthalts
-          type: string
-        exposureEndDate:
-          format: date
-          description: Ende des Aufenthalts am wahrscheinlichen Expositionsort
-          type: string
-        hint:
-          description: Anmerkungen zum Expositonsort
-          type: string
-    InfectionEnvironmentQuestion:
-      description: Covid-19-Angaben Frage Nummer 2. bzgl. Infektionsumfeld.
-      required:
-        - infectionEnvironmentExisting
-      type: object
-      properties:
-        infectionEnvironmentExisting:
-          description: 'Informationen zum vermuteten Infektionsumfeld vorliegend, in dem eine Infektion am wahrscheinlichsten stattgefunden hat'
-          enum:
-            - 'YES'
-            - 'NO'
-            - INDETERMINATE
-            - UNKNOWN
-          type: string
-        infectionEnvironmentInfo:
-          $ref: '#/components/schemas/InfectionEnvironmentInfo'
-          description: Informationen zum Infektionsumfeld
     BedOccupancy:
       description: Bettenbelegung
       required:
@@ -719,10 +260,8 @@ components:
       properties:
         notifierFacility:
           $ref: '#/components/schemas/BedOccupancyNotifierFacility'
-          description: Meldende Einrichtung
         bedOccupancyQuestion:
           $ref: '#/components/schemas/BedOccupancyQuestion'
-          description: Fragebogen zur Bettenbelegung
     OccupiedBeds:
       description: Belegte Betten
       required:
@@ -758,16 +297,17 @@ components:
           $ref: '#/components/schemas/OccupiedBeds'
         operableBeds:
           $ref: '#/components/schemas/OperableBeds'
-        oneTimeCode:
-          $ref: '#/components/schemas/OneTimeCode'
     AddressType:
       enum:
         - current
         - primary
         - ordinary
+        - submittingFacility
+        - otherFacility
+        - primaryAsCurrent
       type: string
     FacilityAddressInfo:
-      description: Adresse einer Meldereinrichtung
+      description: Adresse einer Einrichtung
       required:
         - zip
         - country
@@ -805,9 +345,6 @@ components:
         additionalInfo: Hinterhaus A
     NotifiedPersonAddressInfo:
       description: Adresse einer Betroffenen Person
-      required:
-        - zip
-        - country
       type: object
       properties:
         street:
@@ -883,10 +420,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CodeDisplay'
+        resistances:
+          description: Liste der möglichen resistances nach SNOMED
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeDisplay'
+        resistanceGenes:
+          description: Liste der möglichen resistanceGenes nach SNOMED
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeDisplay'
     PathogenDTO:
       required:
         - codeDisplay
-        - diagnostic
       description: ausgewählte Daten, die an das Gateway gesendet werden
       type: object
       properties:
@@ -894,13 +440,69 @@ components:
           $ref: '#/components/schemas/CodeDisplay'
         diagnostic:
           $ref: '#/components/schemas/PathogenDiagnostic'
-        oneTimeCode:
-          $ref: '#/components/schemas/OneTimeCode'
+        specimenList:
+          $ref: '#/components/schemas/SpecimenList'
+    NotificationLaboratoryCategory:
+      required:
+        - pathogen
+        - reportStatus
+      description: Daten, die auf der Seite Meldetatbestand ausgewält bzw. eingegeben werden können. pathogen entspricht dabei der nachgewiesene Erregerspezies.
+      type: object
+      properties:
+        pathogen:
+          $ref: '#/components/schemas/CodeDisplay'
+        reportStatus:
+          enum:
+            - final
+            - preliminary
+            - amended
+        interpretation:
+          type: string
+        initialNotificationId:
+          type: string
+        laboratoryOrderId:
+          type: string
+    SpecimenList:
+      description: Liste der angegebenen Proben
+      type: array
+      items:
+        $ref: '#/components/schemas/SpecimenDTO'
+    SpecimenDTO:
+      required:
+        - receivedDate
+        - material
+        - methodPathogenList
+      description: Diagnostik/Proben-Inhalt. Wird auf Seite 5 des Portals eingefügt. Beinhaltet eine Probenlisten und dazugehörigen Daten (Datum, Methoden, Analyte, Resistenzen)
+      type: object
+      properties:
+        extractionDate:
+          format: date
+          description: Entnahmedatum
+          type: string
+        receivedDate:
+          format: date
+          description: Eingangsdatum
+          type: string
+        material:
+          $ref: '#/components/schemas/CodeDisplay'
+        methodPathogenList:
+          description: Liste der angegebenen Methoden/Erreger Kombinationen
+          type: array
+          items:
+            $ref: '#/components/schemas/MethodPathogenDTO'
+        resistanceList:
+          description: Liste der angegebenen Resistenzen
+          type: array
+          items:
+            $ref: '#/components/schemas/ResistanceDTO'
+        resistanceGeneList:
+          description: Liste der angegebenen Resistenzdeterminanten
+          type: array
+          items:
+            $ref: '#/components/schemas/ResistanceGeneDTO'
     PathogenDiagnostic:
       required:
         - receivedDate
-        - pathogen
-        - reportStatus
         - material
         - methodPathogenList
       description: ausgewählte Daten, die an das Gateway gesendet werden
@@ -923,6 +525,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MethodPathogenDTO'
+        resistanceList:
+          description: Liste der angegebenen Resistenzen
+          type: array
+          items:
+            $ref: '#/components/schemas/ResistanceDTO'
+        resistanceGeneList:
+          description: Liste der angegebenen Resistenzdeterminanten
+          type: array
+          items:
+            $ref: '#/components/schemas/ResistanceGeneDTO'
         reportStatus:
           enum:
             - final
@@ -932,6 +544,32 @@ components:
           type: string
         initialNotificationId:
           type: string
+        laboratoryOrderId:
+          type: string
+    ResistanceGeneDTO:
+      description: Resistenzdeterminante
+      type: object
+      properties:
+        resistanceGene:
+          $ref: '#/components/schemas/CodeDisplay'
+        resistanceGeneResult:
+          enum:
+            - Detected
+            - NotDetected
+            - Indeterminate
+    ResistanceDTO:
+      description: Resistenzangaben
+      type: object
+      properties:
+        resistance:
+          $ref: '#/components/schemas/CodeDisplay'
+        resistanceResult:
+          enum:
+            - Resistant
+            - SusceptibleWithIncreasedExposure
+            - Intermediate
+            - Susceptible
+            - Indeterminate
     MethodPathogenDTO:
       description: Methoden/Erreger Kombination
       type: object
@@ -954,9 +592,14 @@ components:
         - code
       type: object
       properties:
+        system:
+          description: Kontext des Codes, wie Adressnutzungsart oder normierte Bundesländer
+          type: string
         code:
           type: string
         display:
+          type: string
+        breadcrumb:
           type: string
         designations:
           type: array
@@ -1066,111 +709,170 @@ components:
     OneTimeCode:
       description: 'Feld wird nur als Honeypot verwendet'
       type: string
-    LaboratoriesAndSample:
+    DiseaseNotification:
+      description: Wurzelelement einer Erkrankungsmeldung
+      type: object
+      required:
+        - notifierFacility
+        - notifiedPerson
+        - status
+        - condition
+        - common
+        - disease
+      properties:
+        notifierFacility:
+          $ref: '#/components/schemas/NotifierFacility'
+        notifiedPerson:
+          $ref: '#/components/schemas/NotifiedPerson'
+        status:
+          $ref: '#/components/schemas/DiseaseStatus'
+        condition:
+          $ref: '#/components/schemas/Condition'
+        common:
+          $ref: '#/components/schemas/QuestionnaireResponse'
+        disease:
+          $ref: '#/components/schemas/QuestionnaireResponse'
+    DiseaseStatus:
+      description: Kombinierte Statusinformationen
+      type: object
+      required:
+        - category
+        - status
+      properties:
+        category:
+          description: Code des Meldetatbestands (disease category)
+          type: string
+          example: msvd
+        status:
+          description: Kombinierter Status
+          type: string
+          enum: [ final,preliminary,amended,refuted,error ]
+        note:
+          description: Hinweise zum Status (condition.note)
+          type: string
+        initialNotificationId:
+          description: Initiale Meldungs-ID bei Folgemeldungen
+          type: string
+    Condition:
+      description: Die Erkrankung enthält klinische Informationen wie Diagnose, Symptome und usw.
       type: object
       properties:
-        diagnosticLaboratoryDemisId:
+        recordedDate:
+          description: Datum der Diagnosestellung
+          format: date
           type: string
-        diagnosticLaboratoryName:
+        onset:
+          description: Erkrankungsbeginn
+          format: date
           type: string
-        diagnosticLaboratoryStreet:
+        note:
+          description: Diagnosehinweise
           type: string
-        diagnosticLaboratoryHouseNumber:
-          type: string
-        diagnosticLaboratoryZip:
-          type: string
-        diagnosticLaboratoryCity:
-          type: string
-        sequencingLaboratoryDemisId:
-          type: string
-        sequencingLaboratoryName:
-          type: string
-        sequencingLaboratoryStreet:
-          type: string
-        sequencingLaboratoryHouseNumber:
-          type: string
-        sequencingLaboratoryZip:
-          type: string
-        sequencingLaboratoryCity:
-          type: string
-        notificationId:
-          type: string
-        testPostalCode:
-          type: string
-        gender:
-          type: string
-        birthDate:
-          type: string
-        pathogenGroup:
-          type: string
-        species:
-          type: string
-        sampleDate:
-          type: date
-        sequencingDate:
-          type: date
-    SequenceMetadata:
-      type: object
-      properties:
-        sequencingPlatform:
-          type: string
-        sequencingInstrument:
-          type: string
-        sequencingReason:
-          type: string
-        sequencingStrategy:
-          type: string
-        sequencingProtocol:
-          type: string
-        adapter:
-          type: string
-        isolatId:
-          type: string
-        sampleMaterial:
-          type: string
-        laborSequenceId:
-          type: string
-        sequencingAutor:
-          type: string
-    SequenceFile:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-    OtherUpload:
-      type: object
-      properties:
-        otherUploadRepositoryName:
-          type: string
-        otherUploadRepositoryId:
-          type: string
-        otherUploadRepositoryLink:
-          type: string
-        otherUploadStatus:
-          type: string
-        otherUploadDate:
-          type: date
-        otherUploadSubmitter:
-          type: string
-    SequenceUploads:
-      type: object
-      properties:
-        sequenceFiles:
+        evidence:
           type: array
           items:
-            $ref: '#/components/schemas/SequenceFile'
-        otherUploads:
+            $ref: '#/components/schemas/CodeDisplay'
+    QuestionnaireResponse:
+      description: Die Antworten entweder des meldetatbestandsübergreifenden (common information) oder des meldetatbestandsspezifischen Fragebogens (information).
+      type: object
+      required:
+        - questionnaire
+        - item
+      properties:
+        questionnaire:
+          description: Profil-URL des Fragebogens
+          type: string
+          example: 'https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsCVDD'
+        item:
           type: array
           items:
-            $ref: '#/components/schemas/OtherUpload'
-    SequenceNotification:
+            $ref: '#/components/schemas/QuestionnaireResponseItem'
+    QuestionnaireResponseItem:
+      description: Antwortsektion
+      type: object
+      required:
+        - linkId
+      properties:
+        linkId:
+          description: Das Element aus dem Fragebogen, das diesem Element in der Fragebogenantwort entspricht.
+          type: string
+        text:
+          description: Text, der über dem Inhalt der Gruppe oder als Text der zu beantwortenden Frage angezeigt wird. Ermöglicht das Lesen der Fragebogenantwort ohne Zugriff auf den Fragebogen.
+          type: string
+        answer:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionnaireResponseAnswer'
+        item:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionnaireResponseItem'
+    QuestionnaireResponseAnswer:
+      description: Antwortwert. Nach Konvention darf nur eines der Wertfelder gesetzt sein!
       type: object
       properties:
-        laboratoriesAndSample:
-          $ref: '#/components/schemas/LaboratoriesAndSample'
-        sequenceMetadata:
-          $ref: '#/components/schemas/SequenceMetadata'
-        sequenceUploads:
-          $ref: '#/components/schemas/SequenceUploads'
+        item:
+          description: Weitere verschachtelte Items
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionnaireResponseItem'
+        valueBoolean:
+          description: Wertfeld für Ja/Nein
+          type: boolean
+        valueDecimal:
+          description: Wertfeld für gebrochene Zahlen
+          type: number
+          example: 12.45
+        valueInteger:
+          description: Wertfeld für ganze Zahlen
+          type: integer
+          example: 42
+        valueDate:
+          description: Wertfeld für Datums-, Monats- und Jahresangaben
+          type: string
+          example: '2023-01-27 or 2023-01 or 2023'
+        valueDateTime:
+          description: Wertfeld für Zeitstempel, ISO 8601
+          type: string
+          example: '2023-01-27T18:33+02:00'
+        valueTime:
+          description: Wertfeld für Zeitangaben, ISO 8601
+          type: string
+          example: '18:33:15'
+        valueString:
+          description: Wertfeld für Freitext
+          type: string
+        valueUri:
+          description: Wertfeld für URIs
+          type: string
+          example: https://www.rki.de/
+        valueCoding:
+          $ref: '#/components/schemas/CodeDisplay'
+        valueQuantity:
+          $ref: '#/components/schemas/Quantity'
+        valueReference:
+          description: Wertfeld für Referenzen auf FHIR-Ressourcen wie Patient oder Immunization
+          type: string
+          example: 'Patient/ac163863-fefa-3ce2-8511-7a4150d6ad43'
+    Quantity:
+      description: FHIR-Struktur Quantity
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: number
+        unit:
+          type: string
+        system:
+          type: string
+        code:
+          type: string
+        comparator:
+          description: Wie der Wert zu verstehen und darzustellen ist - ob der tatsächliche Wert aufgrund von Messproblemen größer oder kleiner als der angegebene Wert ist; z. B. wenn der Komparator "le" ist, dann ist der tatsächliche Wert <= angegebener Wert.
+          type: string
+          enum:
+            - lt
+            - le
+            - gt
+            - ge

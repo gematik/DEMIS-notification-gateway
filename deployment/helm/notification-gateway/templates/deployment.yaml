@@ -2,10 +2,9 @@
 {{- $dockerRepository := .Values.required.image.repository | required ".Values.required.image.repository is required." -}}
 {{- $dockerImage := .Values.required.image.name | required ".Values.required.image.name is required." -}}
 {{- $dockerTag := .Values.required.image.tag | default .Chart.AppVersion -}}
-{{- $defaultSecretName := (include "notification-gateway.defaultSecretName" .) -}}
-{{- $secretPasswordsName := (include "notification-gateway.passwordSecretName" .) -}}
+{{- $secretPasswordsName := .Values.config.secret.passwords.name | required ".Values.config.secret.passwords.name is required." -}}
 {{- $secretPasswordsEntries := .Values.config.secret.passwords.entries -}}
-{{- $secretKeystoresName := (include "notification-gateway.keystoresSecretName" .) -}}
+{{- $secretKeystoresName := .Values.config.secret.keystores.name | required ".Values.config.secret.keystores.name is required." -}}
 {{- $customEnvVars := .Values.customEnvVars -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -32,9 +31,11 @@ spec:
       {{- end }}
       labels:
         {{- include "notification-gateway.selectorLabels" . | nindent 8 }}
+        {{- include "notification-gateway.deploymentLabels" . | nindent 8 }}
+
     spec:
       {{- with .Values.imagePullSecrets }}
-      imagePullSecrets: 
+      imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "notification-gateway.serviceAccountName" . }}
@@ -50,24 +51,7 @@ spec:
         {{- end }}
         - name: gw-keystores-volume
           secret:
-            secretName: {{ ternary $defaultSecretName $secretKeystoresName .Values.config.secret.useDefault | quote }}
-        {{- if .Values.config.secret.useDefault }}
-        - name: "default-passwords-volume"
-          secret:
-            secretName: {{ $defaultSecretName }}
-            items:
-            - key: AUTH_CERT_PASSWORD
-              path: auth/cert/password
-            - key: TEST_AUTH_CERT_PASSWORD
-              path: testuser/auth/cert/password
-            - key: TRUSTSTORE_PASSWORD
-              path: truststore/password
-            - key: TOKEN_CLIENT_HOSPITAL
-              path: token/client/secret/hospital
-            - key: TOKEN_CLIENT_LAB
-              path: token/client/secret/lab
-        {{- end }}
-        {{- if and (not .Values.config.secret.useDefault) ($secretPasswordsName) }}
+            secretName: {{ $secretKeystoresName | quote }}
         - name: gw-passwords-volume
           secret:
             secretName: {{ $secretPasswordsName }}
@@ -78,11 +62,8 @@ spec:
               path: testuser/auth/cert/password
             - key: {{ .Values.config.secret.passwords.entries.TRUSTSTORE_PASSWORD }}
               path: truststore/password
-            - key: {{ .Values.config.secret.passwords.entries.TOKEN_CLIENT_HOSPITAL }}
-              path: token/client/secret/hospital
             - key: {{ .Values.config.secret.passwords.entries.TOKEN_CLIENT_LAB }}
               path: token/client/secret/lab
-        {{- end }}
       containers:
         - name: {{ .Values.fullnameOverride }}
           securityContext:
@@ -94,11 +75,11 @@ spec:
           {{- if .Values.application.entrypoint }}
           {{- if .Values.application.parameters }}
           {{- with .Values.application.entrypoint }}
-          command: 
+          command:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.application.parameters }}
-          args: 
+          args:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- end }}
@@ -119,13 +100,8 @@ spec:
             {{- end }}
             {{- end }}
             # Set Spring Configuration Import from Folder Structure
-            {{- if .Values.config.secret.useDefault }}
-            - name: "SPRING_CONFIG_IMPORT"
-              value: "optional:configtree:{{ include "notification-gateway.secretMountPath" . }}/default/"
-            {{- else }}
             - name: "SPRING_CONFIG_IMPORT"
               value: "optional:configtree:{{ include "notification-gateway.secretMountPath" . }}/gateway/"
-            {{- end }}
           # Mount Volumes in container
           volumeMounts:
             - name: gw-keystores-volume
@@ -137,17 +113,9 @@ spec:
             - name: jfr-volume
               mountPath: /jfrdump
             {{- end }}
-            {{- if .Values.config.secret.useDefault }}
-            # Mount default passwords as volume
-            - name: default-passwords-volume
-              readOnly: true
-              mountPath: "{{ include "notification-gateway.secretMountPath" . }}/default"
-            {{- end }}
-            {{- if and (not .Values.config.secret.useDefault) ($secretPasswordsName) }}
             - name: gw-passwords-volume
               readOnly: true
               mountPath: "{{ include "notification-gateway.secretMountPath" . }}/gateway"
-            {{- end }}
           # Ports to be exposed from the container
           ports:
             - name: gw-port
@@ -162,35 +130,47 @@ spec:
           # The Application is marked as failed after periodSeconds*failureThreshold seconds
           startupProbe:
             httpGet:
-              path: /notification-gateway/actuator/health
+              path: /actuator/health
               port: gw-port
             failureThreshold: 10
             periodSeconds: 30
           # Use SpringBoot Actuator Liveness Check
           livenessProbe:
             httpGet:
-              path: /notification-gateway/actuator/health/liveness
+              path: /actuator/health/liveness
               port: gw-port
             failureThreshold: 3
             periodSeconds: 30
           # Use SpringBoot Actuator Readiness Check
           readinessProbe:
             httpGet:
-              path: /notification-gateway/actuator/health/readiness
+              path: /actuator/health/readiness
               port: gw-port
             failureThreshold: 5
             periodSeconds: 10
+          {{- with .Values.resources }}
           # Define Limits and Requested Resources (CPU/RAM)
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ include "notification-gateway.name" . }}
+              - key: version
+                operator: In
+                values:
+                - {{ .Chart.AppVersion | quote }}
+            topologyKey: "kubernetes.io/hostname"
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

@@ -1,0 +1,535 @@
+{
+  "entry": [
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-13",
+      "resource": {
+        "author": [
+          {
+            "reference": "PractitionerRole/555-42-23-2"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "11502-2",
+                "display": "Laboratory report",
+                "system": "http://loinc.org"
+              }
+            ]
+          }
+        ],
+        "date": "2024-03-14T14:45:00+01:00",
+        "id": "555-42-23-13",
+        "identifier": {
+          "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+          "value": "555-42-23-12"
+        },
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory"
+          ]
+        },
+        "relatesTo": [
+          {
+            "code": "appends",
+            "targetReference": {
+              "identifier": {
+                "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+                "value": "12345"
+              },
+              "type": "Composition"
+            }
+          }
+        ],
+        "resourceType": "Composition",
+        "section": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "11502-2",
+                  "display": "Laboratory report",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "DiagnosticReport/555-42-23-11"
+              }
+            ]
+          }
+        ],
+        "status": "final",
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "title": "Erregernachweismeldung",
+        "type": {
+          "coding": [
+            {
+              "code": "34782-3",
+              "display": "Infectious disease Note",
+              "system": "http://loinc.org"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-7",
+      "resource": {
+        "address": [
+          {
+            "city": "Berlin",
+            "country": "DE",
+            "extension": [
+              {
+                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                "valueCoding": {
+                  "code": "current",
+                  "display": "Derzeitiger Aufenthaltsort",
+                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse"
+                }
+              }
+            ],
+            "line": [
+              "Wohnsitzstraße 2"
+            ],
+            "postalCode": "21481"
+          },
+          {
+            "city": "Berlin",
+            "country": "DE",
+            "extension": [
+              {
+                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                "valueCoding": {
+                  "code": "primary",
+                  "display": "Hauptwohnsitz",
+                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse"
+                }
+              }
+            ],
+            "line": [
+              "Wohnsitzstraße 1"
+            ],
+            "postalCode": "21481"
+          }
+        ],
+        "birthDate": "2024-11-20",
+        "gender": "male",
+        "id": "555-42-23-7",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
+          ]
+        },
+        "name": [
+          {
+            "family": "Power",
+            "given": [
+              "Max"
+            ],
+            "text": "Max Power"
+          }
+        ],
+        "resourceType": "Patient",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "012345767"
+          },
+          {
+            "system": "email",
+            "value": "testerino@test.de"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/555-42-23-2",
+      "resource": {
+        "id": "555-42-23-2",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierRole"
+          ]
+        },
+        "organization": {
+          "reference": "Organization/555-42-23-1"
+        },
+        "resourceType": "PractitionerRole"
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-1",
+      "resource": {
+        "address": [
+          {
+            "city": "Frühling",
+            "country": "DE",
+            "line": [
+              "Im Himmelreich 1"
+            ],
+            "postalCode": "21481"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "family": "Melderson",
+              "given": [
+                "Melderina"
+              ],
+              "text": "Melderina Melderson"
+            }
+          }
+        ],
+        "id": "555-42-23-1",
+        "identifier": [
+          {
+            "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR",
+            "value": "248123512"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierFacility"
+          ]
+        },
+        "name": "TEST Organisation",
+        "resourceType": "Organization",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0182736912388889"
+          },
+          {
+            "system": "email",
+            "value": "testerino@test.de"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "code": "othPrivatLab",
+                "display": "Sonstige private Untersuchungsstelle",
+                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/555-42-23-4",
+      "resource": {
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SubmittingRole"
+          ]
+        },
+        "organization": {
+          "reference": "Organization/555-42-23-3"
+        },
+        "resourceType": "PractitionerRole"
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-3",
+      "resource": {
+        "address": [
+          {
+            "city": "Einsendercity",
+            "country": "DE",
+            "line": [
+              "Am Einsenderdamm 1"
+            ],
+            "postalCode": "21481"
+          }
+        ],
+        "contact": [
+          {
+            "address": {
+              "line": [
+                "Station 9a"
+              ]
+            },
+            "name": {
+              "family": "Einsenderson",
+              "given": [
+                "Einsenderina"
+              ],
+              "prefix": [
+                "Dr"
+              ],
+              "text": "Frau Dr Einsenderina Einsenderson"
+            }
+          }
+        ],
+        "id": "555-42-23-3",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SubmittingFacility"
+          ]
+        },
+        "name": "Das Einsenderinstitut",
+        "resourceType": "Organization",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "01231232"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "code": "othPrivatLab",
+                "display": "Sonstige private Untersuchungsstelle",
+                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Specimen/555-42-23-8",
+      "resource": {
+        "collection": {
+          "collectedDateTime": "2022-02-19T00:00:00+01:00",
+          "collector": {
+            "reference": "PractitionerRole/555-42-23-4"
+          }
+        },
+        "id": "555-42-23-8",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SpecimenBANP"
+          ]
+        },
+        "receivedTime": "2022-02-20T00:00:00+01:00",
+        "resourceType": "Specimen",
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "type": {
+          "coding": [
+            {
+              "code": "119339001",
+              "display": "Stool specimen (specimen)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-9",
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "display": "Laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "41852-5",
+              "display": "Microorganism or agent identified in Specimen",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "id": "555-42-23-9",
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "code": "POS",
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation"
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "117040002",
+              "display": "Nucleic acid sequencing (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "Specimen/555-42-23-8"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "code": "21927003",
+              "display": "Bacillus anthracis (organism)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-10",
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "display": "Laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "41852-5",
+              "display": "Microorganism or agent identified in Specimen",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "id": "555-42-23-10",
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "code": "POS",
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation"
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "117040002",
+              "display": "Nucleic acid sequencing (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "Specimen/555-42-23-8"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "code": "409499007",
+              "display": "Protective antigen of anthrax toxin (substance)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/DiagnosticReport/555-42-23-11",
+      "resource": {
+        "basedOn": [
+          {
+            "identifier": {
+              "system": "https://demis.rki.de/fhir/NamingSystem/ServiceRequestId",
+              "value": "1a2b3c"
+            },
+            "type": "ServiceRequest"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "banp",
+              "display": "Bacillus anthracis",
+              "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory"
+            }
+          ]
+        },
+        "conclusionCode": [
+          {
+            "coding": [
+              {
+                "code": "pathogenDetected",
+                "system": "https://demis.rki.de/fhir/CodeSystem/conclusionCode"
+              }
+            ]
+          }
+        ],
+        "id": "555-42-23-11",
+        "issued": "2024-03-14T14:45:00.000+01:00",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/LaboratoryReportBANP"
+          ]
+        },
+        "resourceType": "DiagnosticReport",
+        "result": [
+          {
+            "reference": "Observation/555-42-23-9"
+          },
+          {
+            "reference": "Observation/555-42-23-10"
+          }
+        ],
+        "status": "final",
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        }
+      }
+    }
+  ],
+  "id": "555-42-23-5",
+  "identifier": {
+    "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
+    "value": "555-42-23-6"
+  },
+  "meta": {
+    "profile": [
+      "https://demis.rki.de/fhir/StructureDefinition/NotificationBundleLaboratory"
+    ]
+  },
+  "resourceType": "Bundle",
+  "timestamp": "2024-03-14T14:45:00.000+01:00",
+  "type": "document"
+}

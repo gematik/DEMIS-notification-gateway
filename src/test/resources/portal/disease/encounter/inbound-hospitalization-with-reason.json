@@ -1,0 +1,189 @@
+{
+  "linkId": "hospitalizedEncounter",
+  "answer": [
+    {
+      "item": [
+        {
+          "linkId": "Hospitalization",
+          "item": [
+            {
+              "linkId": "serviceType",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "0436",
+                    "display": "Intensivmedizin",
+                    "designations": [
+                    ],
+                    "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "serviceProvider",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "Organization",
+                      "item": [
+                        {
+                          "linkId": "name",
+                          "answer": [
+                            {
+                              "valueString": "Krankenhaus Oederingen"
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "address",
+                          "item": [
+                            {
+                              "linkId": "street",
+                              "answer": [
+                                {
+                                  "valueString": "Müllerstraße"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "houseNumber",
+                              "answer": [
+                                {
+                                  "valueString": "99"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "postalCode",
+                              "answer": [
+                                {
+                                  "valueString": "44557"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "city",
+                              "answer": [
+                                {
+                                  "valueString": "Oederingen"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "country",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "code": "DE",
+                                    "display": "Deutschland",
+                                    "designations": [
+                                    ],
+                                    "system": "https://demis.rki.de/fhir/CodeSystem/translationIso3166"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "contact",
+                          "item": [
+                            {
+                              "linkId": "name",
+                              "item": [
+                                {
+                                  "linkId": "prefix",
+                                  "answer": [
+                                    {
+                                      "valueString": "Dr.Prof."
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "given",
+                                  "answer": [
+                                    {
+                                      "valueString": "Carl"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "family",
+                                  "answer": [
+                                    {
+                                      "valueString": "Neumann"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "telecom",
+                          "item": [
+                            {
+                              "linkId": "phone",
+                              "answer": [
+                                {
+                                  "valueString": "+123458888"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "email",
+                              "answer": [
+                                {
+                                  "valueString": "kontakt@khoederingen.com"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "period",
+              "item": [
+                {
+                  "linkId": "start",
+                  "answer": [
+                    {
+                      "valueDate": "2024-08-10"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "end",
+                  "answer": [
+                    {
+                      "valueDate": "2024-08-24"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "reason",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationReason",
+                    "code": "becauseOfDisease",
+                    "display": "Hospitalisiert aufgrund der gemeldeten Krankheit"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

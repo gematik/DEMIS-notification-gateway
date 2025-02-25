@@ -1,0 +1,255 @@
+{
+   "notifierFacility":{
+      "facilityInfo":{
+         "institutionName":"TEST Organisation",
+         "bsnr":"248123512",
+         "existsBsnr":true
+      },
+      "address":{
+         "zip":"21481",
+         "country":"DE",
+         "street":"Im Himmelreich",
+         "additionalInfo":null,
+         "city":"Frühling",
+         "houseNumber":"1",
+         "addressType":"current"
+      },
+      "contact":{
+         "salutation":"Mr",
+         "prefix":"Dr",
+         "firstname":"Melderina",
+         "lastname":"Melderson"
+      },
+      "contacts":[
+         {
+            "contactType":"phone",
+            "value":"0182736912388889",
+            "usage":"work"
+         },
+         {
+            "contactType":"email",
+            "value":"testerino@test.de"
+         }
+      ]
+   },
+   "notifiedPerson":{
+      "info":{
+         "firstname":"Max",
+         "lastname":"Power",
+         "birthDate":"2024-11-14",
+         "gender":"MALE"
+      },
+      "currentAddress":{
+         "zip":"21481",
+         "country":"DE",
+         "street":"Seestraße",
+         "additionalInfo":null,
+         "city":"Berlin",
+         "houseNumber":"1",
+         "addressType":"current"
+      },
+      "ordinaryAddress":{
+         "zip":"21481",
+         "country":"DE",
+         "street":"Seestraße",
+         "additionalInfo":null,
+         "city":"Berlin",
+         "houseNumber":"1",
+         "addressType":"ordinary"
+      },
+      "primaryAddress":{
+         "zip":"21481",
+         "country":"DE",
+         "street":"Seestraße",
+         "additionalInfo":null,
+         "city":"Berlin",
+         "houseNumber":"1",
+         "addressType":"primary"
+      },
+      "contacts":[
+         {
+            "contactType":"phone",
+            "value":"012345767"
+         },
+         {
+            "contactType":"email",
+            "value":"testerino@test.de"
+         }
+      ]
+   },
+   "submittingFacility":{
+      "facilityInfo":{
+         "institutionName":"Das Einsenderinstitut",
+         "departmentName":"Station 9a"
+      },
+      "address":{
+         "zip":"21481",
+         "country":"DE",
+         "street":"Am Einsenderdamm",
+         "city":"Einsendercity",
+         "houseNumber":"1"
+      },
+      "contact":{
+         "salutation":"Mrs",
+         "prefix":"Dr",
+         "firstname":"Einsenderina",
+         "lastname":"Einsenderson"
+      },
+      "contacts":[
+         {
+            "contactType":"phone",
+            "value":"012345678",
+            "usage":"work"
+         },
+         {
+            "contactType":"email",
+            "value":"einsender@einsenderinstitut.de"
+         }
+      ]
+   },
+   "pathogen":"acbp",
+   "notificationCategory":{
+      "federalStateCodeDisplay":"DE-BW",
+      "pathogenDisplay":"Acinetobacter spp., Carbapenem",
+      "pathogen":{
+         "code":"1085701000112109",
+         "display":"Carbapenemase-producing Acinetobacter johnsonii (organism)",
+         "designations":[
+            {
+               "language":"de-DE",
+               "value":"Carbapenemase-produzierende Acinetobacter johnsonii"
+            },
+            {
+               "language":"en-US",
+               "value":"Carbapenemase-producing Acinetobacter johnsonii (organism)"
+            }
+         ]
+      },
+      "reportStatus":"final",
+      "interpretation":"Ich wollte nicht tauschen",
+      "initialNotificationId":"834632",
+      "laboratoryOrderId":"686149"
+   },
+   "pathogenDTO":{
+      "codeDisplay":{
+         "code":"acbp",
+         "display":"Acinetobacter spp. bei Nachweis einer Carbapenemase-Determinante oder mit verminderter Empfindlichkeit gegenüber Carbapenemen außer bei natürlicher Resistenz; Meldepflicht nur bei Infektion oder Kolonisation",
+         "designations":[
+            {
+               "language":"de-DE",
+               "value":"Acinetobacter spp., Carbapenem"
+            }
+         ]
+      },
+      "diagnostic":{
+         "methodPathogenList":[
+            {
+               "method":{
+                  "code":"398545005",
+                  "display":"Nucleic acid assay (procedure)",
+                  "designations":[
+                     {
+                        "language":"en-US",
+                        "value":"Nucleic acid assay (procedure)"
+                     },
+                     {
+                        "language":"de-DE",
+                        "value":"Nukleinsäurenachweis"
+                     }
+                  ]
+               },
+               "result":"POS"
+            },
+            {
+               "method":{
+                  "code":"398545005",
+                  "display":"Nucleic acid assay (procedure)",
+                  "designations":[
+                     {
+                        "language":"en-US",
+                        "value":"Nucleic acid assay (procedure)"
+                     },
+                     {
+                        "language":"de-DE",
+                        "value":"Nukleinsäurenachweis"
+                     }
+                  ]
+               },
+               "result":"NEG"
+            }
+         ],
+         "resistanceList":[
+            {
+               "resistance":{
+                  "code":"18928-2",
+                  "display":"Gentamicin [Susceptibility]",
+                  "designations":[
+                     {
+                        "language":"de-DE",
+                        "value":"Gentamicin [Empfindlichkeit]"
+                     }
+                  ]
+               },
+               "resistanceResult":"Intermediate"
+            },
+            {
+               "resistance":{
+                  "code":"18906-8",
+                  "display":"Ciprofloxacin [Susceptibility]",
+                  "designations":[
+                     {
+                        "language":"de-DE",
+                        "value":"Ciprofloxacin [Empfindlichkeit]"
+                     }
+                  ]
+               },
+               "resistanceResult":"SusceptibleWithIncreasedExposure"
+            }
+         ],
+         "resistanceGeneList":[
+            {
+               "resistanceGene":{
+                  "code":"49617-4",
+                  "display":"Carbapenem resistance blaKPC gene [Presence] by Molecular method",
+                  "designations":[
+                     {
+                        "language":"de-DE",
+                        "value":"Carbapenem-Resistenz blaKPC-Gen [Nachweis] mittels Molekulargenetik"
+                     }
+                  ]
+               },
+               "resistanceGeneResult":"NotDetected"
+            },
+            {
+               "resistanceGene":{
+                  "code":"85498-4",
+                  "display":"Carbapenem resistance blaIMP gene [Presence] by Molecular method",
+                  "designations":[
+                     {
+                        "language":"de-DE",
+                        "value":"Carbapenem-Resistenz blaIMP-Gen [Nachweis] mittels Molekulargenetik"
+                     }
+                  ]
+               },
+               "resistanceGeneResult":"Detected"
+            }
+         ],
+         "extractionDate":"2024-01-01",
+         "receivedDate":"2024-02-02",
+         "material":{
+            "code":"119339001",
+            "display":"Stool specimen (specimen)",
+            "designations":[
+               {
+                  "language":"en-US",
+                  "value":"Stool specimen (specimen)"
+               },
+               {
+                  "language":"de-DE",
+                  "value":"Stuhlprobe"
+               }
+            ]
+         }
+      }
+   }
+}

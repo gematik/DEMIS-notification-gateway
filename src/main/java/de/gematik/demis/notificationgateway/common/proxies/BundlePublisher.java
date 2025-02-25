@@ -18,6 +18,28 @@
 
 package de.gematik.demis.notificationgateway.common.proxies;
 
+/*-
+ * #%L
+ * DEMIS Notification-Gateway
+ * %%
+ * Copyright (C) 2025 gematik GmbH
+ * %%
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+ * European Commission – subsequent versions of the EUPL (the "Licence").
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You find a copy of the Licence in the "Licence" file or at
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+ * In case of changes by gematik find details in the "Readme" file.
+ *
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ * #L%
+ */
+
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
@@ -30,10 +52,14 @@ import de.gematik.demis.notificationgateway.common.properties.ApplicationPropert
 import de.gematik.demis.notificationgateway.common.properties.LoggingProperties;
 import de.gematik.demis.notificationgateway.common.properties.TLSProperties;
 import de.gematik.demis.notificationgateway.common.properties.TestUserProperties;
+import de.gematik.demis.notificationgateway.common.request.Metadata;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.common.utils.FileUtils;
+import de.gematik.demis.notificationgateway.security.token.Token;
+import de.gematik.demis.notificationgateway.security.token.TokenService;
 import de.gematik.demis.token.data.KeyStoreConfigParameter;
 import de.gematik.demis.token.services.HttpClientService;
+import jakarta.security.auth.message.AuthException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -51,49 +77,37 @@ import org.hl7.fhir.r4.model.Resource;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@RequestScope
 public class BundlePublisher {
 
   private static final String TEST_USER_POSTAL_CODE = "abcde";
 
   private final FhirContext fhirContext = FhirContext.forR4();
   private final HttpClientService httpClientService = new HttpClientService();
-
   private final LoggingProperties loggingProperties;
-
   private final ApplicationProperties applicationProperties;
-
   private final TLSProperties tlsProperties;
-
   private final TestUserProperties testUserProperties;
-
   private final FhirObjectCreationService fhirObjectCreationService;
-  private final TokenProxy tokenProxy;
+  private final TokenService tokenService;
 
   public Parameters postRequest(
       @NonNull Bundle bundle,
       @NonNull SupportedRealm realm,
       @NonNull String url,
       @NonNull String operationName,
-      @NonNull String remoteAddress,
       @NonNull String fhirProfile,
-      @NonNull String fhirProfileVersion) {
-    final boolean isTestUser = testUserProperties.isTestIp(remoteAddress);
-    if (isTestUser) {
+      @NonNull String fhirProfileVersion,
+      @NonNull Metadata metadata)
+      throws AuthException {
+    if (metadata.isTestUser()) {
       updatePostalCodeForTestUser(bundle);
     }
-
     Parameters parameters = fhirObjectCreationService.createParameters(bundle);
-
-    String bearerToken = tokenProxy.fetchToken(realm, isTestUser);
-    IGenericClient client =
-        Objects.requireNonNull(
-            createClient(isTestUser, url, bearerToken, fhirProfile, fhirProfileVersion));
+    IGenericClient client = createClient(realm, url, fhirProfile, fhirProfileVersion, metadata);
     return processParameters(client, parameters, operationName);
   }
 
@@ -106,21 +120,22 @@ public class BundlePublisher {
             .named(operationName)
             .withParameters(parameters)
             .encodedJson()
-            .prettyPrint()
             .execute();
     log.info("Processing operation {} successful.", operationName);
     return parametersResult;
   }
 
   private IGenericClient createClient(
-      boolean isTestUser,
+      SupportedRealm realm,
       String url,
-      String bearerToken,
       String fhirProfile,
-      String fhirProfileVersion) {
+      String fhirProfileVersion,
+      Metadata metadata)
+      throws AuthException {
     final KeyStoreConfigParameter keyStoreConfigParameter =
         Objects.requireNonNull(
-            createKeyStoreConfigParameter(isTestUser), "requireNonNull keyStoreConfigParameter");
+            createKeyStoreConfigParameter(metadata.isTestUser()),
+            "requireNonNull keyStoreConfigParameter");
 
     // build the ssl context for the request client for the fhir context
     HttpClient closeableHttpClient =
@@ -149,13 +164,17 @@ public class BundlePublisher {
       CustomLoggingInterceptor loggingInterceptor = new CustomLoggingInterceptor();
       loggingInterceptor.setLogRequestSummary(true);
       loggingInterceptor.setLogRequestHeaders(true);
-      loggingInterceptor.setExcludedRequestHeaders(loggingProperties.getExcludedRequestHeaders());
       loggingInterceptor.setLogResponseHeaders(true);
       client.registerInterceptor(loggingInterceptor);
     }
-
-    client.registerInterceptor(new BearerTokenAuthInterceptor(bearerToken));
+    setToken(realm, metadata, client);
     return client;
+  }
+
+  private void setToken(SupportedRealm realm, Metadata metadata, IGenericClient client)
+      throws AuthException {
+    final Token token = this.tokenService.outboundToken(realm, metadata);
+    client.registerInterceptor(new BearerTokenAuthInterceptor(token.asText()));
   }
 
   private void registerUserAgentHeader(
@@ -172,11 +191,9 @@ public class BundlePublisher {
       filePath = testUserProperties.getAuthCertPath();
     }
     final InputStream trustStoreInputStream =
-        FileUtils.getFileInput(
-            tlsProperties.getTruststorePath(), applicationProperties.isLegacyModeEnabled());
+        FileUtils.loadFileFromPath(tlsProperties.getTruststorePath());
 
-    final InputStream keyStoreInputStream =
-        FileUtils.getFileInput(filePath, applicationProperties.isLegacyModeEnabled());
+    final InputStream keyStoreInputStream = FileUtils.loadFileFromPath(filePath);
 
     if (trustStoreInputStream == null || keyStoreInputStream == null) {
       log.info("Failed to load Truststore or Keystore");

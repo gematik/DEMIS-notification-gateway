@@ -18,6 +18,28 @@
 
 package de.gematik.demis.notificationgateway.common.exceptions;
 
+/*-
+ * #%L
+ * DEMIS Notification-Gateway
+ * %%
+ * Copyright (C) 2025 gematik GmbH
+ * %%
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+ * European Commission – subsequent versions of the EUPL (the "Licence").
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You find a copy of the Licence in the "Licence" file or at
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+ * In case of changes by gematik find details in the "Readme" file.
+ *
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ * #L%
+ */
+
 import static de.gematik.demis.notificationgateway.common.constants.MessageConstants.VALIDATION_ERROR_OCCURRED;
 import static de.gematik.demis.notificationgateway.common.constants.WebConstants.NOT_AVAILABLE;
 import static de.gematik.demis.notificationgateway.common.enums.InternalCoreError.NG_100_TOKEN;
@@ -28,26 +50,22 @@ import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
-import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+import static org.springframework.http.HttpStatus.*;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.demis.exceptions.TokenException;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
 import de.gematik.demis.notificationgateway.common.enums.InternalCoreError;
-import feign.FeignException;
-import feign.Request;
+import de.gematik.demis.service.base.error.ServiceCallException;
+import jakarta.security.auth.message.AuthException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.junit.jupiter.api.Test;
@@ -79,7 +97,7 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleBadRequestException(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
@@ -107,7 +125,7 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleBadRequestException(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
@@ -136,12 +154,35 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleBadRequestException(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
         .isNotNull()
         .hasFieldOrPropertyWithValue("statusCode", BAD_REQUEST.value())
+        .hasFieldOrPropertyWithValue("message", message)
+        .hasFieldOrPropertyWithValue("path", REQUEST_URI);
+    assertThat(errorResponse.getValidationErrors()).isNullOrEmpty();
+    assertThat(errorResponse.getTimestamp())
+        .isCloseTo(OffsetDateTime.now(), within(3, ChronoUnit.SECONDS));
+  }
+
+  @Test
+  void givenAuthExceptionWhenHandleAuthExceptionThen401() {
+    AuthException exception = mock(AuthException.class);
+    final String message = RandomStringUtils.randomAlphabetic(10);
+    when(exception.getMessage()).thenReturn(message);
+    MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
+
+    final ResponseEntity<ErrorResponse> responseEntity =
+        responseController.handleAuthException(exception, request);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    assertThat(responseEntity.getBody()).isNotNull();
+    final ErrorResponse errorResponse = responseEntity.getBody();
+    assertThat(errorResponse)
+        .isNotNull()
+        .hasFieldOrPropertyWithValue("statusCode", UNAUTHORIZED.value())
         .hasFieldOrPropertyWithValue("message", message)
         .hasFieldOrPropertyWithValue("path", REQUEST_URI);
     assertThat(errorResponse.getValidationErrors()).isNullOrEmpty();
@@ -162,7 +203,7 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleBadRequestException(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
@@ -186,7 +227,7 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleMethodNotAllowedException(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(METHOD_NOT_ALLOWED);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(METHOD_NOT_ALLOWED);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
@@ -210,42 +251,13 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleUnsupportedMediaTypeException(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(UNSUPPORTED_MEDIA_TYPE);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(UNSUPPORTED_MEDIA_TYPE);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
         .isNotNull()
         .hasFieldOrPropertyWithValue("statusCode", UNSUPPORTED_MEDIA_TYPE.value())
         .hasFieldOrPropertyWithValue("message", message)
-        .hasFieldOrPropertyWithValue("path", REQUEST_URI);
-    assertThat(errorResponse.getValidationErrors()).isNullOrEmpty();
-    assertThat(errorResponse.getTimestamp())
-        .isCloseTo(OffsetDateTime.now(), within(3, ChronoUnit.SECONDS));
-  }
-
-  @ParameterizedTest
-  @MethodSource("provideInternalCoreError")
-  void givenFeignExceptionWhenHandleCoreExceptionThen500(
-      InternalCoreError internalCoreError, int status) {
-    final Request feignRequest =
-        Request.create(Request.HttpMethod.GET, REQUEST_URI, Map.of(), null, null, null);
-    final FeignException exception = mock(FeignException.class);
-    when(exception.request()).thenReturn(feignRequest);
-    when(exception.status()).thenReturn(status);
-    when(exception.getMessage()).thenReturn(internalCoreError.reason());
-
-    MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
-
-    final ResponseEntity<ErrorResponse> responseEntity =
-        responseController.handleCoreException(exception, request);
-
-    assertThat(responseEntity.getStatusCode().value()).isEqualByComparingTo(status);
-    assertThat(responseEntity.getBody()).isNotNull();
-    final ErrorResponse errorResponse = responseEntity.getBody();
-    assertThat(errorResponse)
-        .isNotNull()
-        .hasFieldOrPropertyWithValue("statusCode", status)
-        .hasFieldOrPropertyWithValue("message", internalCoreError.reason())
         .hasFieldOrPropertyWithValue("path", REQUEST_URI);
     assertThat(errorResponse.getValidationErrors()).isNullOrEmpty();
     assertThat(errorResponse.getTimestamp())
@@ -264,7 +276,7 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleCoreException(exception, request);
 
-    assertThat(responseEntity.getStatusCode().value()).isEqualByComparingTo(status);
+    assertThat(responseEntity.getStatusCode().value()).isEqualTo(status);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
@@ -293,7 +305,7 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleCoreException(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(INTERNAL_SERVER_ERROR);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
@@ -319,7 +331,7 @@ class ErrorResponseControllerTest {
     final ResponseEntity<ErrorResponse> responseEntity =
         responseController.handleInternalServerError(exception, request);
 
-    assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(INTERNAL_SERVER_ERROR);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
     assertThat(responseEntity.getBody()).isNotNull();
     final ErrorResponse errorResponse = responseEntity.getBody();
     assertThat(errorResponse)
@@ -330,6 +342,20 @@ class ErrorResponseControllerTest {
     assertThat(errorResponse.getValidationErrors()).isNullOrEmpty();
     assertThat(errorResponse.getTimestamp())
         .isCloseTo(OffsetDateTime.now(), within(3, ChronoUnit.SECONDS));
+  }
+
+  @Test
+  void givenServiceCallExceptionWhenHandleNotImplementedError() {
+    int httpStatus = 501;
+    ResponseEntity<ErrorResponse> response =
+        this.responseController.handleCoreException(
+            new ServiceCallException("my message", "e-42", httpStatus, null), null);
+    assertThat(response).isNotNull();
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_IMPLEMENTED);
+    ErrorResponse body = response.getBody();
+    assertThat(body).isNotNull();
+    assertThat(body.getStatusCode()).isEqualTo(httpStatus);
+    assertThat(body.getMessage()).isEqualTo(NG_300_REQUEST.reason());
   }
 
   private static Stream<Arguments> provideInternalServerException() {

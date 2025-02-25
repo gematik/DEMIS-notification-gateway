@@ -4,24 +4,23 @@ service:
   ports:
     http: 8080
 istio:
-  enable: true
   virtualService:
     gateways: {}
     http:
       match:
         - headers:
-            komfort-client:
-              exact: "false"
+            gateway-request:
+              exact: "true"
           uri:
-            prefix: /
+            prefix: /gateway/notification/api/ng
       rewrite:
-        uri: /
-#      timeout: 15s
+        uri: /api/ng
+      timeout: null
       retries:
         enable: false
 #        attempts: 3
 #        perTryTimeout: 5s
-#        retryOn: 503
+        retryOn: null
     hosts: {}
   subsets:
     main:

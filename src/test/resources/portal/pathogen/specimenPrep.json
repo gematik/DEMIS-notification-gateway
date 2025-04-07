@@ -48,7 +48,7 @@
          "houseNumber":"1",
          "addressType":"current"
       },
-      "ordinaryAddress":{
+      "residenceAddress":{
          "zip":"21481",
          "country":"DE",
          "street":"Seestraße",
@@ -56,15 +56,6 @@
          "city":"Berlin",
          "houseNumber":"1",
          "addressType":"ordinary"
-      },
-      "primaryAddress":{
-         "zip":"21481",
-         "country":"DE",
-         "street":"Seestraße",
-         "additionalInfo":null,
-         "city":"Berlin",
-         "houseNumber":"1",
-         "addressType":"primary"
       },
       "contacts":[
          {
@@ -141,115 +132,44 @@
             }
          ]
       },
-      "diagnostic":{
-         "methodPathogenList":[
-            {
-               "method":{
-                  "code":"398545005",
-                  "display":"Nucleic acid assay (procedure)",
-                  "designations":[
-                     {
-                        "language":"en-US",
-                        "value":"Nucleic acid assay (procedure)"
-                     },
-                     {
-                        "language":"de-DE",
-                        "value":"Nukleinsäurenachweis"
-                     }
-                  ]
-               },
-               "result":"POS"
+      "specimenList":[
+         {
+            "extractionDate":"2024-01-01",
+            "receivedDate":"2024-01-01",
+            "material":{
+               "code":"258450006",
+               "display":"Cerebrospinal fluid specimen (specimen)",
+               "designations":[
+                  {
+                     "language":"de-DE",
+                     "value":"Liquorprobe"
+                  },
+                  {
+                     "language":"en-US",
+                     "value":"Cerebrospinal fluid specimen (specimen)"
+                  }
+               ]
             },
-            {
-               "method":{
-                  "code":"398545005",
-                  "display":"Nucleic acid assay (procedure)",
-                  "designations":[
-                     {
-                        "language":"en-US",
-                        "value":"Nucleic acid assay (procedure)"
-                     },
-                     {
-                        "language":"de-DE",
-                        "value":"Nukleinsäurenachweis"
-                     }
-                  ]
-               },
-               "result":"NEG"
-            }
-         ],
-         "resistanceList":[
-            {
-               "resistance":{
-                  "code":"18928-2",
-                  "display":"Gentamicin [Susceptibility]",
-                  "designations":[
-                     {
-                        "language":"de-DE",
-                        "value":"Gentamicin [Empfindlichkeit]"
-                     }
-                  ]
-               },
-               "resistanceResult":"Intermediate"
-            },
-            {
-               "resistance":{
-                  "code":"18906-8",
-                  "display":"Ciprofloxacin [Susceptibility]",
-                  "designations":[
-                     {
-                        "language":"de-DE",
-                        "value":"Ciprofloxacin [Empfindlichkeit]"
-                     }
-                  ]
-               },
-               "resistanceResult":"SusceptibleWithIncreasedExposure"
-            }
-         ],
-         "resistanceGeneList":[
-            {
-               "resistanceGene":{
-                  "code":"49617-4",
-                  "display":"Carbapenem resistance blaKPC gene [Presence] by Molecular method",
-                  "designations":[
-                     {
-                        "language":"de-DE",
-                        "value":"Carbapenem-Resistenz blaKPC-Gen [Nachweis] mittels Molekulargenetik"
-                     }
-                  ]
-               },
-               "resistanceGeneResult":"NotDetected"
-            },
-            {
-               "resistanceGene":{
-                  "code":"85498-4",
-                  "display":"Carbapenem resistance blaIMP gene [Presence] by Molecular method",
-                  "designations":[
-                     {
-                        "language":"de-DE",
-                        "value":"Carbapenem-Resistenz blaIMP-Gen [Nachweis] mittels Molekulargenetik"
-                     }
-                  ]
-               },
-               "resistanceGeneResult":"Detected"
-            }
-         ],
-         "extractionDate":"2024-01-01",
-         "receivedDate":"2024-02-02",
-         "material":{
-            "code":"119339001",
-            "display":"Stool specimen (specimen)",
-            "designations":[
+            "methodPathogenList":[
                {
-                  "language":"en-US",
-                  "value":"Stool specimen (specimen)"
-               },
-               {
-                  "language":"de-DE",
-                  "value":"Stuhlprobe"
+                  "method":{
+                     "code":"121276004",
+                     "display":"Antigen assay (procedure)",
+                     "designations":[
+                        {
+                           "language":"en-US",
+                           "value":"Antigen assay (procedure)"
+                        },
+                        {
+                           "language":"de-DE",
+                           "value":"Antigennachweis"
+                        }
+                     ]
+                  },
+                  "result":"POS"
                }
             ]
          }
-      }
+      ]
    }
 }

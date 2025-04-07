@@ -26,8 +26,7 @@ import de.gematik.demis.notificationgateway.common.constants.WebConstants;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
-import de.gematik.demis.notificationgateway.common.request.Metadata;
-import de.gematik.demis.notificationgateway.common.request.RequestService;
+import de.gematik.demis.notificationgateway.common.utils.Token;
 import jakarta.security.auth.message.AuthException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -52,7 +51,6 @@ class DiseaseRestController {
 
   private final Validator validator;
   private final DiseaseNotificationService notificationService;
-  private final RequestService requestService;
 
   @PostMapping(
       path = "/disease",
@@ -83,7 +81,6 @@ class DiseaseRestController {
 
   private OkResponse send(DiseaseNotification content, HttpHeaders headers)
       throws BadRequestException, AuthException {
-    final Metadata metadata = this.requestService.createMetadata(headers);
-    return this.notificationService.sendNotification(content, metadata);
+    return this.notificationService.sendNotification(content, Token.of(headers));
   }
 }

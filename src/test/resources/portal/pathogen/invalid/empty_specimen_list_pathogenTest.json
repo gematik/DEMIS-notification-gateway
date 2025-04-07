@@ -1,0 +1,121 @@
+{
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "bsnr": "248123512",
+      "existsBsnr": true
+    },
+    "address": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Im Himmelreich",
+      "additionalInfo": null,
+      "city": "Frühling",
+      "houseNumber": "1",
+      "addressType": "current"
+    },
+    "contact": {
+      "salutation": null,
+      "prefix": null,
+      "firstname": "Melderina",
+      "lastname": "Melderson"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "0182736912388889"
+      },
+      {
+        "contactType": "email",
+        "value": "testerino@test.de"
+      }
+    ]
+  },
+  "notifiedPerson": {
+    "info": {
+      "firstname": "Max",
+      "lastname": "Power",
+      "birthDate": "2024-11-21",
+      "gender": "MALE"
+    },
+    "currentAddress": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Seestraße",
+      "additionalInfo": null,
+      "city": "Berlin",
+      "houseNumber": "1",
+      "addressType": "current"
+    },
+    "residenceAddress": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Seestraße",
+      "additionalInfo": null,
+      "city": "Berlin",
+      "houseNumber": "1",
+      "addressType": "ordinary"
+    },
+    "contacts": []
+  },
+  "submittingFacility": {
+    "facilityInfo": {
+      "institutionName": "Das Einsenderinstitut",
+      "departmentName": "Station 9a"
+    },
+    "address": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Am Einsenderdamm",
+      "city": "Einsendercity",
+      "houseNumber": "1"
+    },
+    "contact": {
+      "salutation": "Mrs",
+      "prefix": "Dr",
+      "firstname": "Einsenderina",
+      "lastname": "Einsenderson"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "01231232"
+      }
+    ]
+  },
+  "pathogen": "banp",
+  "notificationCategory": {
+    "pathogen": {
+      "code": "21927003",
+      "display": "Bacillus anthracis (organism)",
+      "designations": [
+        {
+          "language": "de-DE",
+          "value": "Bacillus anthracis"
+        },
+        {
+          "language": "en-US",
+          "value": "Bacillus anthracis (organism)"
+        }
+      ]
+    },
+    "reportStatus": "final",
+    "initialNotificationId": "12345",
+    "laboratoryOrderId": "1a2b3c"
+  },
+  "pathogenDTO": {
+    "codeDisplay": {
+      "code": "banp",
+      "display": "Bacillus anthracis",
+      "designations": [
+        {
+          "language": "de-DE",
+          "value": "Bacillus anthracis"
+        }
+      ]
+    },
+    "specimenList": []
+  }
+}

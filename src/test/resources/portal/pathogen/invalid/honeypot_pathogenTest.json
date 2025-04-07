@@ -6,48 +6,47 @@
       "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory",
       "designations": []
     },
-    "diagnostic": {
-      "extractionDate": "2022-12-01",
-      "receivedDate": "2022-12-01",
-      "material": {
-        "code": "258607008",
-        "display": "Bronchoalveolar lavage fluid sample (specimen)",
-        "system": "http://snomed.info/sct",
-        "designations": []
-      },
-      "pathogen": {
-        "code": "407479009",
-        "display": "Influenza A virus (organism)",
-        "system": "http://snomed.info/sct",
-        "designations": []
-      },
-      "methodPathogenList": [
-        {
-          "method": {
-            "code": "67122001",
-            "display": "Acid fast stain method (procedure)",
-            "system": "http://snomed.info/sct",
-            "designations": []
-          },
-          "analyt": null,
-          "result": "POS"
-        }
-      ],
-      "reportStatus": "final",
-      "interpretation": "blablabla",
-      "initialNotificationId": "0123456789"
-    }
+    "specimenList":[
+      {
+        "extractionDate":"2024-01-01",
+        "receivedDate":"2024-01-01",
+        "material":{
+          "code":"258450006",
+          "display":"Cerebrospinal fluid specimen (specimen)",
+          "designations":[
+            {
+              "language":"de-DE",
+              "value":"Liquorprobe"
+            },
+            {
+              "language":"en-US",
+              "value":"Cerebrospinal fluid specimen (specimen)"
+            }
+          ]
+        },
+        "methodPathogenList":[
+          {
+            "method":{
+              "code":"121276004",
+              "display":"Antigen assay (procedure)",
+              "designations":[
+                {
+                  "language":"en-US",
+                  "value":"Antigen assay (procedure)"
+                },
+                {
+                  "language":"de-DE",
+                  "value":"Antigennachweis"
+                }
+              ]
+            },
+            "result":"POS"
+          }
+        ]
+      }
+    ]
   },
   "notifiedPerson": {
-    "ordinaryAddress": {
-      "street": "Seestraße",
-      "houseNumber": "1",
-      "zip": "21481",
-      "city": "Berlin",
-      "country": "20422",
-      "addressType": "current",
-      "additionalInfo": "Hinterhaus A"
-    },
     "currentAddress": {
       "street": "Seestraße",
       "houseNumber": "1",
@@ -57,13 +56,13 @@
       "addressType": "current",
       "additionalInfo": "Hinterhaus A"
     },
-    "primaryAddress": {
+    "residenceAddress": {
       "street": "Seestraße",
       "houseNumber": "1",
       "zip": "21481",
       "city": "Berlin",
       "country": "20422",
-      "addressType": "current",
+      "addressType": "ordinary",
       "additionalInfo": "Hinterhaus A"
     },
     "contacts": [

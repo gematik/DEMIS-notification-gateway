@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.domain.pathogen.services;
 
 /*-
@@ -53,8 +35,8 @@ import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.exceptions.HoneypotException;
 import de.gematik.demis.notificationgateway.common.properties.NESProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
-import de.gematik.demis.notificationgateway.common.request.Metadata;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
+import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.domain.HeaderProperties;
 import de.gematik.demis.notificationgateway.domain.pathogen.fhir.PathogenBundleCreationService;
 import java.io.IOException;
@@ -71,14 +53,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PathogenSendServiceTest implements BaseTestUtils {
 
   private final OkResponseService okResponseService = new OkResponseService();
-  private final PathogenBundleCreationService mapper =
-      new PathogenBundleCreationService(false, false, false);
+  private final PathogenBundleCreationService mapper = new PathogenBundleCreationService();
   private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
   @Mock private BundlePublisher bundlePublisher;
   @Mock private NESProperties nesProperties;
   @Mock private HeaderProperties headerPropertiesMock;
-  @Mock private Metadata metadata;
+  @Mock private Token token;
   private PathogenSendService service;
   private String jsonContent;
 
@@ -91,15 +72,14 @@ class PathogenSendServiceTest implements BaseTestUtils {
 
   @BeforeEach
   void createJsonContent() {
-    jsonContent =
-        loadJsonFromFile("/portal/pathogen/Regression-pathogen-test-diagnosticChanges.json");
+    jsonContent = loadJsonFromFile("/portal/pathogen/pathogen-test.json");
     assert jsonContent != null;
   }
 
   private void mockPostResponse() throws Exception {
     when(headerPropertiesMock.getLaboratoryNotificationProfile()).thenReturn("core");
     when(headerPropertiesMock.getLaboratoryNotificationVersion()).thenReturn("1.0.0");
-    when(bundlePublisher.postRequest(any(), any(), any(), any(), eq("core"), eq("1.0.0"), any()))
+    when(bundlePublisher.postRequest(any(), any(), any(), eq("core"), eq("1.0.0"), any()))
         .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
     when(nesProperties.laboratoryUrl()).thenReturn(RandomStringUtils.randomAlphabetic(10));
   }
@@ -109,7 +89,7 @@ class PathogenSendServiceTest implements BaseTestUtils {
     mockPostResponse();
     PathogenTest pathogenTest = objectMapper.readValue(jsonContent, PathogenTest.class);
 
-    final OkResponse response = service.send(pathogenTest, metadata);
+    final OkResponse response = service.send(pathogenTest, token);
 
     Assertions.assertThat(response)
         .isNotNull()
@@ -126,25 +106,9 @@ class PathogenSendServiceTest implements BaseTestUtils {
 
   private void verifyHoneyPotDetection(PathogenTest pathogenTest) {
     final ThrowableAssert.ThrowingCallable throwingCallable =
-        () -> service.send(pathogenTest, metadata);
+        () -> service.send(pathogenTest, token);
     Assertions.assertThatThrownBy(throwingCallable)
         .isInstanceOf(HoneypotException.class)
         .hasMessage(CONTENT_NOT_ACCEPTED);
-  }
-
-  @Test
-  void givenValidNotificationWithResistanceDataWhenSendThenOkResponse() throws Exception {
-    mockPostResponse();
-    String jsonContentWithResistances =
-        loadJsonFromFile("/portal/pathogen/pathogen-test-resistance.json");
-    PathogenTest pathogenTest =
-        objectMapper.readValue(jsonContentWithResistances, PathogenTest.class);
-
-    final OkResponse response = service.send(pathogenTest, metadata);
-
-    Assertions.assertThat(response)
-        .isNotNull()
-        .extracting(OkResponse::getStatus)
-        .isEqualTo("All OK");
   }
 }

@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.domain.disease.fhir;
 
 /*-
@@ -40,54 +22,50 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #L%
  */
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.PractitionerRoleBuilder;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
-import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.ContactPoint;
-import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.HumanName.NameUse;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NotifiedPersonCreationServiceTest {
 
-  @InjectMocks private NotifiedPersonCreationService notifiedPersonCreationService;
-  @Mock private FhirObjectCreationService fhirObjectCreationServiceMock;
+  private final NotifiedPersonCreationService notifiedPersonCreationService =
+      new NotifiedPersonCreationService(new FhirObjectCreationService());
 
   @Test
   void testCreateNotifiedPersonWithMinimumInput() throws JsonProcessingException {
     final QuickTest quickTest =
         FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
 
-    final Address currentAddress = new Address();
-    currentAddress.setId(UUID.randomUUID().toString());
-    Mockito.when(
-            fhirObjectCreationServiceMock.createAddress(
-                quickTest.getNotifiedPerson().getCurrentAddress(), true))
-        .thenReturn(currentAddress);
+    final PractitionerRole submitter = new PractitionerRoleBuilder().setDefaults().build();
 
     final Patient notifiedPerson =
-        notifiedPersonCreationService.createPatient(quickTest.getNotifiedPerson());
+        notifiedPersonCreationService.createPatient(
+            quickTest.getNotifiedPerson(), submitter, Optional.empty());
     Assertions.assertNotNull(notifiedPerson);
 
     assertTrue(notifiedPerson.hasId());
@@ -110,12 +88,16 @@ class NotifiedPersonCreationServiceTest {
     Assertions.assertNull(notifiedPerson.getBirthDate());
 
     final List<Address> addresses = notifiedPerson.getAddress();
-    assertEquals(1, addresses.size());
-    final Address address = addresses.getFirst();
-    assertEquals(currentAddress, address);
+    assertThat(addresses).hasSize(2);
+    final Address currentAddress = addresses.getFirst();
+    assertThat(currentAddress.getCity()).isEqualTo("Buchhorst");
+    assertThat(currentAddress.getPostalCode()).isEqualTo("21481");
+    assertThat(currentAddress.getCountry()).isEqualTo("DE");
 
-    Mockito.verify(fhirObjectCreationServiceMock)
-        .createAddress(quickTest.getNotifiedPerson().getCurrentAddress(), true);
+    final Address residenceAddress = addresses.get(1);
+    assertThat(residenceAddress.getCity()).isEqualTo("residence");
+    assertThat(residenceAddress.getPostalCode()).isEqualTo("21481");
+    assertThat(residenceAddress.getCountry()).isEqualTo("DE");
   }
 
   @Test
@@ -123,45 +105,10 @@ class NotifiedPersonCreationServiceTest {
     final QuickTest quickTest =
         FileUtils.createQuickTest("portal/laboratory/notification_content_max.json");
 
-    Mockito.when(
-            fhirObjectCreationServiceMock.createAddress(
-                quickTest.getNotifiedPerson().getCurrentAddress(), true))
-        .thenReturn(
-            new Address()
-                .setLine(List.of(new StringType("Betroffenenstraße 1")))
-                .setPostalCode("21481")
-                .setCity("Buchhorst")
-                .setCountry("20422"));
-    Mockito.when(
-            fhirObjectCreationServiceMock.createAddress(
-                quickTest.getNotifiedPerson().getOrdinaryAddress(), true))
-        .thenReturn(
-            new Address()
-                .setLine(List.of(new StringType("Andere Straße 3")))
-                .setPostalCode("11223")
-                .setCity("Stadt")
-                .setCountry("20422"));
-    Mockito.when(
-            fhirObjectCreationServiceMock.createAddress(
-                quickTest.getNotifiedPerson().getPrimaryAddress(), true))
-        .thenReturn(
-            new Address()
-                .setLine(List.of(new StringType("Berthastraße 123")))
-                .setPostalCode("12345")
-                .setCity("Betroffenenstadt")
-                .setCountry("20422"));
-    Mockito.when(
-            fhirObjectCreationServiceMock.createContactPoint(
-                quickTest.getNotifiedPerson().getContacts().getFirst()))
-        .thenReturn(new ContactPoint().setSystem(ContactPointSystem.PHONE).setValue("01234567"));
-    Mockito.when(
-            fhirObjectCreationServiceMock.createContactPoint(
-                quickTest.getNotifiedPerson().getContacts().get(1)))
-        .thenReturn(
-            new ContactPoint().setSystem(ContactPointSystem.EMAIL).setValue("bertha@betroffen.de"));
-
+    final PractitionerRole submitter = new PractitionerRoleBuilder().setDefaults().build();
     final Patient notifiedPerson =
-        notifiedPersonCreationService.createPatient(quickTest.getNotifiedPerson());
+        notifiedPersonCreationService.createPatient(
+            quickTest.getNotifiedPerson(), submitter, Optional.empty());
     Assertions.assertNotNull(notifiedPerson);
 
     assertTrue(notifiedPerson.hasId());
@@ -196,17 +143,11 @@ class NotifiedPersonCreationServiceTest {
     assertEquals(LocalDate.of(1999, 6, 9), birthdate);
 
     final List<Address> addresses = notifiedPerson.getAddress();
-    assertEquals(3, addresses.size());
+    assertEquals(2, addresses.size());
     final Address currentAddress = addresses.getFirst();
     assertEquals("Betroffenenstraße 1", currentAddress.getLine().getFirst().asStringValue());
 
-    final Address primaryAddress = addresses.get(1);
-    assertEquals("Berthastraße 123", primaryAddress.getLine().getFirst().asStringValue());
-
-    final Address ordinaryAddress = addresses.get(2);
-    assertEquals("Andere Straße 3", ordinaryAddress.getLine().getFirst().asStringValue());
-
-    Mockito.verify(fhirObjectCreationServiceMock, Mockito.times(3))
-        .createAddress(Mockito.any(NotifiedPersonAddressInfo.class), Mockito.eq(true));
+    final Address residenceAddress = addresses.getLast();
+    assertEquals("Andere Straße 3", residenceAddress.getLine().getFirst().asStringValue());
   }
 }

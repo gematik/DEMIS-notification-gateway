@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.common.services.fhir;
 
 /*-
@@ -126,7 +108,7 @@ public class FhirObjectCreationService {
    * @return an Optional containing the created Address resource, or an empty Optional if
    *     addressInfo is null
    */
-  public Optional<Address> createAddress(
+  public Optional<Address> createAddressWithReferenceToOrganization(
       final NotifiedPersonAddressInfo addressInfo, final Organization organization) {
     if (addressInfo == null) {
       return Optional.empty();
@@ -147,7 +129,6 @@ public class FhirObjectCreationService {
    * @return a Coding object representing the FHIR address type
    */
   private Coding getAddressUseCoding(final AddressType addressType) {
-    AddressType.fromValue(addressType.getValue());
     final String referencedCodingValue =
         switch (addressType) {
           case SUBMITTING_FACILITY, OTHER_FACILITY, PRIMARY_AS_CURRENT -> "current";

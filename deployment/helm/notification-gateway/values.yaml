@@ -61,25 +61,8 @@ customEnvVars:
   AUTH_CERT_KEYSTORE: "/app/config/notification-gateway/certs/keystore.p12"
   TEST_AUTH_CERT_KEYSTORE: "/app/config/notification-gateway/certs/test_keystore.p12"
   GATEWAY_SERVER_PORT: "8080"
-  KEYCLOAK_TOKEN_LAB_URI: "https://ingress.local/auth/realms/LAB/protocol/openid-connect/token"
-  KEYCLOAK_TOKEN_HOSPITAL_URI: "https://ingress.local/auth/realms/HOSPITAL/protocol/openid-connect/token"
-  IDP_DEMIS_JWK_SET_URI: "https://keycloak.ingress.local/auth/realms/HOSPITAL/protocol/openid-connect/certs"
-  IDP_DEMIS_ISSUERS: "https://keycloak.ingress.local/auth/realms/HOSPITAL,https://keycloak.ingress.local/auth/realms/LAB"
-  CONFIG_NOTIFICATION_PORTAL_IDENTITY_PROVIDERS_0_BASE_URL: "https://ingress.local"
-  CONFIG_NOTIFICATION_PORTAL_IDENTITY_PROVIDERS_0_ISSUERS_0: "https://keycloak.ingress.local/auth/realms/HOSPITAL"
-  CONFIG_NOTIFICATION_PORTAL_IDENTITY_PROVIDERS_0_TENANT: "demis"
-  CONFIG_NOTIFICATION_PORTAL_IDENTITY_PROVIDERS_1_BASE_URL: "https://ingress.local"
-  CONFIG_NOTIFICATION_PORTAL_IDENTITY_PROVIDERS_1_ISSUERS_0: "https://keycloak.ingress.local/auth/realms/PORTAL"
-  CONFIG_NOTIFICATION_PORTAL_IDENTITY_PROVIDERS_1_TENANT: "demis-portal"
-  CONFIG_NOTIFICATION_PORTAL_IDENTITY_PROVIDERS_1_CLIENT_ID: "meldeportal"
-  # new layout on notification category page
-  FEATURE_FLAG_SPECIMEN_PREPARATION_ENABLED: "false"
-  # new layout for notified person on pathogen page
-  FEATURE_FLAG_NEW_NOTIFIED_PERSON_ENABLED: "false"
-  # activates new multi specimen processing
-  FEATURE_FLAG_MULTIPLE_SPECIMEN_ENABLED: "false"
-  # new layout for notified person on disease page
-  FEATURE_FLAG_DISEASE_ADDRESS_PATIENT: "false"
+  # new checkboxes at hospitalization to copy the address and contact data
+  FEATURE_FLAG_HOSP_COPY_CHECKBOXES: "false"
 
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)

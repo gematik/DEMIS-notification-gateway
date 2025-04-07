@@ -118,6 +118,30 @@
         "gender": "male",
         "address": [
           {
+            "extension": [
+              {
+                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
+                  "code": "current",
+                  "display": "Derzeitiger Aufenthaltsort"
+                }
+              }
+            ],
+            "postalCode": "37648",
+            "country": "DE"
+          },
+          {
+          "extension": [
+            {
+              "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+              "valueCoding": {
+                "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
+                "code": "ordinary",
+                "display": "Gewöhnlicher Aufenthaltsort"
+              }
+            }
+          ],
             "postalCode": "37648",
             "country": "DE"
           }

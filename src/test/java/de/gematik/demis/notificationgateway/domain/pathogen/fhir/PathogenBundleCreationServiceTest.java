@@ -41,21 +41,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PathogenBundleCreationServiceTest {
 
   private final PathogenBundleCreationService pathogenBundleCreationService =
-      new PathogenBundleCreationService(true, false, false);
-  private final PathogenBundleCreationService withAddressFeature =
-      new PathogenBundleCreationService(true, true, false);
-  private final PathogenBundleCreationService withMultipleSpecimenFeature =
-      new PathogenBundleCreationService(true, true, true);
+      new PathogenBundleCreationService();
 
   private int counter;
 
   @ParameterizedTest
   @CsvSource({
     "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle.json",
-    "portal/pathogen/pathogen-test-prefix.json, portal/pathogen/pathogen-test-bundle-prefix.json",
-    "portal/pathogen/pathogen-test-salutation.json, portal/pathogen/pathogen-test-bundle-salutation.json",
-    "portal/pathogen/pathogen-test-salutation-prefix.json, portal/pathogen/pathogen-test-bundle-salutation-prefix.json",
-    "portal/pathogen/pathogen-test-with-resistance-gene.json, portal/pathogen/pathogen-test-bundle-with-resistance-gene.json"
+    "portal/pathogen/pathogen-test-prefix.json, portal/pathogen/pathogen-test-prefix-bundle.json",
+    "portal/pathogen/pathogen-test-salutation.json, portal/pathogen/pathogen-test-salutation-bundle.json",
+    "portal/pathogen/pathogen-test-salutation-prefix.json, portal/pathogen/pathogen-test-salutation-prefix-bundle.json",
+    "portal/pathogen/pathogen-test-multiple-specimen-with-resistance-gene.json, portal/pathogen/pathogen-test-multiple-specimen-with-resistance-gene-bundle.json"
   })
   void toBundle_shouldCreateBundle(String input, String expectedOutput) throws Exception {
     try (final var utils = Mockito.mockStatic(Utils.class)) {
@@ -66,37 +62,37 @@ class PathogenBundleCreationServiceTest {
 
   @ParameterizedTest
   @CsvSource({
-    "portal/pathogen/pathogen-otherFacility.json, portal/pathogen/pathogen-otherFacility-bundle.json",
-    "portal/pathogen/pathogen-otherAddress.json, portal/pathogen/pathogen-otherAddress-bundle.json",
-    "portal/pathogen/pathogen-submittingFacility.json, portal/pathogen/pathogen-submittingFacility-bundle.json",
-    "portal/pathogen/pathogen-currentResidence.json, portal/pathogen/pathogen-currentResidence-bundle.json",
-    "portal/pathogen/pathogen-allPossibleAddresses.json, portal/pathogen/pathogen-allPossibleAddresses-bundle.json",
+    "portal/pathogen/pathogen-test-otherFacility.json, portal/pathogen/pathogen-test-otherFacility-bundle.json",
+    "portal/pathogen/pathogen-test-otherAddress.json, portal/pathogen/pathogen-test-otherAddress-bundle.json",
+    "portal/pathogen/pathogen-test-submittingFacility.json, portal/pathogen/pathogen-test-submittingFacility-bundle.json",
+    "portal/pathogen/pathogen-test-currentResidence.json, portal/pathogen/pathogen-test-currentResidence-bundle.json",
+    "portal/pathogen/pathogen-test-allPossibleAddresses.json, portal/pathogen/pathogen-test-allPossibleAddresses-bundle.json",
   })
   void toBundle_shouldCreateBundleWithNewAddressData(String input, String expectedOutput)
       throws Exception {
     try (final var utils = Mockito.mockStatic(Utils.class)) {
       mockNblUtils(utils);
-      testBundleCreation(withAddressFeature, input, expectedOutput);
+      testBundleCreation(pathogenBundleCreationService, input, expectedOutput);
     }
   }
 
   @ParameterizedTest
   @CsvSource({
-    "portal/pathogen/pathogen-test-multiple-specimen.json, portal/pathogen/pathogen-test-multiple-specimen-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-prefix.json, portal/pathogen/pathogen-test-multiple-specimen-prefix-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-salutation.json, portal/pathogen/pathogen-test-multiple-specimen-salutation-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-salutation-prefix.json, portal/pathogen/pathogen-test-multiple-specimen-salutation-prefix-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-otherFacility.json, portal/pathogen/pathogen-test-multiple-specimen-otherFacility-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-otherAddress.json, portal/pathogen/pathogen-test-multiple-specimen-otherAddress-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-submittingFacility.json, portal/pathogen/pathogen-test-multiple-specimen-submittingFacility-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-currentResidence.json, portal/pathogen/pathogen-test-multiple-specimen-currentResidence-bundle.json",
-    "portal/pathogen/pathogen-test-multiple-specimen-allPossibleAddresses.json, portal/pathogen/pathogen-test-multiple-specimen-allPossibleAddresses-bundle.json"
+    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle.json",
+    "portal/pathogen/pathogen-test-prefix.json, portal/pathogen/pathogen-test-prefix-bundle.json",
+    "portal/pathogen/pathogen-test-salutation.json, portal/pathogen/pathogen-test-salutation-bundle.json",
+    "portal/pathogen/pathogen-test-salutation-prefix.json, portal/pathogen/pathogen-test-salutation-prefix-bundle.json",
+    "portal/pathogen/pathogen-test-otherFacility.json, portal/pathogen/pathogen-test-otherFacility-bundle.json",
+    "portal/pathogen/pathogen-test-otherAddress.json, portal/pathogen/pathogen-test-otherAddress-bundle.json",
+    "portal/pathogen/pathogen-test-submittingFacility.json, portal/pathogen/pathogen-test-submittingFacility-bundle.json",
+    "portal/pathogen/pathogen-test-currentResidence.json, portal/pathogen/pathogen-test-currentResidence-bundle.json",
+    "portal/pathogen/pathogen-test-allPossibleAddresses.json, portal/pathogen/pathogen-test-allPossibleAddresses-bundle.json"
   })
   void toBundle_shouldCreateBundleWithMultipleSpecimenData(String input, String expectedOutput)
       throws Exception {
     try (final var utils = Mockito.mockStatic(Utils.class)) {
       mockNblUtils(utils);
-      testBundleCreation(withMultipleSpecimenFeature, input, expectedOutput);
+      testBundleCreation(pathogenBundleCreationService, input, expectedOutput);
     }
   }
 

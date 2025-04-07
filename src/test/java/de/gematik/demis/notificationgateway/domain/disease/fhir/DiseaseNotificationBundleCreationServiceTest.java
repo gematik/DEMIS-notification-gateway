@@ -77,6 +77,9 @@ class DiseaseNotificationBundleCreationServiceTest {
   @CsvSource({
     "portal/disease/notification-formly-input.json, portal/disease/notification-formly-output.json",
     "portal/disease/notification-formly-rund-input.json, portal/disease/notification-formly-rund-output.json",
+    "portal/disease/patient.address/current-address-is-primary-as-current-input.json, portal/disease/patient.address/current-address-is-primary-as-current-output.json",
+    "portal/disease/patient.address/current-address-is-other-facility-input.json, portal/disease/patient.address/current-address-is-other-facility-output.json",
+    "portal/disease/patient.address/current-address-is-submitting-facility-input.json, portal/disease/patient.address/current-address-is-submitting-facility-output.json"
   })
   void createBundle_shouldCreateBundle(String inputFile, String outputFile)
       throws BadRequestException {

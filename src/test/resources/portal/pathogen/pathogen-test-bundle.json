@@ -14,10 +14,10 @@
   "timestamp": "2024-03-14T14:45:00.000+01:00",
   "entry": [
     {
-      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-13",
+      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-19",
       "resource": {
         "resourceType": "Composition",
-        "id": "555-42-23-13",
+        "id": "555-42-23-19",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory"
@@ -25,7 +25,7 @@
         },
         "identifier": {
           "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
-          "value": "555-42-23-12"
+          "value": "555-42-23-18"
         },
         "status": "final",
         "type": {
@@ -83,7 +83,7 @@
             },
             "entry": [
               {
-                "reference": "DiagnosticReport/555-42-23-11"
+                "reference": "DiagnosticReport/555-42-23-17"
               }
             ]
           }
@@ -120,24 +120,6 @@
                   "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
                   "code": "current",
                   "display": "Derzeitiger Aufenthaltsort"
-                }
-              }
-            ],
-            "line": [
-              "Seestraße 1"
-            ],
-            "city": "Berlin",
-            "postalCode": "21481",
-            "country": "DE"
-          },
-          {
-            "extension": [
-              {
-                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
-                "valueCoding": {
-                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
-                  "code": "primary",
-                  "display": "Hauptwohnsitz"
                 }
               }
             ],
@@ -335,6 +317,37 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "code": "258450006",
+              "display": "Cerebrospinal fluid specimen (specimen)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "receivedTime": "2024-01-01T00:00:00+01:00",
+        "collection": {
+          "collector": {
+            "reference": "PractitionerRole/555-42-23-4"
+          },
+          "collectedDateTime": "2024-01-01T00:00:00+01:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Specimen/555-42-23-10",
+      "resource": {
+        "resourceType": "Specimen",
+        "id": "555-42-23-10",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SpecimenBANP"
+          ]
+        },
+        "type": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
               "code": "119339001",
               "display": "Stool specimen (specimen)"
             }
@@ -343,12 +356,12 @@
         "subject": {
           "reference": "Patient/555-42-23-7"
         },
-        "receivedTime": "2022-02-20T00:00:00+01:00",
+        "receivedTime": "2024-02-02T00:00:00+01:00",
         "collection": {
           "collector": {
             "reference": "PractitionerRole/555-42-23-4"
           },
-          "collectedDateTime": "2022-02-19T00:00:00+01:00"
+          "collectedDateTime": "2024-01-01T00:00:00+01:00"
         }
       }
     },
@@ -409,8 +422,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "117040002",
-              "display": "Nucleic acid sequencing (procedure)"
+              "code": "121276004",
+              "display": "Antigen assay (procedure)"
             }
           ]
         },
@@ -420,10 +433,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-10",
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-11",
       "resource": {
         "resourceType": "Observation",
-        "id": "555-42-23-10",
+        "id": "555-42-23-11",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
@@ -457,8 +470,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "409499007",
-              "display": "Protective antigen of anthrax toxin (substance)"
+              "code": "21927003",
+              "display": "Bacillus anthracis (organism)"
             }
           ]
         },
@@ -482,15 +495,346 @@
           ]
         },
         "specimen": {
-          "reference": "Specimen/555-42-23-8"
+          "reference": "Specimen/555-42-23-10"
         }
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/DiagnosticReport/555-42-23-11",
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-12",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-12",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41852-5",
+              "display": "Microorganism or agent identified in Specimen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "21927003",
+              "display": "Bacillus anthracis (organism)"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "NEG"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "14788002",
+              "display": "Antimicrobial susceptibility test (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-10"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-13",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-13",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "73982-1",
+              "display": "Carbapenem resistance blaNDM gene [Presence] by Molecular method"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "260373001"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "R"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "116148004",
+              "display": "Molecular genetic procedure (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-10"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-14",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-14",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85501-5",
+              "display": "Carbapenem resistance blaVIM gene [Presence] by Molecular method"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "260415000"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "S"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "116148004",
+              "display": "Molecular genetic procedure (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-10"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-15",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-15",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "100049-6",
+              "display": "Eravacycline [Susceptibility]"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "30714006"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "R"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "14788002",
+              "display": "Antimicrobial susceptibility test (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-10"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-16",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-16",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionBANP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "18860-7",
+              "display": "Amikacin [Susceptibility]"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "1255965005"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "I"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "14788002",
+              "display": "Antimicrobial susceptibility test (procedure)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-10"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/DiagnosticReport/555-42-23-17",
       "resource": {
         "resourceType": "DiagnosticReport",
-        "id": "555-42-23-11",
+        "id": "555-42-23-17",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/LaboratoryReportBANP"
@@ -524,7 +868,22 @@
             "reference": "Observation/555-42-23-9"
           },
           {
-            "reference": "Observation/555-42-23-10"
+            "reference": "Observation/555-42-23-11"
+          },
+          {
+            "reference": "Observation/555-42-23-12"
+          },
+          {
+            "reference": "Observation/555-42-23-13"
+          },
+          {
+            "reference": "Observation/555-42-23-14"
+          },
+          {
+            "reference": "Observation/555-42-23-15"
+          },
+          {
+            "reference": "Observation/555-42-23-16"
           }
         ],
         "conclusionCode": [

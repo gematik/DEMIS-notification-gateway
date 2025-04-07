@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.domain.pathogen.fhir;
 
 /*-
@@ -50,32 +32,13 @@ import de.gematik.demis.notificationgateway.common.mappers.BundleMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class PathogenBundleCreationService implements BundleMapper {
-
-  private final boolean useNewNotificationPreparationCode;
-  private final boolean isNewAddressFeatureEnabled;
-  private final boolean multipleSpecimen;
-
-  @Autowired
-  public PathogenBundleCreationService(
-      @Value("${feature.flag.specimen.preparation.enabled}")
-          final boolean useNewNotificationPreparationCode,
-      @Value("${feature.flag.new_notified_person_enabled:false}")
-          final boolean isNewAddressFeatureEnabled,
-      @Value("${feature.flag.multiple_specimen_enabled:false}") final boolean multipleSpecimen) {
-    this.useNewNotificationPreparationCode = useNewNotificationPreparationCode;
-    this.isNewAddressFeatureEnabled = isNewAddressFeatureEnabled;
-    this.multipleSpecimen = multipleSpecimen;
-  }
 
   /**
    * Create a patient and additional resources if necessary
@@ -114,15 +77,10 @@ public class PathogenBundleCreationService implements BundleMapper {
         whereabouts = createAddress(whereaboutsInfo);
     }
 
-    final List<Address> nonNullAddress =
-        Stream.of(
-                whereabouts,
-                createAddress(rawPatientData.getResidenceAddress()),
-                createAddress(rawPatientData.getOrdinaryAddress()))
-            .filter(Objects::nonNull)
-            .toList();
+    final List<Address> addresses =
+        List.of(whereabouts, createAddress(rawPatientData.getResidenceAddress()));
     final Patient patient;
-    patient = createPatient(rawPatientData, nonNullAddress);
+    patient = createPatient(rawPatientData, addresses);
 
     return patient;
   }
@@ -151,45 +109,21 @@ public class PathogenBundleCreationService implements BundleMapper {
 
     final NotificationBundleLaboratoryDataBuilder bundleBuilder =
         new NotificationBundleLaboratoryDataBuilder().setDefaults();
-    final Patient patient;
-    if (isNewAddressFeatureEnabled) {
-      patient = createPatient(bundleBuilder, pathogenTest, submittingRole);
-    } else {
-      patient = createPatient(notifiedPerson);
-    }
+    final Patient patient = createPatient(bundleBuilder, pathogenTest, submittingRole);
 
     List<Observation> observation = new ArrayList<>();
     List<Specimen> specimenList = new ArrayList<>();
 
-    if (multipleSpecimen) {
+    addSpecimen(
+        pathogenDTO,
+        patient,
+        submittingRole,
+        specimenList,
+        observation,
+        notificationLaboratoryCategory);
 
-      addSpecimen(
-          pathogenDTO,
-          patient,
-          submittingRole,
-          specimenList,
-          observation,
-          notificationLaboratoryCategory);
-
-    } else {
-      final Specimen specimen = createSpecimen(pathogenDTO, patient, submittingRole);
-      observation =
-          createObservation(
-              pathogenDTO,
-              patient,
-              specimen,
-              useNewNotificationPreparationCode,
-              multipleSpecimen,
-              notificationLaboratoryCategory);
-      specimenList.add(specimen);
-    }
     final DiagnosticReport diagnosticReport =
-        createDiagnosticReport(
-            pathogenDTO,
-            patient,
-            observation,
-            useNewNotificationPreparationCode,
-            notificationLaboratoryCategory);
+        createDiagnosticReport(pathogenDTO, patient, observation, notificationLaboratoryCategory);
 
     return bundleBuilder
         .setPathogenDetection(observation)
@@ -203,7 +137,6 @@ public class PathogenBundleCreationService implements BundleMapper {
                 notifierRole,
                 diagnosticReport,
                 pathogenDTO,
-                useNewNotificationPreparationCode,
                 notificationLaboratoryCategory))
         .setLaboratoryReport(diagnosticReport)
         .build();
@@ -242,8 +175,6 @@ public class PathogenBundleCreationService implements BundleMapper {
               specimenDTO.getMethodPathogenList(),
               patient,
               specimen,
-              useNewNotificationPreparationCode,
-              multipleSpecimen,
               notificationLaboratoryCategory));
 
       createObservationsForResistanceGenes(

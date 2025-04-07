@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.domain.disease.fhir;
 
 /*-
@@ -63,7 +45,6 @@ import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.StringType;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -71,12 +52,6 @@ import org.springframework.stereotype.Service;
 class NotifiedPersonCreationService {
 
   private final FhirObjectCreationService fhirObjectCreationService;
-
-  public Patient createPatient(NotifiedPerson notifiedPersonContent) {
-    final Patient notifiedPerson = createNotifiedPersonWithoutAddresses(notifiedPersonContent);
-    addAddresses(notifiedPerson, notifiedPersonContent);
-    return notifiedPerson;
-  }
 
   public Patient createPatient(
       NotifiedPerson notifiedPersonContent,
@@ -120,12 +95,6 @@ class NotifiedPersonCreationService {
     }
   }
 
-  private void addAddresses(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
-    addAddress(notifiedPerson, notifiedPersonContent.getCurrentAddress());
-    addAddress(notifiedPerson, notifiedPersonContent.getPrimaryAddress());
-    addAddress(notifiedPerson, notifiedPersonContent.getOrdinaryAddress());
-  }
-
   private void addAddresses(
       Patient notifiedPerson,
       NotifiedPerson notifiedPersonContent,
@@ -138,7 +107,11 @@ class NotifiedPersonCreationService {
         createAddress(notifiedPersonAddress, practitionerRole, otherFacility);
     patientCurrentAddress.ifPresent(notifiedPerson::addAddress);
 
-    addAddress(notifiedPerson, notifiedPersonContent.getResidenceAddress());
+    NotifiedPersonAddressInfo addressInfo = notifiedPersonContent.getResidenceAddress();
+    if (addressInfo != null) {
+      final Address fhirAddress = fhirObjectCreationService.createAddress(addressInfo, true);
+      notifiedPerson.addAddress(fhirAddress);
+    }
   }
 
   private Optional<Address> createAddress(
@@ -146,20 +119,15 @@ class NotifiedPersonCreationService {
       PractitionerRole practitionerRole,
       Optional<Organization> otherFacility) {
     if (otherFacility.isPresent()) {
-      return fhirObjectCreationService.createAddress(notifiedPersonAddress, otherFacility.get());
+      return fhirObjectCreationService.createAddressWithReferenceToOrganization(
+          notifiedPersonAddress, otherFacility.get());
     } else if (notifiedPersonAddress.getAddressType() == SUBMITTING_FACILITY) {
       final Organization submittingFacility =
           (Organization) practitionerRole.getOrganization().getResource();
-      return fhirObjectCreationService.createAddress(notifiedPersonAddress, submittingFacility);
+      return fhirObjectCreationService.createAddressWithReferenceToOrganization(
+          notifiedPersonAddress, submittingFacility);
     } else {
       return fhirObjectCreationService.createAddress(notifiedPersonAddress);
-    }
-  }
-
-  private void addAddress(Patient notifiedPerson, @Nullable NotifiedPersonAddressInfo addressInfo) {
-    if (addressInfo != null) {
-      final Address fhirAddress = fhirObjectCreationService.createAddress(addressInfo, true);
-      notifiedPerson.addAddress(fhirAddress);
     }
   }
 

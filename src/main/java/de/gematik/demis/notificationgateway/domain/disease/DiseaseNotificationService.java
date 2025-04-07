@@ -22,19 +22,16 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.enums.SupportedRealm.LAB;
-
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.exceptions.HoneypotException;
 import de.gematik.demis.notificationgateway.common.properties.NESProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
-import de.gematik.demis.notificationgateway.common.request.Metadata;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
+import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.domain.HeaderProperties;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.DiseaseNotificationBundleCreationService;
-import jakarta.security.auth.message.AuthException;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,12 +74,12 @@ class DiseaseNotificationService {
    * Convert disease notification to FHIR document. Send the FHIR document to DEMIS core API.
    *
    * @param notification disease notification
-   * @param metadata inbound request metadata
+   * @param token inbound JWT
    * @return response of DEMIS core
    * @throws BadRequestException illegal disease notification structure or data
    */
-  OkResponse sendNotification(DiseaseNotification notification, Metadata metadata)
-      throws BadRequestException, AuthException {
+  OkResponse sendNotification(DiseaseNotification notification, Token token)
+      throws BadRequestException {
     validateHoneypot(notification);
     final Bundle bundle = this.bundleCreationService.createBundle(notification);
     final String url = this.nesProperties.hospitalizationUrl();
@@ -91,12 +88,11 @@ class DiseaseNotificationService {
     Parameters result =
         this.bundlePublisher.postRequest(
             bundle,
-            LAB,
             url,
             operation,
             this.headerProperties.getDiseaseNotificationProfile(),
             this.headerProperties.getDiseaseNotificationVersion(),
-            metadata);
+            token);
     return this.okResponseService.buildOkResponse(result);
   }
 }

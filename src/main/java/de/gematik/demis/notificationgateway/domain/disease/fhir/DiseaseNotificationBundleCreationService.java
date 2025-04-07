@@ -41,15 +41,11 @@ import org.hl7.fhir.r4.model.Composition;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class DiseaseNotificationBundleCreationService {
-
-  @Value("${feature.flag.disease_address_patient:false}")
-  private boolean isNewAddressFeatureEnabled;
 
   private final NotifiedPersonCreationService notifiedPersonCreationService;
   private final OrganizationCreationService organizationCreationService;
@@ -66,7 +62,9 @@ public class DiseaseNotificationBundleCreationService {
   public Bundle createBundle(DiseaseNotification diseaseNotification) throws BadRequestException {
     PractitionerRole notifier = createNotifier(diseaseNotification);
     Optional<Organization> otherFacility = createOtherFacility(diseaseNotification);
-    Patient patient = createPatient(diseaseNotification, notifier, otherFacility);
+    Patient patient =
+        this.notifiedPersonCreationService.createPatient(
+            diseaseNotification.getNotifiedPerson(), notifier, otherFacility);
 
     DiseaseNotificationContext context =
         createContext(diseaseNotification, notifier, patient, otherFacility);
@@ -93,28 +91,6 @@ public class DiseaseNotificationBundleCreationService {
           organizationCreationService.createOtherFacility(notifiedPersonAddressInfo));
     }
     return Optional.empty();
-  }
-
-  /**
-   * Creates a Patient based on DiseaseNotification, PractitionerRole, and optional Organization.
-   *
-   * @param diseaseNotification the disease notification containing the notified person information
-   * @param notifierRole the practitioner role associated with the notifier
-   * @param otherFacility an optional organization representing another facility (i.e. andere
-   *     Einrichtung / Unterkunft in disease-portal)
-   * @return the created Patient resource
-   */
-  private Patient createPatient(
-      DiseaseNotification diseaseNotification,
-      PractitionerRole notifierRole,
-      Optional<Organization> otherFacility) {
-    if (isNewAddressFeatureEnabled) {
-      return this.notifiedPersonCreationService.createPatient(
-          diseaseNotification.getNotifiedPerson(), notifierRole, otherFacility);
-    } else {
-      return this.notifiedPersonCreationService.createPatient(
-          diseaseNotification.getNotifiedPerson());
-    }
   }
 
   private DiseaseNotificationContext createContext(

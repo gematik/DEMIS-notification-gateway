@@ -31,26 +31,97 @@ import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseItem
 import de.gematik.demis.notificationgateway.domain.disease.fhir.DiseaseNotificationContext;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.PractitionerRole;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Type;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class Organizations implements ResourceFactory {
+
+  private static final String CHECKBOX_LINK_ID_COPY_CONTACT = "copyNotifierContact";
+  private static final String CHECKBOX_LINK_ID_COPY_CURRENT_ADDRESS =
+      "copyNotifiedPersonCurrentAddress";
+  private static final String EXTENSION_NOTIFIED_PERSON_FACILITY_ADDRESS =
+      "https://demis.rki.de/fhir/StructureDefinition/FacilityAddressNotifiedPerson";
+  private static final String EXTENSION_CURRENT_ADDRESS =
+      "https://demis.rki.de/fhir/StructureDefinition/AddressUse";
+
+  private final boolean featureFlagCopyCheckboxes;
+
+  Organizations(@Value("${feature.flag.hosp_copy_checkboxes}") boolean featureFlagCopyCheckboxes) {
+    this.featureFlagCopyCheckboxes = featureFlagCopyCheckboxes;
+  }
 
   @Override
   public FhirResource createFhirResource(
       DiseaseNotificationContext context, QuestionnaireResponseItem item) {
     QuestionnaireResponseItem organizationItem = item.getAnswer().getFirst().getItem().getFirst();
-    Organization organization = createOrganization(organizationItem);
-    context.bundle().addOrganization(organization);
+    Organization organization = getReferencedOrganization(context, organizationItem);
+    if (organization == null) {
+      organization = createOrganization(context, organizationItem);
+    }
+    syncContacts(context, organizationItem, organization);
     return createFhirResource(organization, item.getLinkId());
+  }
+
+  private Organization createOrganization(
+      DiseaseNotificationContext context, QuestionnaireResponseItem organizationItem) {
+    final Organization organization = createOrganization(organizationItem);
+    context.bundle().addOrganization(organization);
+    return organization;
+  }
+
+  private Organization getReferencedOrganization(
+      DiseaseNotificationContext context, QuestionnaireResponseItem organizationItem) {
+    Organization organization = null;
+    if (shouldCopyNotifiedPersonCurrentAddress(organizationItem)) {
+      log.debug("Organization definition is referencing current address of notified person");
+      organization = getNotifiedPersonCurrentAddressOrganization(context);
+      if (organization == null) {
+        log.warn(
+            "Notified person current address organization not found. Unable to create reference.");
+      }
+    }
+    return organization;
+  }
+
+  private boolean shouldCopyNotifiedPersonCurrentAddress(QuestionnaireResponseItem organization) {
+    return featureFlagCopyCheckboxes
+        && findSubItemAnswer(organization, CHECKBOX_LINK_ID_COPY_CURRENT_ADDRESS)
+            .map(QuestionnaireResponseAnswer::getValueBoolean)
+            .orElse(false);
+  }
+
+  private Organization getNotifiedPersonCurrentAddressOrganization(
+      DiseaseNotificationContext context) {
+    return context.notifiedPerson().getAddress().stream()
+        .filter(address -> address.hasExtension(EXTENSION_CURRENT_ADDRESS))
+        .filter(address -> address.hasExtension(EXTENSION_NOTIFIED_PERSON_FACILITY_ADDRESS))
+        .findFirst()
+        .map(this::getNotifiedPersonFacilityOrganization)
+        .orElse(null);
+  }
+
+  private Organization getNotifiedPersonFacilityOrganization(Address address) {
+    final Type value =
+        address.getExtensionByUrl(EXTENSION_NOTIFIED_PERSON_FACILITY_ADDRESS).getValue();
+    if (value instanceof Reference reference) {
+      return (Organization) reference.getResource();
+    }
+    return null;
   }
 
   @Override
   public boolean test(QuestionnaireResponseItem item) {
     /*
-     * Organization references don't have a specific linkId, so we have to check the answer subitems.
+     * References of organizations don't have a specific linkId, so we have to check the answer subitems.
      * This code assumes that the first answer subitem is the reference to the organization
      * and that there are no other answer subitems.
      */
@@ -152,5 +223,43 @@ public class Organizations implements ResourceFactory {
         .map(QuestionnaireResponseAnswer::getValueString)
         .map(StringUtils::trimToNull)
         .orElse(null);
+  }
+
+  private void syncContacts(
+      DiseaseNotificationContext context,
+      QuestionnaireResponseItem organizationItem,
+      Organization organization) {
+    if (shouldCopyNotifierContacts(organizationItem)) {
+      log.debug("Copying contacts from notifier to organization");
+      final Organization notifierOrganization = getNotifierOrganization(context);
+      if (notifierOrganization == null) {
+        log.warn("Notifier organization not found. Unable to copy contacts.");
+      } else if (organization != notifierOrganization) {
+        notifierOrganization.getContact().forEach(organization::addContact);
+      }
+    }
+  }
+
+  private boolean shouldCopyNotifierContacts(QuestionnaireResponseItem organizationItem) {
+    if (this.featureFlagCopyCheckboxes) {
+      final Optional<QuestionnaireResponseItem> contact = findSubItem(organizationItem, "contact");
+      if (contact.isPresent()) {
+        return findSubItemAnswer(contact.get(), CHECKBOX_LINK_ID_COPY_CONTACT)
+            .map(QuestionnaireResponseAnswer::getValueBoolean)
+            .orElse(false);
+      }
+    }
+    return false;
+  }
+
+  private Organization getNotifierOrganization(DiseaseNotificationContext context) {
+    final PractitionerRole notifier = context.bundle().getNotifierRole();
+    if (notifier != null) {
+      final Reference reference = notifier.getOrganization();
+      if (reference != null) {
+        return (Organization) reference.getResource();
+      }
+    }
+    return null;
   }
 }

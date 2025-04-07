@@ -136,6 +136,16 @@
         "birthDate": "1974-07-19",
         "address": [
           {
+            "extension": [
+              {
+                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
+                  "code": "current",
+                  "display": "Derzeitiger Aufenthaltsort"
+                }
+              }
+            ],
             "line": [
               "Herbertstraße 14"
             ],
@@ -154,6 +164,38 @@
               }
             ],
             "city": "Oederingen",
+            "postalCode": "21481",
+            "country": "20422"
+          },
+          {
+            "extension": [
+              {
+                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
+                  "code": "ordinary",
+                  "display": "Gewöhnlicher Aufenthaltsort"
+                }
+              }
+            ],
+            "line": [
+              "Andere Straße 3"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Andere Straße"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "3"
+                  }
+                ]
+              }
+            ],
+            "city": "Buchhorst",
             "postalCode": "21481",
             "country": "20422"
           }

@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.domain.bedoccupancy;
 
 /*-
@@ -57,10 +39,9 @@ import de.gematik.demis.notificationgateway.BaseTestUtils;
 import de.gematik.demis.notificationgateway.common.constants.MessageConstants;
 import de.gematik.demis.notificationgateway.common.constants.WebConstants;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
-import de.gematik.demis.notificationgateway.common.enums.SupportedRealm;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
-import de.gematik.demis.notificationgateway.common.request.Metadata;
 import de.gematik.demis.notificationgateway.common.utils.Feature;
+import de.gematik.demis.notificationgateway.common.utils.Token;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
@@ -82,9 +63,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = {"feature.flag.specimen.preparation.enabled=false"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUtils {
 
   private MockMvc mockMvc;
@@ -103,9 +82,8 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
     HttpHeaders clientHeaders = new HttpHeaders();
     clientHeaders.setContentType(MediaType.APPLICATION_JSON);
     clientHeaders.setBearerAuth(EXPIRED_DEMIS_PORTAL_TOKEN_HOSPITAL);
-    clientHeaders.put(WebConstants.HEADER_X_REAL_IP, List.of("62.23.239.123"));
     when(bundlePublisher.postRequest(
-            any(), any(), any(), any(), eq("rki.demis.r4.core"), eq("1.24.0"), any()))
+            any(), any(), any(), eq("rki.demis.r4.core"), eq("1.24.0"), any()))
         .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
 
     final MockHttpServletResponse response =
@@ -121,12 +99,11 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
     Mockito.verify(bundlePublisher, times(1))
         .postRequest(
             any(Bundle.class),
-            eq(SupportedRealm.HOSPITAL),
             any(String.class),
             any(String.class),
             eq("rki.demis.r4.core"),
             eq("1.24.0"),
-            any(Metadata.class));
+            any(Token.class));
   }
 
   @ParameterizedTest
@@ -140,7 +117,6 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBearerAuth(EXPIRED_DEMIS_PORTAL_TOKEN_HOSPITAL);
-    headers.put(WebConstants.HEADER_X_REAL_IP, List.of("62.23.239.123"));
 
     final MockHttpServletResponse response =
         this.mockMvc
@@ -168,12 +144,11 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
     Mockito.verify(bundlePublisher, Mockito.never())
         .postRequest(
             any(Bundle.class),
-            eq(SupportedRealm.HOSPITAL),
             any(String.class),
             any(String.class),
             eq("rki.demis.r4.core"),
             eq("1.24.0"),
-            any(Metadata.class));
+            any(Token.class));
   }
 
   @Test
@@ -206,11 +181,10 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
     Mockito.verify(bundlePublisher, Mockito.never())
         .postRequest(
             any(Bundle.class),
-            eq(SupportedRealm.HOSPITAL),
             any(String.class),
             any(String.class),
             eq("rki.demis.r4.core"),
             eq("1.24.0"),
-            any(Metadata.class));
+            any(Token.class));
   }
 }

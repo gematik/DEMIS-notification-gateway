@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.common.services.fhir;
 
 /*-
@@ -109,7 +91,7 @@ class FhirObjectCreationServiceTest {
 
     assertFalse(address.hasLine());
     assertEquals("Buchhorst", address.getCity());
-    assertEquals("20422", address.getCountry());
+    assertEquals("DE", address.getCountry());
     assertEquals("21481", address.getPostalCode());
   }
 
@@ -124,7 +106,7 @@ class FhirObjectCreationServiceTest {
     assertFalse(address.hasExtension());
     assertEquals("Straße 1", address.getLine().get(0).asStringValue());
     assertEquals("Buchhorst", address.getCity());
-    assertEquals("20422", address.getCountry());
+    assertEquals("DE", address.getCountry());
     assertEquals("21481", address.getPostalCode());
   }
 
@@ -159,16 +141,16 @@ class FhirObjectCreationServiceTest {
 
     assertEquals("21481", address.getPostalCode());
     assertEquals("Buchhorst", address.getCity());
-    assertEquals("20422", address.getCountry());
+    assertEquals("DE", address.getCountry());
   }
 
   @Test
-  void testCreateCompletePrimaryAddress() throws JsonProcessingException {
+  void testCreateCompleteResidenceAddress() throws JsonProcessingException {
     final QuickTest quickTest =
         FileUtils.createQuickTest("portal/laboratory/notification_content_max.json");
 
     final Address address =
-        creationService.createAddress(quickTest.getNotifiedPerson().getPrimaryAddress(), true);
+        creationService.createAddress(quickTest.getNotifiedPerson().getResidenceAddress(), true);
 
     final List<Extension> addressExtensions = address.getExtension();
     assertEquals(1, addressExtensions.size());
@@ -178,40 +160,6 @@ class FhirObjectCreationServiceTest {
     assertEquals(FhirConstants.CODE_SYSTEM_ADDRESS_USE, addressExtensionValue.getSystem());
     assertEquals("primary", addressExtensionValue.getCode());
     assertEquals("Hauptwohnsitz", addressExtensionValue.getDisplay());
-
-    final StringType addressLine = address.getLine().get(0);
-    assertEquals("Berthastraße 123", addressLine.asStringValue());
-    final List<Extension> addressLineExtensions = addressLine.getExtension();
-    assertEquals(2, addressLineExtensions.size());
-    final Extension streetNameExtension = addressLineExtensions.get(0);
-    assertEquals(FhirConstants.STRUCTURE_DEFINITION_ADXP_STREET_NAME, streetNameExtension.getUrl());
-    assertEquals("Berthastraße", streetNameExtension.getValue().toString());
-    final Extension houseNumberExtension = addressLineExtensions.get(1);
-    assertEquals(
-        FhirConstants.STRUCTURE_DEFINITION_ADXP_HOUSE_NUMBER, houseNumberExtension.getUrl());
-    assertEquals("123", houseNumberExtension.getValue().toString());
-
-    assertEquals("12345", address.getPostalCode());
-    assertEquals("Betroffenenstadt", address.getCity());
-    assertEquals("20422", address.getCountry());
-  }
-
-  @Test
-  void testCreateCompleteOrdinaryAddress() throws JsonProcessingException {
-    final QuickTest quickTest =
-        FileUtils.createQuickTest("portal/laboratory/notification_content_max.json");
-
-    final Address address =
-        creationService.createAddress(quickTest.getNotifiedPerson().getOrdinaryAddress(), true);
-
-    final List<Extension> addressExtensions = address.getExtension();
-    assertEquals(1, addressExtensions.size());
-    final Extension addressExtension = addressExtensions.get(0);
-    assertEquals(FhirConstants.STRUCTURE_DEFINITION_ADDRESS_USE, addressExtension.getUrl());
-    final Coding addressExtensionValue = (Coding) addressExtension.getValue();
-    assertEquals(FhirConstants.CODE_SYSTEM_ADDRESS_USE, addressExtensionValue.getSystem());
-    assertEquals("ordinary", addressExtensionValue.getCode());
-    assertEquals("Gewöhnlicher Aufenthaltsort", addressExtensionValue.getDisplay());
 
     final StringType addressLine = address.getLine().get(0);
     assertEquals("Andere Straße 3", addressLine.asStringValue());
@@ -227,7 +175,7 @@ class FhirObjectCreationServiceTest {
 
     assertEquals("11223", address.getPostalCode());
     assertEquals("Stadt", address.getCity());
-    assertEquals("20422", address.getCountry());
+    assertEquals("DE", address.getCountry());
   }
 
   @Test

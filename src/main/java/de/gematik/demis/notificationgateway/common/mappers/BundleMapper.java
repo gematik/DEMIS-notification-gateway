@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.common.mappers;
 
 /*-
@@ -47,7 +29,6 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.LaboratoryReportDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.PathogenDetectionDataBuilder;
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.SpecimenDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.HumanNameDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
@@ -75,7 +56,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -97,12 +77,12 @@ public interface BundleMapper {
     final FacilityInfo facilityInfo = notifierFacility.getFacilityInfo();
     final PractitionerInfo practitionerInfo = notifierFacility.getContact();
 
-    List<ContactPoint> contactPoints =
+    final List<ContactPoint> contactPoints =
         notifierFacility.getContacts().stream().map(this::createContactPoint).toList();
 
     final HumanName contactName = createHumanName(practitionerInfo);
 
-    OrganizationBuilder organizationBuilder =
+    final OrganizationBuilder organizationBuilder =
         new OrganizationBuilder()
             .asNotifierFacility()
             .setDefaults()
@@ -117,9 +97,9 @@ public interface BundleMapper {
       organizationBuilder.setBsnrValue(facilityInfo.getBsnr());
     }
 
-    Organization organization = organizationBuilder.build();
+    final Organization organization = organizationBuilder.build();
 
-    PractitionerRoleBuilder practitionerRoleBuilder =
+    final PractitionerRoleBuilder practitionerRoleBuilder =
         new PractitionerRoleBuilder().asNotifierRole().withOrganization(organization);
 
     return practitionerRoleBuilder.build();
@@ -148,16 +128,12 @@ public interface BundleMapper {
         .build();
   }
 
-  default PractitionerRole createSubmitterPractitionerRole(SubmitterFacility submitterFacility) {
-    return createSubmitterPractitionerRole(submitterFacility, false);
-  }
-
   default PractitionerRole createSubmitterPractitionerRole(
       SubmitterFacility submitterFacility, boolean isNotifiedPersonFacility) {
     final SubmittingFacilityInfo facilityInfo = submitterFacility.getFacilityInfo();
     final FacilityAddressInfo addressInfo = submitterFacility.getAddress();
 
-    List<ContactPoint> contactPoints =
+    final List<ContactPoint> contactPoints =
         submitterFacility.getContacts().stream().map(this::createContactPoint).toList();
     final Address submitterAddress = createAddress(addressInfo);
     final HumanName contactName = createHumanName(submitterFacility.getContact());
@@ -175,7 +151,7 @@ public interface BundleMapper {
       organizationBuilder.addNotifiedPersonFacilityProfile();
     }
 
-    Organization submittingFacility = organizationBuilder.build();
+    final Organization submittingFacility = organizationBuilder.build();
 
     return new PractitionerRoleBuilder()
         .asSubmittingRole()
@@ -187,23 +163,13 @@ public interface BundleMapper {
       PathogenDTO pathogenDTO,
       Patient patient,
       List<Observation> observationList,
-      boolean useNewNotificationPreparationCode,
       NotificationLaboratoryCategory notificationCategory) {
 
-    String value;
-    String conclusionCode;
-    String laboratoryOrderId;
-    if (useNewNotificationPreparationCode) {
-      value = notificationCategory.getReportStatus().getValue();
-      conclusionCode = notificationCategory.getInterpretation();
-      laboratoryOrderId = notificationCategory.getLaboratoryOrderId();
-    } else {
-      value = pathogenDTO.getDiagnostic().getReportStatus().getValue();
-      conclusionCode = pathogenDTO.getDiagnostic().getInterpretation();
-      laboratoryOrderId = pathogenDTO.getDiagnostic().getLaboratoryOrderId();
-    }
+    final String value = notificationCategory.getReportStatus().getValue();
+    final String conclusionCode = notificationCategory.getInterpretation();
+    final String laboratoryOrderId = notificationCategory.getLaboratoryOrderId();
 
-    LaboratoryReportDataBuilder laboratoryReportDataBuilder =
+    final LaboratoryReportDataBuilder laboratoryReportDataBuilder =
         new LaboratoryReportDataBuilder()
             .setDefaultData()
             .setStatus(DiagnosticReport.DiagnosticReportStatus.fromCode(value))
@@ -221,8 +187,8 @@ public interface BundleMapper {
     }
 
     for (Observation obs : observationList) {
-      for (var interpretation : obs.getInterpretation()) {
-        for (var code : interpretation.getCoding()) {
+      for (CodeableConcept interpretation : obs.getInterpretation()) {
+        for (Coding code : interpretation.getCoding()) {
           if (("POS").equals(code.getCode())) {
             laboratoryReportDataBuilder.setConclusionCodeStatusToDetected();
             return laboratoryReportDataBuilder.build();
@@ -239,22 +205,15 @@ public interface BundleMapper {
       PractitionerRole practitionerRole,
       DiagnosticReport diagnosticReport,
       PathogenDTO pathogenDTO,
-      boolean useNewNotificationPreparationCode,
       NotificationLaboratoryCategory notificationCategory) {
 
-    Composition.CompositionStatus compositionStatus;
-    if (useNewNotificationPreparationCode) {
-      compositionStatus =
-          Composition.CompositionStatus.fromCode(notificationCategory.getReportStatus().getValue());
-    } else {
-      compositionStatus =
-          Composition.CompositionStatus.fromCode(
-              pathogenDTO.getDiagnostic().getReportStatus().getValue());
-    }
-    String notificationLaboratorySectionCompomentyCode = "11502-2";
-    String notificationLaboratorySectionCompomentyDisplay = "Laboratory report";
+    final Composition.CompositionStatus compositionStatus =
+        Composition.CompositionStatus.fromCode(notificationCategory.getReportStatus().getValue());
 
-    NotificationLaboratoryDataBuilder builder =
+    final String notificationLaboratorySectionCompomentyCode = "11502-2";
+    final String notificationLaboratorySectionCompomentyDisplay = "Laboratory report";
+
+    final NotificationLaboratoryDataBuilder builder =
         new NotificationLaboratoryDataBuilder()
             .setDefault()
             .setCompositionStatus(compositionStatus)
@@ -265,12 +224,8 @@ public interface BundleMapper {
             .setNotifierRole(practitionerRole)
             .setLaboratoryReport(diagnosticReport);
 
-    String initialNotificationId;
-    if (useNewNotificationPreparationCode) {
-      initialNotificationId = notificationCategory.getInitialNotificationId();
-    } else {
-      initialNotificationId = pathogenDTO.getDiagnostic().getInitialNotificationId();
-    }
+    final String initialNotificationId = notificationCategory.getInitialNotificationId();
+
     if (initialNotificationId != null) {
       builder.setRelatesToNotificationId(initialNotificationId);
     }
@@ -278,67 +233,19 @@ public interface BundleMapper {
     return builder.build();
   }
 
-  default Specimen createSpecimen(
-      PathogenDTO pathogenDTO, Patient patient, PractitionerRole submittingRole) {
-
-    final String code = pathogenDTO.getCodeDisplay().getCode();
-    SpecimenDataBuilder specimenDataBuilder =
-        new SpecimenDataBuilder()
-            .setDefaultData()
-            .setProfileUrlHelper(code)
-            .setReceivedTime(createDate(pathogenDTO.getDiagnostic().getReceivedDate()))
-            .setTypeCode(pathogenDTO.getDiagnostic().getMaterial().getCode())
-            .setTypeDisplay(pathogenDTO.getDiagnostic().getMaterial().getDisplay())
-            .setNotifiedPerson(patient)
-            .setSubmittingRole(submittingRole);
-
-    if (pathogenDTO.getDiagnostic().getExtractionDate() != null) {
-      specimenDataBuilder.setCollectedDate(
-          createDate(pathogenDTO.getDiagnostic().getExtractionDate()));
-    }
-    return specimenDataBuilder.build();
-  }
-
-  default List<Observation> createObservation(
-      PathogenDTO pathogenDTO,
-      Patient patient,
-      Specimen specimen,
-      boolean useNewNotificationPreparationCode,
-      boolean multipleSpecimen,
-      NotificationLaboratoryCategory notificationCategory) {
-    var firstMethodPathogenDTO = pathogenDTO.getDiagnostic().getMethodPathogenList();
-
-    return createObservation(
-        pathogenDTO,
-        firstMethodPathogenDTO,
-        patient,
-        specimen,
-        useNewNotificationPreparationCode,
-        multipleSpecimen,
-        notificationCategory);
-  }
-
   default List<Observation> createObservation(
       PathogenDTO pathogenDTO,
       List<MethodPathogenDTO> methodPathogenDTOList,
       Patient patient,
       Specimen specimen,
-      boolean useNewNotificationPreparationCode,
-      boolean multipleSpecimen,
       NotificationLaboratoryCategory notificationCategory) {
-    List<Observation> collect = new ArrayList<>();
-    String pathogenCode;
-    String pathogenDisplay;
-    if (useNewNotificationPreparationCode) {
-      pathogenCode = notificationCategory.getPathogen().getCode();
-      pathogenDisplay = notificationCategory.getPathogen().getDisplay();
-    } else {
-      pathogenCode = pathogenDTO.getDiagnostic().getPathogen().getCode();
-      pathogenDisplay = pathogenDTO.getDiagnostic().getPathogen().getDisplay();
-    }
+    final List<Observation> collect = new ArrayList<>();
+    final String pathogenCode = notificationCategory.getPathogen().getCode();
+    final String pathogenDisplay = notificationCategory.getPathogen().getDisplay();
+
     // Observation 1
-    String pathogenShortCode = pathogenDTO.getCodeDisplay().getCode();
-    MethodPathogenDTO firstMethodPathogenDTO = methodPathogenDTOList.getFirst();
+    final String pathogenShortCode = pathogenDTO.getCodeDisplay().getCode();
+    final MethodPathogenDTO firstMethodPathogenDTO = methodPathogenDTOList.getFirst();
     collect.add(
         createSingleObservation(
             firstMethodPathogenDTO,
@@ -362,7 +269,7 @@ public interface BundleMapper {
 
     // Observations for all other diagnostik input
     for (int i = 1; i < methodPathogenDTOList.size(); i++) {
-      var pdto = methodPathogenDTOList.get(i);
+      final MethodPathogenDTO pdto = methodPathogenDTOList.get(i);
       String code;
       String display;
       if (pdto.getAnalyt() != null) {
@@ -374,23 +281,6 @@ public interface BundleMapper {
       }
       collect.add(
           createSingleObservation(pdto, code, display, patient, specimen, pathogenShortCode));
-    }
-
-    // TODO remove this hole block when removing feature.flag.multiple_specimen_enabled
-    if (!multipleSpecimen) {
-      // Observations for resistance genes
-      createObservationsForResistanceGenes(
-          pathogenDTO.getDiagnostic().getResistanceGeneList(),
-          patient,
-          specimen,
-          collect,
-          pathogenShortCode);
-      createObservationsForResistances(
-          pathogenDTO.getDiagnostic().getResistanceList(),
-          patient,
-          specimen,
-          collect,
-          pathogenShortCode);
     }
 
     return collect;
@@ -405,15 +295,16 @@ public interface BundleMapper {
     if (resistanceGenes == null || resistanceGenes.isEmpty()) {
       return;
     }
-    for (var resistanceGene : resistanceGenes) {
-      String code = resistanceGene.getResistanceGene().getCode();
-      String display = resistanceGene.getResistanceGene().getDisplay();
+    for (ResistanceGeneDTO resistanceGene : resistanceGenes) {
+      final String code = resistanceGene.getResistanceGene().getCode();
+      final String display = resistanceGene.getResistanceGene().getDisplay();
 
       String interpretation = "";
       String valueCode = "";
       String valueDisplay = "";
 
-      var interpretationEnum = resistanceGene.getResistanceGeneResult();
+      final ResistanceGeneDTO.ResistanceGeneResultEnum interpretationEnum =
+          resistanceGene.getResistanceGeneResult();
       switch (interpretationEnum) {
         case DETECTED -> {
           interpretation = "R";
@@ -457,14 +348,15 @@ public interface BundleMapper {
     if (resistances == null || resistances.isEmpty()) {
       return;
     }
-    for (var resistance : resistances) {
-      String code = resistance.getResistance().getCode();
-      String display = resistance.getResistance().getDisplay();
+    for (ResistanceDTO resistance : resistances) {
+      final String code = resistance.getResistance().getCode();
+      final String display = resistance.getResistance().getDisplay();
       String interpretation = "";
       String valueCode = "";
       String valueDisplay = "";
 
-      var interpretationEnum = resistance.getResistanceResult();
+      final ResistanceDTO.ResistanceResultEnum interpretationEnum =
+          resistance.getResistanceResult();
       switch (interpretationEnum) {
         case RESISTANT -> {
           interpretation = "R";
@@ -555,18 +447,6 @@ public interface BundleMapper {
     notifiedPerson.getContacts().stream().map(this::createContactPoint).forEach(result::addTelecom);
 
     return result.build();
-  }
-
-  default Patient createPatient(NotifiedPerson notifiedPerson) {
-    // Some of the addresses might be null, so we can't use List.of()
-    final List<Address> automaticAddresses =
-        Stream.of(
-                createAddress(notifiedPerson.getCurrentAddress()),
-                createAddress(notifiedPerson.getPrimaryAddress()),
-                createAddress(notifiedPerson.getOrdinaryAddress()))
-            .filter(Objects::nonNull)
-            .toList();
-    return createPatient(notifiedPerson, automaticAddresses);
   }
 
   default ContactPoint createContactPoint(ContactPointInfo contactPointInfo) {

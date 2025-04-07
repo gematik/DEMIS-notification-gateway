@@ -28,9 +28,9 @@ import static org.mockito.Mockito.when;
 
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
-import de.gematik.demis.notificationgateway.common.request.RequestService;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import jakarta.validation.Validator;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,7 +44,7 @@ class DiseaseRestControllerTest {
 
   @Mock private DiseaseNotificationService notificationService;
   @Mock private Validator validator;
-  @Mock private RequestService requestService;
+  @Mock private HttpHeaders headers;
   @InjectMocks private DiseaseRestController controller;
 
   @Test
@@ -53,8 +53,9 @@ class DiseaseRestControllerTest {
         FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");
     when(this.notificationService.sendNotification(eq(diseaseNotification), any()))
         .thenReturn(new OkResponse());
+    when(headers.get("Authorization")).thenReturn(List.of("Bearer " + "token"));
 
-    this.controller.addDiseaseNotification(diseaseNotification, HttpHeaders.EMPTY);
+    this.controller.addDiseaseNotification(diseaseNotification, headers);
     Mockito.verify(this.notificationService).sendNotification(eq(diseaseNotification), any());
   }
 }

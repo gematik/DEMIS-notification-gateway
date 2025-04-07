@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.common.proxies;
 
 /*-
@@ -40,8 +22,6 @@ package de.gematik.demis.notificationgateway.common.proxies;
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.enums.SupportedRealm.HOSPITAL;
-import static de.gematik.demis.notificationgateway.common.enums.SupportedRealm.LAB;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,8 +29,8 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import de.gematik.demis.notificationgateway.BaseTestUtils;
 import de.gematik.demis.notificationgateway.common.properties.NESProperties;
 import de.gematik.demis.notificationgateway.common.properties.RPSProperties;
-import de.gematik.demis.notificationgateway.common.request.Metadata;
 import de.gematik.demis.notificationgateway.common.utils.Reachability;
+import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import jakarta.security.auth.message.AuthException;
 import java.util.List;
@@ -66,13 +46,13 @@ import org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 
-@SpringBootTest(properties = {"feature.flag.specimen.preparation.enabled=false"})
+@SpringBootTest()
 @ActiveProfiles("test")
 @EnabledIf(expression = "${testing.enable-e2e}", loadContext = true)
 @Slf4j
@@ -81,7 +61,7 @@ class BundlePublisherE2ETest implements BaseTestUtils {
   @Autowired private BundlePublisher bundlePublisher;
   @Autowired private NESProperties nesProperties;
   @Autowired private RPSProperties rpsProperties;
-  @MockBean private Metadata metadata;
+  @Mock private Token token;
 
   @BeforeEach
   void assumeReachableNes() {
@@ -99,12 +79,11 @@ class BundlePublisherE2ETest implements BaseTestUtils {
     final Parameters parameters =
         bundlePublisher.postRequest(
             (Bundle) input.getParameter().get(0).getResource(),
-            LAB,
             nesProperties.laboratoryUrl(),
             NESProperties.OPERATION_NAME,
             "rki.demis.r4.core",
             "1.24.0",
-            metadata);
+            token);
 
     assertNotNull(parameters);
 
@@ -133,12 +112,11 @@ class BundlePublisherE2ETest implements BaseTestUtils {
         () ->
             bundlePublisher.postRequest(
                 (Bundle) input.getParameter().get(0).getResource(),
-                LAB,
                 nesProperties.laboratoryUrl(),
                 NESProperties.OPERATION_NAME,
                 "rki.demis.r4.core",
                 "1.24.0",
-                metadata);
+                token);
 
     assertThatThrownBy(throwingCallable)
         .isInstanceOf(UnprocessableEntityException.class)
@@ -153,12 +131,11 @@ class BundlePublisherE2ETest implements BaseTestUtils {
     final Parameters parameters =
         bundlePublisher.postRequest(
             (Bundle) input.getParameter().get(0).getResource(),
-            LAB,
             nesProperties.hospitalizationUrl(),
             NESProperties.OPERATION_NAME,
             "rki.demis.r4.core",
             "1.24.0",
-            metadata);
+            token);
 
     assertNotNull(parameters);
 
@@ -185,12 +162,11 @@ class BundlePublisherE2ETest implements BaseTestUtils {
     final Parameters parameters =
         bundlePublisher.postRequest(
             (Bundle) input.getParameter().get(0).getResource(),
-            HOSPITAL,
             rpsProperties.bedOccupancyUrl(),
             RPSProperties.OPERATION_NAME,
             "rki.demis.r4.core",
             "1.24.0",
-            metadata);
+            token);
 
     assertNotNull(parameters);
 

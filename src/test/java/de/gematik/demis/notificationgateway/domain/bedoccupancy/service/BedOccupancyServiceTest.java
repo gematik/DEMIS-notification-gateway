@@ -1,21 +1,3 @@
-/*
- * Copyright [2023], gematik GmbH
- *
- * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
- * European Commission – subsequent versions of the EUPL (the "Licence").
- * You may not use this work except in compliance with the Licence.
- *
- * You find a copy of the Licence in the "Licence" file or at
- * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
- * In case of changes by gematik find details in the "Readme" file.
- *
- * See the Licence for the specific language governing permissions and limitations under the Licence.
- */
-
 package de.gematik.demis.notificationgateway.domain.bedoccupancy.service;
 
 /*-
@@ -41,7 +23,6 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy.service;
  */
 
 import static de.gematik.demis.notificationgateway.common.constants.MessageConstants.CONTENT_NOT_ACCEPTED;
-import static de.gematik.demis.notificationgateway.common.enums.SupportedRealm.HOSPITAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -54,8 +35,8 @@ import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.exceptions.HoneypotException;
 import de.gematik.demis.notificationgateway.common.properties.RPSProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
-import de.gematik.demis.notificationgateway.common.request.Metadata;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
+import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.domain.HeaderProperties;
 import de.gematik.demis.notificationgateway.domain.bedoccupancy.fhir.ReportBundleCreationService;
 import jakarta.security.auth.message.AuthException;
@@ -77,7 +58,7 @@ class BedOccupancyServiceTest {
   @Mock private OkResponseService okResponseServiceMock;
   @Mock private RPSProperties rpsPropertiesMock;
   @Mock private HeaderProperties headerPropertiesMock;
-  @Mock private Metadata metadata;
+  @Mock private Token token;
 
   @InjectMocks private BedOccupancyService bedOccupancyService;
 
@@ -106,7 +87,6 @@ class BedOccupancyServiceTest {
     when(headerPropertiesMock.getBedOccupancyVersion()).thenReturn("profileVersion");
     when(bundlePublisherMock.postRequest(
             eq(t),
-            eq(HOSPITAL),
             eq(url),
             eq(RPSProperties.OPERATION_NAME),
             eq("profileId"),
@@ -116,7 +96,7 @@ class BedOccupancyServiceTest {
     when(okResponseServiceMock.buildOkResponse(result)).thenReturn(expectedResponse);
 
     // use handleBedOccupancy method
-    OkResponse okResponse = bedOccupancyService.handleBedOccupancy(bedOccupancy, metadata);
+    OkResponse okResponse = bedOccupancyService.handleBedOccupancy(bedOccupancy, token);
 
     assertThat(okResponse).isEqualTo(expectedResponse);
   }
@@ -130,7 +110,7 @@ class BedOccupancyServiceTest {
 
   private void verifyHoneyPotDetection(BedOccupancy bedOccupancy) {
     final ThrowableAssert.ThrowingCallable throwingCallable =
-        () -> this.bedOccupancyService.handleBedOccupancy(bedOccupancy, metadata);
+        () -> this.bedOccupancyService.handleBedOccupancy(bedOccupancy, token);
 
     Assertions.assertThatThrownBy(throwingCallable)
         .isInstanceOf(HoneypotException.class)

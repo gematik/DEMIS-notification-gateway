@@ -40,12 +40,21 @@
       "lastname": "Masen",
       "birthDate": "1974-07-19T00:00:00.000Z"
     },
-    "primaryAddress": {
+    "currentAddress": {
       "country": "20422",
       "zip": "21481",
       "street": "Herbertstraße",
       "houseNumber": "14",
-      "city": "Oederingen"
+      "city": "Oederingen",
+      "addressType": "current"
+    },
+    "residenceAddress": {
+      "country": "20422",
+      "zip": "21481",
+      "street": "Andere Straße",
+      "houseNumber": "3",
+      "city": "Buchhorst",
+      "addressType": "ordinary"
     },
     "contacts": [
     ]

@@ -11,7 +11,7 @@
             "houseNumber": "1",
             "zip": "21481",
             "city": "Buchhorst",
-            "country": "20422",
+            "country": "DE",
             "additionalInfo": null,
             "addressType": "current"
         },
@@ -44,7 +44,7 @@
             "houseNumber": "1",
             "zip": "21481",
             "city": "Buchhorst",
-            "country": "20422",
+            "country": "DE",
             "addressType": "current"
         },
         "contacts": [
@@ -57,21 +57,13 @@
                 "value": "bertha@betroffen.de"
             }
         ],
-        "primaryAddress": {
-            "street": "Berthastraße",
-            "houseNumber": "123",
-            "zip": "12345",
-            "city": "Betroffenenstadt",
-            "country": "20422",
-            "addressType": "primary"
-        },
-        "ordinaryAddress": {
+        "residenceAddress": {
             "street": "Andere Straße",
             "houseNumber": "3",
             "zip": "11223",
             "city": "Stadt",
-            "country": "20422",
-            "addressType": "ordinary"
+            "country": "DE",
+            "addressType": "primary"
         }
     },
     "diagnostic": {

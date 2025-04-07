@@ -44,9 +44,15 @@
       "lastname": "Analytika",
       "birthDate": ""
     },
-    "primaryAddress": {
+    "currentAddress": {
       "country": "DE",
-      "zip": "37648"
+      "zip": "37648",
+      "addressType":"current"
+    },
+    "residenceAddress": {
+      "country": "DE",
+      "zip": "37648",
+      "addressType":"ordinary"
     },
     "contacts": []
   },

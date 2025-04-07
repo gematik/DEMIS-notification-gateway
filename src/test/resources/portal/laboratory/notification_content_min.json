@@ -10,7 +10,7 @@
             "houseNumber": "1",
             "zip": "21481",
             "city": "Buchhorst",
-            "country": "20422",
+            "country": "DE",
             "additionalInfo": null
         },
         "contact": {
@@ -38,8 +38,16 @@
             "houseNumber": null,
             "zip": "21481",
             "city": "Buchhorst",
-            "country": "20422",
+            "country": "DE",
             "addressType": "current"
+        },
+        "residenceAddress": {
+            "street": null,
+            "houseNumber": null,
+            "zip": "21481",
+            "city": "residence",
+            "country": "DE",
+            "addressType": "primary"
         },
         "contacts": []
     },

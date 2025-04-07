@@ -33,7 +33,7 @@ import org.hl7.fhir.r4.model.Resource;
  * @param resource resource
  * @param referenceItem questionnaire response item with reference answer value
  */
-record FhirResource(
+public record FhirResource(
     Resource resource, QuestionnaireResponse.QuestionnaireResponseItemComponent referenceItem) {
 
   Organization organization() {

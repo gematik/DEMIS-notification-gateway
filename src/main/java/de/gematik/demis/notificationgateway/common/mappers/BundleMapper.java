@@ -19,6 +19,10 @@ package de.gematik.demis.notificationgateway.common.mappers;
  * In case of changes by gematik find details in the "Readme" file.
  *
  * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  * #L%
  */
 
@@ -368,7 +372,7 @@ public interface BundleMapper {
         }
         case INTERMEDIATE -> {
           interpretation = "I";
-          valueCode = "11896004";
+          valueCode = "264841006";
         }
         case SUSCEPTIBLE -> {
           interpretation = "S";

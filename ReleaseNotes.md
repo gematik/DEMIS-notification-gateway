@@ -2,8 +2,10 @@
 
 # Release notes notification-gateway
 
-## Release 6.3.2 (2025-02-25)
+## Release 6.3.6
+- Updated ospo-resources for adding additional notes and disclaimer
 
+## Release 6.3.2
 - second official GitHub-Release
 - updated dependencies
 - remove Komfort-Client
@@ -17,6 +19,5 @@
 
 
 ## Release 3.0.0 (2023-12-15)
-
 - first official GitHub-Release
 - Migration to SpringBoot 3.2.1 as standalone JAR

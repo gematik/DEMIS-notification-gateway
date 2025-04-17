@@ -73,11 +73,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 class ErrorResponseControllerTest {
   private final ErrorResponseController responseController =
       new ErrorResponseController(new ObjectMapper());
-  private static final String REQUEST_URI = RandomStringUtils.randomAlphabetic(5);
+  private static RandomStringUtils random = RandomStringUtils.secure();
+  private static final String REQUEST_URI = random.nextAlphabetic(5);
 
   @Test
   void givenBadRequestExceptionWhenHandleBadRequestExceptionThen400() {
-    BadRequestException exception = new BadRequestException(RandomStringUtils.randomAlphabetic(5));
+    BadRequestException exception = new BadRequestException(random.nextAlphabetic(5));
     MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
 
     final ResponseEntity<ErrorResponse> responseEntity =
@@ -100,9 +101,7 @@ class ErrorResponseControllerTest {
   void givenMethodArgumentNotValidExceptionWhenHandleBadRequestExceptionThen400() {
     final FieldError fieldError =
         new FieldError(
-            RandomStringUtils.randomAlphabetic(5),
-            RandomStringUtils.randomAlphabetic(5),
-            RandomStringUtils.randomAlphabetic(10));
+            random.nextAlphabetic(5), random.nextAlphabetic(5), random.nextAlphabetic(10));
     MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
     when(exception.getFieldErrors()).thenReturn(List.of(fieldError));
 
@@ -132,8 +131,8 @@ class ErrorResponseControllerTest {
   @Test
   void givenHttpMessageNotReadableExceptionWhenHandleBadRequestExceptionThen400() {
     HttpMessageNotReadableException exception = mock(HttpMessageNotReadableException.class);
-    when(exception.getMessage()).thenReturn(RandomStringUtils.randomAlphabetic(10));
-    final String message = RandomStringUtils.randomAlphabetic(10);
+    when(exception.getMessage()).thenReturn(random.nextAlphabetic(10));
+    final String message = random.nextAlphabetic(10);
     when(exception.getMostSpecificCause()).thenReturn(new Throwable(message));
     MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
 
@@ -156,7 +155,7 @@ class ErrorResponseControllerTest {
   @Test
   void givenAuthExceptionWhenHandleAuthExceptionThen401() {
     AuthException exception = mock(AuthException.class);
-    final String message = RandomStringUtils.randomAlphabetic(10);
+    final String message = random.nextAlphabetic(10);
     when(exception.getMessage()).thenReturn(message);
     MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
 
@@ -179,9 +178,9 @@ class ErrorResponseControllerTest {
   @Test
   void givenConstraintViolationExceptionWhenHandleBadRequestExceptionThen400() {
     ConstraintViolationException exception = mock(ConstraintViolationException.class);
-    when(exception.getMessage()).thenReturn(RandomStringUtils.randomAlphabetic(10));
+    when(exception.getMessage()).thenReturn(random.nextAlphabetic(10));
     ConstraintViolation<String> constraintViolation = mock(ConstraintViolation.class);
-    final String message = RandomStringUtils.randomAlphabetic(10);
+    final String message = random.nextAlphabetic(10);
     when(constraintViolation.getMessage()).thenReturn(message);
     when(exception.getConstraintViolations()).thenReturn(Set.of(constraintViolation));
     MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
@@ -206,7 +205,7 @@ class ErrorResponseControllerTest {
   void givenHttpRequestMethodNotSupportedExceptionWhenHandleMethodNotAllowedExceptionThen405() {
     HttpRequestMethodNotSupportedException exception =
         mock(HttpRequestMethodNotSupportedException.class);
-    final String message = RandomStringUtils.randomAlphabetic(10);
+    final String message = random.nextAlphabetic(10);
     when(exception.getMessage()).thenReturn(message);
     MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
 
@@ -230,7 +229,7 @@ class ErrorResponseControllerTest {
   void
       givenHttpMediaTypeNotSupportedExceptionWhenHandleHttpMediaTypeNotSupportedExceptionThen415() {
     HttpMediaTypeNotSupportedException exception = mock(HttpMediaTypeNotSupportedException.class);
-    final String message = RandomStringUtils.randomAlphabetic(10);
+    final String message = random.nextAlphabetic(10);
     when(exception.getMessage()).thenReturn(message);
     MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
 
@@ -280,7 +279,7 @@ class ErrorResponseControllerTest {
     final OperationOutcome.OperationOutcomeIssueComponent issueComponent =
         new OperationOutcome.OperationOutcomeIssueComponent()
             .setSeverity(OperationOutcome.IssueSeverity.ERROR)
-            .setDiagnostics(RandomStringUtils.randomAlphabetic(10))
+            .setDiagnostics(random.nextAlphabetic(10))
             .setCode(OperationOutcome.IssueType.EXCEPTION);
     OperationOutcome outcome = new OperationOutcome().addIssue(issueComponent);
     BaseServerResponseException exception = mock(BaseServerResponseException.class);
@@ -346,7 +345,7 @@ class ErrorResponseControllerTest {
 
   private static Stream<Arguments> provideInternalServerException() {
     return Stream.of(
-        Arguments.of(new Exception(RandomStringUtils.randomAlphabetic(10))),
+        Arguments.of(new Exception(random.nextAlphabetic(10))),
         Arguments.of(new TokenException(NG_100_TOKEN.reason())));
   }
 

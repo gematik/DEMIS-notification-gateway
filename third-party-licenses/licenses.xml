@@ -262,7 +262,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>33.4.5-jre</version>
+      <version>33.4.6-jre</version>
       <licenses>
         <license>
           <name>Apache License, Version 2.0</name>

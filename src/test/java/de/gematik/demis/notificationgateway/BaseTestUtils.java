@@ -121,14 +121,15 @@ public interface BaseTestUtils {
   }
 
   default LocationDTO createLocation() {
+    RandomStringUtils random = RandomStringUtils.secure();
     return new LocationDTO()
         .id(ThreadLocalRandom.current().nextInt())
-        .ik(RandomStringUtils.randomNumeric(9))
-        .label(RandomStringUtils.randomAlphabetic(5))
-        .postalCode(RandomStringUtils.randomNumeric(5))
-        .city(RandomStringUtils.randomAlphabetic(5))
-        .line(RandomStringUtils.randomAlphabetic(5))
-        .houseNumber(RandomStringUtils.randomAlphabetic(3));
+        .ik(random.nextNumeric(9))
+        .label(random.nextAlphabetic(5))
+        .postalCode(random.nextNumeric(5))
+        .city(random.nextAlphabetic(5))
+        .line(random.nextAlphabetic(5))
+        .houseNumber(random.nextAlphabetic(3));
   }
 
   default String pdfToText(byte[] pdfContent) throws IOException {

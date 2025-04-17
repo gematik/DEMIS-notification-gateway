@@ -49,7 +49,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/555-42-23-4"
+          "reference": "Patient/555-42-23-3"
         },
         "date": "2024-03-14T14:45:00+01:00",
         "author": [
@@ -114,10 +114,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-4",
+      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-3",
       "resource": {
         "resourceType": "Patient",
-        "id": "555-42-23-4",
+        "id": "555-42-23-3",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
@@ -140,7 +140,7 @@
               {
                 "url": "https://demis.rki.de/fhir/StructureDefinition/FacilityAddressNotifiedPerson",
                 "valueReference": {
-                  "reference": "Organization/555-42-23-3"
+                  "reference": "Organization/555-42-23-4"
                 }
               },
               {
@@ -215,7 +215,7 @@
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-4"
+          "reference": "Patient/555-42-23-3"
         },
         "onsetDateTime": "2024-01-31",
         "recordedDate": "2024-03-04",
@@ -348,6 +348,43 @@
                 "Wolfgang"
               ]
             }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
+          ]
+        },
+        "name": "The other facility",
+        "address": [
+          {
+            "line": [
+              "Otherfacilitystraße 1"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Otherfacilitystraße"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "1"
+                  }
+                ]
+              }
+            ],
+            "city": "Berlin",
+            "postalCode": "21481",
+            "country": "DE"
           }
         ]
       }
@@ -562,7 +599,7 @@
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-4"
+          "reference": "Patient/555-42-23-3"
         },
         "period": {
           "start": "2024-03-03"
@@ -597,7 +634,7 @@
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-4"
+          "reference": "Patient/555-42-23-3"
         },
         "period": {
           "start": "2024-01-30",
@@ -621,7 +658,7 @@
         "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsCommon",
         "status": "completed",
         "subject": {
-          "reference": "Patient/555-42-23-4"
+          "reference": "Patient/555-42-23-3"
         },
         "item": [
           {
@@ -935,7 +972,7 @@
           ]
         },
         "patient": {
-          "reference": "Patient/555-42-23-4"
+          "reference": "Patient/555-42-23-3"
         },
         "occurrenceDateTime": "2023-12-10",
         "note": [
@@ -958,7 +995,7 @@
         "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsMSVD",
         "status": "completed",
         "subject": {
-          "reference": "Patient/555-42-23-4"
+          "reference": "Patient/555-42-23-3"
         },
         "item": [
           {
@@ -1050,43 +1087,6 @@
                 ]
               }
             ]
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-3",
-      "resource": {
-        "resourceType": "Organization",
-        "id": "555-42-23-3",
-        "meta": {
-          "profile": [
-            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
-          ]
-        },
-        "name": "The other facility",
-        "address": [
-          {
-            "line": [
-              "Otherfacilitystraße 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Otherfacilitystraße"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
-            ],
-            "city": "Berlin",
-            "postalCode": "21481",
-            "country": "DE"
           }
         ]
       }

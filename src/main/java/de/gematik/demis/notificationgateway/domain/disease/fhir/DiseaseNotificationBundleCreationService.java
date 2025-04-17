@@ -26,25 +26,27 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.dto.AddressType.OTHER_FACILITY;
-
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationBundleDiseaseDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationDiseaseDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.utils.DemisConstants;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
-import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponse;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.QuestionnaireResponses;
-import java.util.Optional;
+import jakarta.annotation.Nullable;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Composition;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
+import org.hl7.fhir.r4.model.Reference;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -65,13 +67,11 @@ public class DiseaseNotificationBundleCreationService {
    */
   public Bundle createBundle(DiseaseNotification diseaseNotification) throws BadRequestException {
     PractitionerRole notifier = createNotifier(diseaseNotification);
-    Optional<Organization> otherFacility = createOtherFacility(diseaseNotification);
     Patient patient =
         this.notifiedPersonCreationService.createPatient(
-            diseaseNotification.getNotifiedPerson(), notifier, otherFacility);
+            diseaseNotification.getNotifiedPerson(), notifier);
 
-    DiseaseNotificationContext context =
-        createContext(diseaseNotification, notifier, patient, otherFacility);
+    DiseaseNotificationContext context = createContext(diseaseNotification, notifier, patient);
     createDisease(context);
     createCommonQuestionnaireResponse(diseaseNotification, context);
     createDiseaseQuestionnaireResponse(diseaseNotification, context);
@@ -86,28 +86,36 @@ public class DiseaseNotificationBundleCreationService {
     return practitionerRoleCreationService.createNotifierRole(notifierFacility);
   }
 
-  private Optional<Organization> createOtherFacility(DiseaseNotification diseaseNotification) {
-    final NotifiedPersonAddressInfo notifiedPersonAddressInfo =
-        diseaseNotification.getNotifiedPerson().getCurrentAddress();
-    if (notifiedPersonAddressInfo != null
-        && notifiedPersonAddressInfo.getAddressType() == OTHER_FACILITY) {
-      return Optional.of(
-          organizationCreationService.createOtherFacility(notifiedPersonAddressInfo));
-    }
-    return Optional.empty();
-  }
-
   private DiseaseNotificationContext createContext(
       DiseaseNotification diseaseNotification,
       PractitionerRole notifierRole,
-      Patient notifiedPerson,
-      Optional<Organization> otherFacility) {
+      Patient notifiedPerson) {
     NotificationBundleDiseaseDataBuilder bundle = new NotificationBundleDiseaseDataBuilder();
     bundle.setDefaults();
     bundle.setNotifierRole(notifierRole);
-    bundle.setNotifiedPerson(notifiedPerson);
-    otherFacility.ifPresent(bundle::addAdditionalEntry);
+    setNotifiedPerson(notifiedPerson, bundle);
     return new DiseaseNotificationContext(diseaseNotification, bundle, notifiedPerson);
+  }
+
+  private void setNotifiedPerson(
+      Patient notifiedPerson, NotificationBundleDiseaseDataBuilder bundle) {
+    bundle.setNotifiedPerson(notifiedPerson);
+    if (notifiedPerson.hasAddress()) {
+      notifiedPerson.getAddress().stream()
+          .map(this::getNotifiedPersonFacilityExtension)
+          .filter(Objects::nonNull)
+          .map(Extension::getValue)
+          .map(Reference.class::cast)
+          .map(Reference::getResource)
+          .map(Organization.class::cast)
+          .forEach(bundle::addOrganization);
+    }
+  }
+
+  @Nullable
+  private Extension getNotifiedPersonFacilityExtension(Address address) {
+    return address.getExtensionByUrl(
+        DemisConstants.STRUCTURE_DEFINITION_FACILITY_ADDRESS_NOTIFIED_PERSON);
   }
 
   private Organization createNotifierFacility(NotifierFacility notifierFacilityContent)

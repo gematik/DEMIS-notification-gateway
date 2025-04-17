@@ -1,6 +1,6 @@
 {
   "resourceType": "Bundle",
-  "id": "555-42-23-4",
+  "id": "555-42-23-5",
   "meta": {
     "profile": [
       "https://demis.rki.de/fhir/StructureDefinition/NotificationBundleDisease"
@@ -8,16 +8,16 @@
   },
   "identifier": {
     "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
-    "value": "555-42-23-5"
+    "value": "555-42-23-6"
   },
   "type": "document",
   "timestamp": "2024-03-14T14:45:00.000+01:00",
   "entry": [
     {
-      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-11",
+      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-13",
       "resource": {
         "resourceType": "Composition",
-        "id": "555-42-23-11",
+        "id": "555-42-23-13",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotificationDiseaseCVDD"
@@ -25,7 +25,7 @@
         },
         "identifier": {
           "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
-          "value": "555-42-23-12"
+          "value": "555-42-23-14"
         },
         "status": "final",
         "type": {
@@ -72,7 +72,7 @@
             },
             "entry": [
               {
-                "reference": "Condition/555-42-23-6"
+                "reference": "Condition/555-42-23-7"
               }
             ]
           },
@@ -89,7 +89,7 @@
             },
             "entry": [
               {
-                "reference": "QuestionnaireResponse/555-42-23-9"
+                "reference": "QuestionnaireResponse/555-42-23-11"
               }
             ]
           },
@@ -106,7 +106,7 @@
             },
             "entry": [
               {
-                "reference": "QuestionnaireResponse/555-42-23-10"
+                "reference": "QuestionnaireResponse/555-42-23-12"
               }
             ]
           }
@@ -139,7 +139,7 @@
               {
                 "url": "https://demis.rki.de/fhir/StructureDefinition/FacilityAddressNotifiedPerson",
                 "valueReference": {
-                  "reference": "Organization/555-42-23-1"
+                  "reference": "Organization/555-42-23-4"
                 }
               },
               {
@@ -170,10 +170,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Condition/555-42-23-6",
+      "fullUrl": "https://demis.rki.de/fhir/Condition/555-42-23-7",
       "resource": {
         "resourceType": "Condition",
-        "id": "555-42-23-6",
+        "id": "555-42-23-7",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/DiseaseCVDD"
@@ -293,10 +293,10 @@
         "contact": [
           {
             "name": {
-              "text": "Ansprech Partner",
-              "family": "Partner",
+              "text": "Melder-Kontakt-Vorname Melder-Kontakt-Nachname",
+              "family": "Melder-Kontakt-Nachname",
               "given": [
-                "Ansprech"
+                "Melder-Kontakt-Vorname"
               ]
             }
           }
@@ -304,10 +304,121 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-7",
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
+          ]
+        },
+        "name": "Kreiskrankenhaus Riedlingen",
+        "telecom": [
+          {
+            "system": "email",
+            "value": "t.person@gmail.com"
+          },
+          {
+            "system": "email",
+            "value": "test.person@kh-rie.de"
+          },
+          {
+            "system": "phone",
+            "value": "01234567",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Im Himmelreich 1"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Im Himmelreich"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "1"
+                  }
+                ]
+              }
+            ],
+            "city": "Frühling",
+            "postalCode": "21481",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Melder-Kontakt-Vorname Melder-Kontakt-Nachname",
+              "family": "Melder-Kontakt-Nachname",
+              "given": [
+                "Melder-Kontakt-Vorname"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-9",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-9",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/StructureDefinition/Organization"
+          ]
+        },
+        "name": "Kreiskrankenhaus Riedlingen",
+        "address": [
+          {
+            "line": [
+              "Im Himmelreich 1"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Im Himmelreich"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "1"
+                  }
+                ]
+              }
+            ],
+            "city": "Frühling",
+            "postalCode": "21481",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Hospitalization-Kontakt-Vorname Hospitalization-Kontakt-Nachname",
+              "family": "Hospitalization-Kontakt-Nachname",
+              "given": [
+                "Hospitalization-Kontakt-Vorname"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-8",
       "resource": {
         "resourceType": "Encounter",
-        "id": "555-42-23-7",
+        "id": "555-42-23-8",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/Hospitalization"
@@ -345,15 +456,15 @@
           }
         ],
         "serviceProvider": {
-          "reference": "Organization/555-42-23-1"
+          "reference": "Organization/555-42-23-9"
         }
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-9",
+      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-11",
       "resource": {
         "resourceType": "QuestionnaireResponse",
-        "id": "555-42-23-9",
+        "id": "555-42-23-11",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/DiseaseInformationCommon"
@@ -419,7 +530,7 @@
                         "answer": [
                           {
                             "valueReference": {
-                              "reference": "Encounter/555-42-23-7"
+                              "reference": "Encounter/555-42-23-8"
                             }
                           }
                         ]
@@ -470,10 +581,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-10",
+      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-12",
       "resource": {
         "resourceType": "QuestionnaireResponse",
-        "id": "555-42-23-10",
+        "id": "555-42-23-12",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/DiseaseInformationCVDD"

@@ -29,6 +29,7 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy;
 import static de.gematik.demis.notificationgateway.common.constants.MessageConstants.VALIDATION_ERROR_OCCURRED;
 import static de.gematik.demis.notificationgateway.common.constants.WebConstants.BED_OCCUPANCY_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -56,11 +57,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -72,7 +73,7 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
 
   private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
-  @MockBean private BundlePublisher bundlePublisher;
+  @MockitoBean private BundlePublisher bundlePublisher;
 
   @BeforeEach
   void init(WebApplicationContext context) {
@@ -139,7 +140,7 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
         .hasFieldOrPropertyWithValue("message", VALIDATION_ERROR_OCCURRED)
         .hasFieldOrPropertyWithValue("path", BED_OCCUPANCY_PATH)
         .extracting(ErrorResponse::getValidationErrors)
-        .asList()
+        .asInstanceOf(LIST)
         .hasSize(1)
         .first()
         .hasFieldOrPropertyWithValue("field", field)
@@ -179,7 +180,7 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
         .hasFieldOrPropertyWithValue("message", MessageConstants.CONTENT_NOT_ACCEPTED)
         .hasFieldOrPropertyWithValue("path", BED_OCCUPANCY_PATH)
         .extracting("validationErrors")
-        .asList()
+        .asInstanceOf(LIST)
         .isNullOrEmpty();
 
     Mockito.verify(bundlePublisher, Mockito.never())

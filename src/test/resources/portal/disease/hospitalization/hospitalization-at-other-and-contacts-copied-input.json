@@ -12,8 +12,8 @@
       "houseNumber": "1"
     },
     "contact": {
-      "firstname": "Ansprech",
-      "lastname": "Partner"
+      "firstname": "Melder-Kontakt-Vorname",
+      "lastname": "Melder-Kontakt-Nachname"
     },
     "contacts": [
       {
@@ -46,12 +46,12 @@
     },
     "currentAddress": {
       "country": "DE",
-      "zip": "21481",
-      "street": "Im Himmelreich",
-      "city": "Frühling",
-      "houseNumber": "1",
-      "addressType": "submittingFacility",
-      "additionalInfo": "Kreiskrankenhaus Riedlingen"
+      "street": "Straße zur betroffenen Personeneinrichtung",
+      "houseNumber": "42",
+      "zip": "54321",
+      "city": "Personeneinrichtungsstadt",
+      "addressType": "otherFacility",
+      "additionalInfo": "KH Betroffene Personeneinrichtung"
     },
     "residenceAddress": {
       "country": "DE",
@@ -201,7 +201,7 @@
                                                 "linkId": "name",
                                                 "answer": [
                                                   {
-                                                    "valueString": "Kreiskrankenhaus Riedlingen"
+                                                    "valueString": "Hospitalization-Einrichtung"
                                                   }
                                                 ]
                                               },
@@ -212,7 +212,7 @@
                                                     "linkId": "street",
                                                     "answer": [
                                                       {
-                                                        "valueString": "Im Himmelreich"
+                                                        "valueString": "Hospitalization-Straße"
                                                       }
                                                     ]
                                                   },
@@ -220,7 +220,7 @@
                                                     "linkId": "houseNumber",
                                                     "answer": [
                                                       {
-                                                        "valueString": "1"
+                                                        "valueString": "42"
                                                       }
                                                     ]
                                                   },
@@ -228,7 +228,7 @@
                                                     "linkId": "postalCode",
                                                     "answer": [
                                                       {
-                                                        "valueString": "21481"
+                                                        "valueString": "11448"
                                                       }
                                                     ]
                                                   },
@@ -268,7 +268,7 @@
                                                         "linkId": "given",
                                                         "answer": [
                                                           {
-                                                            "valueString": "Ansprech"
+                                                            "valueString": "Hospitalization-Kontakt-Vorname"
                                                           }
                                                         ]
                                                       },
@@ -276,7 +276,7 @@
                                                         "linkId": "family",
                                                         "answer": [
                                                           {
-                                                            "valueString": "Partner"
+                                                            "valueString": "Hospitalization-Kontakt-Nachname"
                                                           }
                                                         ]
                                                       }

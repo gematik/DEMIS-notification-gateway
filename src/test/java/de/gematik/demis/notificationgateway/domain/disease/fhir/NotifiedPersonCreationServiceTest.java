@@ -40,7 +40,6 @@ import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.HumanName;
@@ -57,8 +56,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class NotifiedPersonCreationServiceTest {
 
+  private final FhirObjectCreationService fhirObjectCreationService =
+      new FhirObjectCreationService();
+  private final OrganizationCreationService organizationCreationService =
+      new OrganizationCreationService(fhirObjectCreationService);
   private final NotifiedPersonCreationService notifiedPersonCreationService =
-      new NotifiedPersonCreationService(new FhirObjectCreationService());
+      new NotifiedPersonCreationService(fhirObjectCreationService, organizationCreationService);
 
   @Test
   void testCreateNotifiedPersonWithMinimumInput() throws JsonProcessingException {
@@ -68,8 +71,7 @@ class NotifiedPersonCreationServiceTest {
     final PractitionerRole submitter = new PractitionerRoleBuilder().setDefaults().build();
 
     final Patient notifiedPerson =
-        notifiedPersonCreationService.createPatient(
-            quickTest.getNotifiedPerson(), submitter, Optional.empty());
+        notifiedPersonCreationService.createPatient(quickTest.getNotifiedPerson(), submitter);
     Assertions.assertNotNull(notifiedPerson);
 
     assertTrue(notifiedPerson.hasId());
@@ -111,8 +113,7 @@ class NotifiedPersonCreationServiceTest {
 
     final PractitionerRole submitter = new PractitionerRoleBuilder().setDefaults().build();
     final Patient notifiedPerson =
-        notifiedPersonCreationService.createPatient(
-            quickTest.getNotifiedPerson(), submitter, Optional.empty());
+        notifiedPersonCreationService.createPatient(quickTest.getNotifiedPerson(), submitter);
     Assertions.assertNotNull(notifiedPerson);
 
     assertTrue(notifiedPerson.hasId());

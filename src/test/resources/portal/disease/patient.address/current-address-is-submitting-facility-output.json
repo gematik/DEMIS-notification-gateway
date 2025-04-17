@@ -1,6 +1,6 @@
 {
   "resourceType": "Bundle",
-  "id": "555-42-23-4",
+  "id": "555-42-23-5",
   "meta": {
     "profile": [
       "https://demis.rki.de/fhir/StructureDefinition/NotificationBundleDisease"
@@ -8,16 +8,16 @@
   },
   "identifier": {
     "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
-    "value": "555-42-23-5"
+    "value": "555-42-23-6"
   },
   "type": "document",
   "timestamp": "2024-03-14T14:45:00.000+01:00",
   "entry": [
     {
-      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-18",
+      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-19",
       "resource": {
         "resourceType": "Composition",
-        "id": "555-42-23-18",
+        "id": "555-42-23-19",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotificationDiseaseMSVD"
@@ -72,7 +72,7 @@
             },
             "entry": [
               {
-                "reference": "Condition/555-42-23-6"
+                "reference": "Condition/555-42-23-7"
               }
             ]
           },
@@ -89,7 +89,7 @@
             },
             "entry": [
               {
-                "reference": "QuestionnaireResponse/555-42-23-15"
+                "reference": "QuestionnaireResponse/555-42-23-16"
               }
             ]
           },
@@ -106,7 +106,7 @@
             },
             "entry": [
               {
-                "reference": "QuestionnaireResponse/555-42-23-17"
+                "reference": "QuestionnaireResponse/555-42-23-18"
               }
             ]
           }
@@ -140,7 +140,7 @@
               {
                 "url": "https://demis.rki.de/fhir/StructureDefinition/FacilityAddressNotifiedPerson",
                 "valueReference": {
-                  "reference": "Organization/555-42-23-1"
+                  "reference": "Organization/555-42-23-4"
                 }
               },
               {
@@ -189,10 +189,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Condition/555-42-23-6",
+      "fullUrl": "https://demis.rki.de/fhir/Condition/555-42-23-7",
       "resource": {
         "resourceType": "Condition",
-        "id": "555-42-23-6",
+        "id": "555-42-23-7",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/DiseaseMSVD"
@@ -353,10 +353,73 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-7",
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
       "resource": {
         "resourceType": "Organization",
-        "id": "555-42-23-7",
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
+          ]
+        },
+        "name": "Kreiskrankenhaus Riedlingen",
+        "telecom": [
+          {
+            "system": "email",
+            "value": "w.oederaner@web.de"
+          },
+          {
+            "system": "email",
+            "value": "h.leiserstrom@web.de"
+          },
+          {
+            "system": "phone",
+            "value": "01234567",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Donaustrasse 1"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Donaustrasse"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "1"
+                  }
+                ]
+              }
+            ],
+            "city": "Riedlingen",
+            "postalCode": "21481",
+            "country": "20422"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Wolfgang Oederaner",
+              "family": "Oederaner",
+              "given": [
+                "Wolfgang"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-8",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-8",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/StructureDefinition/Organization"
@@ -400,10 +463,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-9",
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-10",
       "resource": {
         "resourceType": "Organization",
-        "id": "555-42-23-9",
+        "id": "555-42-23-10",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/StructureDefinition/Organization"
@@ -447,10 +510,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-12",
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-13",
       "resource": {
         "resourceType": "Organization",
-        "id": "555-42-23-12",
+        "id": "555-42-23-13",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/StructureDefinition/Organization"
@@ -494,10 +557,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-14",
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-15",
       "resource": {
         "resourceType": "Organization",
-        "id": "555-42-23-14",
+        "id": "555-42-23-15",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/StructureDefinition/Organization"
@@ -538,10 +601,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-8",
+      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-9",
       "resource": {
         "resourceType": "Encounter",
-        "id": "555-42-23-8",
+        "id": "555-42-23-9",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/Hospitalization"
@@ -568,15 +631,15 @@
           "start": "2024-03-03"
         },
         "serviceProvider": {
-          "reference": "Organization/555-42-23-9"
+          "reference": "Organization/555-42-23-10"
         }
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-11",
+      "fullUrl": "https://demis.rki.de/fhir/Encounter/555-42-23-12",
       "resource": {
         "resourceType": "Encounter",
-        "id": "555-42-23-11",
+        "id": "555-42-23-12",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/Hospitalization"
@@ -604,15 +667,15 @@
           "end": "2024-03-02"
         },
         "serviceProvider": {
-          "reference": "Organization/555-42-23-12"
+          "reference": "Organization/555-42-23-13"
         }
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-15",
+      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-16",
       "resource": {
         "resourceType": "QuestionnaireResponse",
-        "id": "555-42-23-15",
+        "id": "555-42-23-16",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/DiseaseInformationCommon"
@@ -673,7 +736,7 @@
                     "answer": [
                       {
                         "valueReference": {
-                          "reference": "Organization/555-42-23-7"
+                          "reference": "Organization/555-42-23-8"
                         }
                       }
                     ]
@@ -700,7 +763,7 @@
                         "answer": [
                           {
                             "valueReference": {
-                              "reference": "Encounter/555-42-23-8"
+                              "reference": "Encounter/555-42-23-9"
                             }
                           }
                         ]
@@ -715,7 +778,7 @@
                         "answer": [
                           {
                             "valueReference": {
-                              "reference": "Encounter/555-42-23-11"
+                              "reference": "Encounter/555-42-23-12"
                             }
                           }
                         ]
@@ -784,7 +847,7 @@
                         "answer": [
                           {
                             "valueReference": {
-                              "reference": "Organization/555-42-23-14"
+                              "reference": "Organization/555-42-23-15"
                             }
                           }
                         ]
@@ -915,10 +978,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Immunization/555-42-23-16",
+      "fullUrl": "https://demis.rki.de/fhir/Immunization/555-42-23-17",
       "resource": {
         "resourceType": "Immunization",
-        "id": "555-42-23-16",
+        "id": "555-42-23-17",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/ImmunizationInformationMSVD"
@@ -946,10 +1009,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-17",
+      "fullUrl": "https://demis.rki.de/fhir/QuestionnaireResponse/555-42-23-18",
       "resource": {
         "resourceType": "QuestionnaireResponse",
-        "id": "555-42-23-17",
+        "id": "555-42-23-18",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/DiseaseInformationMSVD"
@@ -976,7 +1039,7 @@
                     "answer": [
                       {
                         "valueReference": {
-                          "reference": "Immunization/555-42-23-16"
+                          "reference": "Immunization/555-42-23-17"
                         }
                       }
                     ]

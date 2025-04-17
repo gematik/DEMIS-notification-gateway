@@ -66,6 +66,7 @@ class PathogenSendServiceTest implements BaseTestUtils {
   @Mock private Token token;
   private PathogenSendService service;
   private String jsonContent;
+  private static RandomStringUtils random = RandomStringUtils.secure();
 
   @BeforeEach
   void createService() {
@@ -85,7 +86,7 @@ class PathogenSendServiceTest implements BaseTestUtils {
     when(headerPropertiesMock.getLaboratoryNotificationVersion()).thenReturn("1.0.0");
     when(bundlePublisher.postRequest(any(), any(), any(), eq("core"), eq("1.0.0"), any()))
         .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
-    when(nesProperties.laboratoryUrl()).thenReturn(RandomStringUtils.randomAlphabetic(10));
+    when(nesProperties.laboratoryUrl()).thenReturn(random.nextAlphabetic(10));
   }
 
   @Test
@@ -104,7 +105,7 @@ class PathogenSendServiceTest implements BaseTestUtils {
   @Test
   void givenHoneyPotNotifierFacilityWhenSendThenError() throws IOException {
     PathogenTest pathogenTest = objectMapper.readValue(jsonContent, PathogenTest.class);
-    pathogenTest.getNotifierFacility().oneTimeCode(RandomStringUtils.randomAlphabetic(5));
+    pathogenTest.getNotifierFacility().oneTimeCode(random.nextAlphabetic(5));
     verifyHoneyPotDetection(pathogenTest);
   }
 

@@ -1,0 +1,437 @@
+{
+  "status": {
+    "category": "cvdd",
+    "status": "final"
+  },
+  "notifierFacility": {
+    "address": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Im Himmelreich",
+      "city": "Frühling",
+      "houseNumber": "1"
+    },
+    "contact": {
+      "firstname": "Melder-Kontakt-Vorname",
+      "lastname": "Melder-Kontakt-Nachname"
+    },
+    "contacts": [
+      {
+        "contactType": "email",
+        "value": "t.person@gmail.com"
+      },
+      {
+        "contactType": "email",
+        "value": "test.person@kh-rie.de"
+      },
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "01234567"
+      }
+    ],
+    "facilityInfo": {
+      "existsBsnr": true,
+      "bsnr": "123456789",
+      "institutionName": "Kreiskrankenhaus Riedlingen",
+      "organizationType": "hospital"
+    }
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "FEMALE",
+      "firstname": "Martina",
+      "lastname": "Müller",
+      "birthDate": ""
+    },
+    "currentAddress": {
+      "country": "DE",
+      "zip": "21481",
+      "street": "Im Himmelreich",
+      "city": "Frühling",
+      "houseNumber": "1",
+      "addressType": "submittingFacility",
+      "additionalInfo": "Kreiskrankenhaus Riedlingen"
+    },
+    "residenceAddress": {
+      "country": "DE",
+      "zip": "12345",
+      "addressType": "primary"
+    },
+    "contacts": [
+    ]
+  },
+  "condition": {
+    "recordedDate": "",
+    "onset": "",
+    "note": ""
+  },
+  "common": {
+    "questionnaire": "common",
+    "item": [
+      {
+        "linkId": "isDead",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "militaryAffiliation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "labSpecimenTaken",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "hospitalized",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "yes",
+              "display": "Ja",
+              "designations": null,
+              "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer"
+            },
+            "item": [
+              {
+                "linkId": "repeat-section-1",
+                "item": [
+                  {
+                    "linkId": "hospitalizedGroup",
+                    "item": [
+                      {
+                        "linkId": "hospitalizedEncounter",
+                        "answer": [
+                          {
+                            "item": [
+                              {
+                                "linkId": "Hospitalization",
+                                "item": [
+                                  {
+                                    "linkId": "serviceType",
+                                    "answer": [
+                                      {
+                                        "valueCoding": {
+                                          "code": "0152",
+                                          "display": "Schwerpunkt Infektionskrankheiten",
+                                          "designations": null,
+                                          "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType",
+                                          "breadcrumb": "Innere Medizin"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "period",
+                                    "item": [
+                                      {
+                                        "linkId": "start",
+                                        "answer": [
+                                          {
+                                            "valueDate": "01.10.2024"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "linkId": "end",
+                                        "answer": [
+                                          {
+                                            "valueDate": ""
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "reason",
+                                    "answer": [
+                                      {
+                                        "valueCoding": {
+                                          "code": "becauseOfDisease",
+                                          "display": "Hospitalisiert aufgrund der gemeldeten Krankheit",
+                                          "designations": null,
+                                          "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationReason"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "linkId": "serviceProvider",
+                                    "answer": [
+                                      {
+                                        "item": [
+                                          {
+                                            "linkId": "Organization",
+                                            "item": [
+                                              {
+                                                "linkId": "copyNotifiedPersonCurrentAddress",
+                                                "answer": [
+                                                  {
+                                                    "valueBoolean": true
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "name",
+                                                "answer": [
+                                                  {
+                                                    "valueString": "Hospitalization-Einrichtung"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "address",
+                                                "item": [
+                                                  {
+                                                    "linkId": "street",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "Hospitalization-Straße"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "houseNumber",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "42"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "postalCode",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "11448"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "city",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": "Frühling"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "contact",
+                                                "item": [
+                                                  {
+                                                    "linkId": "copyNotifierContact",
+                                                    "answer": [
+                                                      {
+                                                        "valueBoolean": false
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "name",
+                                                    "item": [
+                                                      {
+                                                        "linkId": "prefix",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": ""
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "linkId": "given",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Hospitalization-Kontakt-Vorname"
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "linkId": "family",
+                                                        "answer": [
+                                                          {
+                                                            "valueString": "Hospitalization-Kontakt-Nachname"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "linkId": "telecom",
+                                                "item": [
+                                                  {
+                                                    "linkId": "phone",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": ""
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "linkId": "email",
+                                                    "answer": [
+                                                      {
+                                                        "valueString": ""
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "linkId": "infectProtectFacility",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "placeExposure",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "organDonation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "additionalInformation",
+        "answer": [
+          {
+            "valueString": ""
+          }
+        ]
+      }
+    ]
+  },
+  "disease": {
+    "questionnaire": "cvdd",
+    "item": [
+      {
+        "linkId": "infectionSource",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "infectionEnvironmentSetting",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "immunization",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "repeat-section-3"
+      },
+      {
+        "linkId": "outbreak",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "NASK",
+              "display": "nicht erhoben",
+              "designations": null,
+              "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

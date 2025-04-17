@@ -48,6 +48,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class BundlePublisherTest {
+  private static RandomStringUtils random = RandomStringUtils.secure();
 
   @Mock
   private FhirObjectCreationService fhirObjectCreationService =
@@ -65,14 +66,14 @@ class BundlePublisherTest {
 
   @Test
   void testWrongServerURL() throws AuthException {
-    when(token.asText()).thenReturn(RandomStringUtils.random(15));
+    when(token.asText()).thenReturn(random.nextAlphanumeric(15));
     when(loggingProperties.isUseLoggingInterceptor()).thenReturn(true);
     assertThatThrownBy(
             () ->
                 bundlePublisher.postRequest(
                     new Bundle(),
-                    RandomStringUtils.randomAlphabetic(5),
-                    RandomStringUtils.randomAlphabetic(5),
+                    random.nextAlphabetic(5),
+                    random.nextAlphabetic(5),
                     "rki.demis.r4.core",
                     "1.24.0",
                     token))

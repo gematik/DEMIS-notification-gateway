@@ -35,7 +35,6 @@ import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo.UsageEnu
 import de.gematik.demis.notificationgateway.common.dto.FacilityAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.utils.ConfiguredCodeSystems;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -90,16 +89,13 @@ public class FhirObjectCreationService {
         address.getCountry());
   }
 
-  public Optional<Address> createAddress(NotifiedPersonAddressInfo personAddress) {
-    if (personAddress == null) {
-      return Optional.empty();
-    }
+  public Address createAddress(NotifiedPersonAddressInfo personAddress) {
     final Address fhirAddress = createAddress(personAddress, false);
     final Coding addressUse = getAddressUseCoding(personAddress.getAddressType());
     if (addressUse != null) {
       fhirAddress.addExtension().setUrl(STRUCTURE_DEFINITION_ADDRESS_USE).setValue(addressUse);
     }
-    return Optional.of(fhirAddress);
+    return fhirAddress;
   }
 
   /**
@@ -112,18 +108,15 @@ public class FhirObjectCreationService {
    * @return an Optional containing the created Address resource, or an empty Optional if
    *     addressInfo is null
    */
-  public Optional<Address> createAddressWithReferenceToOrganization(
+  public Address createAddressWithReferenceToOrganization(
       final NotifiedPersonAddressInfo addressInfo, final Organization organization) {
-    if (addressInfo == null) {
-      return Optional.empty();
-    }
     final Address fhirAddress =
         new AddressDataBuilder().withOrganizationReferenceExtension(organization).build();
     final Coding addressUse = getAddressUseCoding(addressInfo.getAddressType());
     if (addressUse != null) {
       fhirAddress.addExtension().setUrl(STRUCTURE_DEFINITION_ADDRESS_USE).setValue(addressUse);
     }
-    return Optional.of(fhirAddress);
+    return fhirAddress;
   }
 
   /**

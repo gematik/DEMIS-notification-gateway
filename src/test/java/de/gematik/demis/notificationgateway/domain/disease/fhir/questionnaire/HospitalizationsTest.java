@@ -59,7 +59,7 @@ class HospitalizationsTest {
   private Hospitalizations hospitalizations;
 
   private static QuestionnaireResponseItem readFile(String filename) throws IOException {
-    File file = new File("src/test/resources/portal/disease/encounter/" + filename);
+    File file = new File("src/test/resources/portal/disease/hospitalization/" + filename);
     return JSON.readValue(file, QuestionnaireResponseItem.class);
   }
 

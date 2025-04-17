@@ -40,7 +40,6 @@ import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreat
 import de.gematik.demis.notificationgateway.common.utils.ConfiguredCodeSystems;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
@@ -48,6 +47,7 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Service;
 
@@ -62,43 +62,29 @@ class OrganizationCreationService {
     return createFacility(notifierFacilityContent, organizationType);
   }
 
-  public Organization createLabNotifierFacility(NotifierFacility notifierFacilityContent) {
-    return createFacility(notifierFacilityContent, "othPrivatLab");
-  }
-
   public Organization createHospitalNotifierFacility(NotifierFacility notifierFacilityContent) {
     return createFacility(notifierFacilityContent, "hospital");
   }
 
-  public Organization createOtherFacility(NotifiedPersonAddressInfo notifiedPersonAddressInfo) {
-    var otherFacilityName = notifiedPersonAddressInfo.getAdditionalInfo();
+  public Organization createNotifiedPersonFacility(NotifiedPersonAddressInfo address) {
+    final String facilityName = address.getAdditionalInfo();
     // In this context additionalInfo is only used to store the name of the other facility
     // but in further steps it shouldn't be processed as part of the address, that's why it's
     // removed here
-    var notifiedPersonAddressInfoWithoutAdditionalInfo =
-        withoutAdditionalInfo(notifiedPersonAddressInfo);
-
-    final Optional<Address> fhirAddress =
-        fhirObjectCreationService.createAddress(notifiedPersonAddressInfoWithoutAdditionalInfo);
-    if (fhirAddress.isEmpty()) {
-      throw new IllegalStateException("Patient address is missing");
-    } else {
-      fhirAddress.get().getExtension().clear();
-      return new OrganizationBuilder()
-          .setDefaults()
-          .setMetaProfileUrl(PROFILE_NOTIFIED_PERSON_FACILITY)
-          .setFacilityName(otherFacilityName)
-          .setAddress(fhirAddress.get())
-          .build();
-    }
+    final var addressWithoutAdditionalInfo = withoutAdditionalInfo(address);
+    final Address fhirAddress =
+        fhirObjectCreationService.createAddress(addressWithoutAdditionalInfo);
+    fhirAddress.getExtension().clear();
+    return new OrganizationBuilder()
+        .setDefaults()
+        .setMetaProfileUrl(PROFILE_NOTIFIED_PERSON_FACILITY)
+        .setFacilityName(facilityName)
+        .setAddress(fhirAddress)
+        .build();
   }
 
   private NotifiedPersonAddressInfo withoutAdditionalInfo(
       NotifiedPersonAddressInfo notifiedPersonAddressInfo) {
-    if (notifiedPersonAddressInfo == null) {
-      return null;
-    }
-
     var clone = new NotifiedPersonAddressInfo();
     clone.setStreet(notifiedPersonAddressInfo.getStreet());
     clone.setHouseNumber(notifiedPersonAddressInfo.getHouseNumber());
@@ -107,6 +93,25 @@ class OrganizationCreationService {
     clone.setCountry(notifiedPersonAddressInfo.getCountry());
     clone.setAddressType(notifiedPersonAddressInfo.getAddressType());
     return clone;
+  }
+
+  /**
+   * Disease notification currently requires creating a clone of the notifier facility as a notified
+   * person facility. This is different to pathogen notifications.
+   *
+   * @param notifier the notifier
+   * @return notified person facility
+   */
+  Organization createNotifiedPersonFacility(PractitionerRole notifier) {
+    final Organization source = (Organization) notifier.getOrganization().getResource();
+    final OrganizationBuilder clone = new OrganizationBuilder();
+    clone.setDefaults();
+    clone.setMetaProfileUrl(PROFILE_NOTIFIED_PERSON_FACILITY);
+    clone.setFacilityName(source.getName());
+    clone.setAddress(source.getAddressFirstRep());
+    source.getContact().forEach(clone::addContact);
+    source.getTelecom().forEach(clone::addTelecom);
+    return clone.build();
   }
 
   private Organization createFacility(

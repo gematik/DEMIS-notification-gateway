@@ -9,7 +9,7 @@
   </parent>
   <artifactId>notification-gateway</artifactId>
   <name>DEMIS Notification-Gateway</name>
-  <version>6.3.5-SNAPSHOT</version>
+  <version>6.3.6-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>Gateway Service for Notifications over Portal</description>
   <licenses>
@@ -44,7 +44,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>33.4.5-jre</version>
+        <version>33.4.6-jre</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -98,6 +98,7 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- Test environment dependencies -->
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>

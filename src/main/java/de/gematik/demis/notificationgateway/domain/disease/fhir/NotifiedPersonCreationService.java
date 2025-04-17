@@ -27,9 +27,9 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  */
 
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.PROFILE_NOTIFIED_PERSON;
-import static de.gematik.demis.notificationgateway.common.dto.AddressType.SUBMITTING_FACILITY;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
+import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
@@ -38,14 +38,12 @@ import de.gematik.demis.notificationgateway.common.utils.DateUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.HumanName.NameUse;
 import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.StringType;
@@ -56,25 +54,24 @@ import org.springframework.stereotype.Service;
 class NotifiedPersonCreationService {
 
   private final FhirObjectCreationService fhirObjectCreationService;
+  private final OrganizationCreationService organizationCreationService;
 
-  public Patient createPatient(
-      NotifiedPerson notifiedPersonContent,
-      PractitionerRole practitionerRole,
-      Optional<Organization> otherFacility) {
-    final Patient notifiedPerson = createNotifiedPersonWithoutAddresses(notifiedPersonContent);
-    addAddresses(notifiedPerson, notifiedPersonContent, practitionerRole, otherFacility);
-    return notifiedPerson;
+  private static void setGender(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
+    notifiedPerson.setGender(
+        AdministrativeGender.valueOf(notifiedPersonContent.getInfo().getGender().getValue()));
   }
 
-  private Patient createNotifiedPersonWithoutAddresses(NotifiedPerson notifiedPersonContent) {
+  public Patient createPatient(
+      NotifiedPerson notifiedPersonContent, PractitionerRole practitionerRole) {
     final Patient notifiedPerson = new Patient();
     notifiedPerson.setId(Utils.generateUuidString());
     notifiedPerson.setMeta(new Meta().addProfile(PROFILE_NOTIFIED_PERSON));
-    notifiedPerson.setGender(
-        AdministrativeGender.valueOf(notifiedPersonContent.getInfo().getGender().getValue()));
+    setGender(notifiedPerson, notifiedPersonContent);
     addName(notifiedPerson, notifiedPersonContent);
     addBirthDate(notifiedPerson, notifiedPersonContent);
-    addContacts(notifiedPerson, notifiedPersonContent.getContacts());
+    addContacts(notifiedPerson, notifiedPersonContent);
+    addCurrentAddress(notifiedPerson, notifiedPersonContent, practitionerRole);
+    addResidenceAddress(notifiedPerson, notifiedPersonContent);
     return notifiedPerson;
   }
 
@@ -84,7 +81,6 @@ class NotifiedPersonCreationService {
     for (String firstName : firstnameInfo.split("\\s+")) {
       firstNameList.add(new StringType(firstName));
     }
-
     notifiedPerson
         .addName()
         .setUse(NameUse.OFFICIAL)
@@ -99,46 +95,47 @@ class NotifiedPersonCreationService {
     }
   }
 
-  private void addAddresses(
-      Patient notifiedPerson,
-      NotifiedPerson notifiedPersonContent,
-      PractitionerRole practitionerRole,
-      Optional<Organization> otherFacility) {
-    final NotifiedPersonAddressInfo notifiedPersonAddress =
-        notifiedPersonContent.getCurrentAddress();
-
-    final Optional<Address> patientCurrentAddress =
-        createAddress(notifiedPersonAddress, practitionerRole, otherFacility);
-    patientCurrentAddress.ifPresent(notifiedPerson::addAddress);
-
-    NotifiedPersonAddressInfo addressInfo = notifiedPersonContent.getResidenceAddress();
-    if (addressInfo != null) {
-      final Address fhirAddress = fhirObjectCreationService.createAddress(addressInfo, true);
-      notifiedPerson.addAddress(fhirAddress);
-    }
-  }
-
-  private Optional<Address> createAddress(
-      NotifiedPersonAddressInfo notifiedPersonAddress,
-      PractitionerRole practitionerRole,
-      Optional<Organization> otherFacility) {
-    if (otherFacility.isPresent()) {
-      return fhirObjectCreationService.createAddressWithReferenceToOrganization(
-          notifiedPersonAddress, otherFacility.get());
-    } else if (notifiedPersonAddress.getAddressType() == SUBMITTING_FACILITY) {
-      final Organization submittingFacility =
-          (Organization) practitionerRole.getOrganization().getResource();
-      return fhirObjectCreationService.createAddressWithReferenceToOrganization(
-          notifiedPersonAddress, submittingFacility);
-    } else {
-      return fhirObjectCreationService.createAddress(notifiedPersonAddress);
-    }
-  }
-
-  private void addContacts(Patient notifiedPerson, List<ContactPointInfo> contacts) {
-    for (ContactPointInfo contact : contacts) {
+  private void addContacts(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
+    for (ContactPointInfo contact : notifiedPersonContent.getContacts()) {
       ContactPoint contactPoint = fhirObjectCreationService.createContactPoint(contact);
       notifiedPerson.addTelecom(contactPoint);
     }
+  }
+
+  private void addResidenceAddress(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
+    final NotifiedPersonAddressInfo info = notifiedPersonContent.getResidenceAddress();
+    if (info != null) {
+      notifiedPerson.addAddress(fhirObjectCreationService.createAddress(info, true));
+    }
+  }
+
+  private void addCurrentAddress(
+      Patient notifiedPerson,
+      NotifiedPerson notifiedPersonContent,
+      PractitionerRole practitionerRole) {
+    final NotifiedPersonAddressInfo currentAddress = notifiedPersonContent.getCurrentAddress();
+    if (currentAddress != null) {
+      final Address address;
+      final AddressType addressType = currentAddress.getAddressType();
+      if (addressType == AddressType.OTHER_FACILITY) {
+        address = createOtherFacilityAddress(currentAddress);
+      } else if (addressType == AddressType.SUBMITTING_FACILITY) {
+        address = createNotifierFacilityAddress(practitionerRole, currentAddress);
+      } else {
+        address = fhirObjectCreationService.createAddress(currentAddress);
+      }
+      notifiedPerson.addAddress(address);
+    }
+  }
+
+  private Address createOtherFacilityAddress(NotifiedPersonAddressInfo currentAddress) {
+    return fhirObjectCreationService.createAddressWithReferenceToOrganization(
+        currentAddress, organizationCreationService.createNotifiedPersonFacility(currentAddress));
+  }
+
+  private Address createNotifierFacilityAddress(
+      PractitionerRole practitionerRole, NotifiedPersonAddressInfo currentAddress) {
+    return fhirObjectCreationService.createAddressWithReferenceToOrganization(
+        currentAddress, organizationCreationService.createNotifiedPersonFacility(practitionerRole));
   }
 }

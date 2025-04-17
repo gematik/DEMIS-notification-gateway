@@ -73,7 +73,8 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(
     properties = {
       "feature.flag.disease_address_patient=true",
-      "feature.flag.hosp_copy_checkboxes=true"
+      "feature.flag.hosp_copy_checkboxes=true",
+      "logging.level.de.gematik=DEBUG"
     })
 class HospitalizationCopyCheckboxesTest {
 
@@ -83,8 +84,10 @@ class HospitalizationCopyCheckboxesTest {
 
   @ParameterizedTest
   @CsvSource({
-    "portal/disease/patient.address/hospitalization-copies-current-address-other-facility-input.json, portal/disease/patient.address/hospitalization-copies-current-address-other-facility-output.json",
-    "portal/disease/patient.address/hospitalization-copies-current-address-submitting-facility-input.json, portal/disease/patient.address/hospitalization-copies-current-address-submitting-facility-output.json"
+    "portal/disease/hospitalization/hospitalization-at-notifier-and-contacts-copied-input.json, portal/disease/hospitalization/hospitalization-at-notifier-and-contacts-copied-output.json",
+    "portal/disease/hospitalization/hospitalization-at-notifier-and-contacts-manual-input.json, portal/disease/hospitalization/hospitalization-at-notifier-and-contacts-manual-output.json",
+    "portal/disease/hospitalization/hospitalization-at-other-and-contacts-copied-input.json, portal/disease/hospitalization/hospitalization-at-other-and-contacts-copied-output.json",
+    "portal/disease/hospitalization/hospitalization-at-other-and-contacts-manual-input.json, portal/disease/hospitalization/hospitalization-at-other-and-contacts-manual-output.json",
   })
   void createBundle_shouldCreateBundle(String inputFile, String outputFile)
       throws BadRequestException {

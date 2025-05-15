@@ -34,7 +34,9 @@ import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.domain.HeaderProperties;
+import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
 import de.gematik.demis.notificationgateway.domain.pathogen.fhir.PathogenBundleCreationService;
+import jakarta.security.auth.message.AuthException;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +52,7 @@ public class PathogenSendService {
 
   private final BundlePublisher bundlePublisher;
   private final OkResponseService okResponseService;
-  private final PathogenBundleCreationService mapper;
+  private final PathogenBundleCreationService pathogenBundleCreationService;
   private final NESProperties nesProperties;
   private final HeaderProperties headerProperties;
 
@@ -70,9 +72,36 @@ public class PathogenSendService {
     return Arrays.stream(a).anyMatch(StringUtils::isNotBlank);
   }
 
+  /**
+   * @deprecated
+   * @param pathogenTest
+   * @param token
+   * @return
+   */
+  @Deprecated(forRemoval = true)
   public OkResponse send(PathogenTest pathogenTest, Token token) {
     verifyHoneypot(pathogenTest);
-    final Bundle bundle = mapper.toBundle(pathogenTest);
+    final Bundle bundle = pathogenBundleCreationService.toBundle(pathogenTest);
+    final String url = nesProperties.laboratoryUrl();
+    final String operation = NESProperties.OPERATION_NAME;
+    log.info("Sending request to {}, operation: {}", "NES", operation);
+    Parameters result =
+        bundlePublisher.postRequest(
+            bundle,
+            url,
+            operation,
+            headerProperties.getLaboratoryNotificationProfile(),
+            headerProperties.getLaboratoryNotificationVersion(),
+            token);
+    return okResponseService.buildOkResponse(result);
+  }
+
+  public OkResponse processPortalNotificationData(
+      PathogenTest pathogenTest, Token token, LaboratoryNotificationType laboratoryNotificationType)
+      throws AuthException {
+    verifyHoneypot(pathogenTest);
+    final Bundle bundle =
+        pathogenBundleCreationService.toBundle(pathogenTest, laboratoryNotificationType);
     final String url = nesProperties.laboratoryUrl();
     final String operation = NESProperties.OPERATION_NAME;
     log.info("Sending request to {}, operation: {}", "NES", operation);

@@ -27,22 +27,34 @@ package de.gematik.demis.notificationgateway.domain.pathogen.fhir;
  */
 
 import static de.gematik.demis.notificationgateway.common.utils.DateUtils.createDate;
+import static de.gematik.demis.notificationgateway.domain.pathogen.creator.AddressCreator.createAddress;
+import static de.gematik.demis.notificationgateway.domain.pathogen.creator.AddressCreator.createAddressWithoutAddressUse;
+import static de.gematik.demis.notificationgateway.domain.pathogen.creator.BundleCreator.createBundle;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.SpecimenDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notificationgateway.common.dto.*;
 import de.gematik.demis.notificationgateway.common.mappers.BundleMapper;
+import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class PathogenBundleCreationService implements BundleMapper {
+
+  private final boolean featureFlagSnapshot5_3_0Active;
+
+  public PathogenBundleCreationService(
+      @Value("${feature.flag.snapshot.5.3.0.active}") boolean featureFlagSnapshot530Active) {
+    featureFlagSnapshot5_3_0Active = featureFlagSnapshot530Active;
+  }
 
   /**
    * Create a patient and additional resources if necessary
@@ -90,11 +102,27 @@ public class PathogenBundleCreationService implements BundleMapper {
   }
 
   /**
-   * Creates FHIR bundle from POJO input
+   * Creates a complete FHIR {@link Bundle} that can be sent to the DEMIS core services.
    *
+   * <p>This method uses the provided {@link LaboratoryNotificationType} to determine the type of
+   * notification to create, which corresponds to different notification paragraphs.
+   *
+   * @param pathogenTest The {@link PathogenTest} object containing the data for the notification.
+   * @param laboratoryNotificationType The {@link LaboratoryNotificationType} specifying the type of
+   *     notification.
+   * @return A {@link Bundle} object representing the complete notification.
+   */
+  public Bundle toBundle(
+      PathogenTest pathogenTest, LaboratoryNotificationType laboratoryNotificationType) {
+    return createBundle(pathogenTest, laboratoryNotificationType, featureFlagSnapshot5_3_0Active);
+  }
+
+  /**
+   * @deprecated this only works for §7.1 notifications Creates FHIR bundle from POJO input
    * @param pathogenTest pathogen test business details
    * @return FHIR bundle
    */
+  @Deprecated(forRemoval = true)
   public Bundle toBundle(PathogenTest pathogenTest) {
     final NotifiedPerson notifiedPerson = pathogenTest.getNotifiedPerson();
     final PathogenDTO pathogenDTO = pathogenTest.getPathogenDTO();
@@ -182,7 +210,12 @@ public class PathogenBundleCreationService implements BundleMapper {
               notificationLaboratoryCategory));
 
       createObservationsForResistanceGenes(
-          specimenDTO.getResistanceGeneList(), patient, specimen, observation, pathogenShortCode);
+          specimenDTO.getResistanceGeneList(),
+          patient,
+          specimen,
+          observation,
+          pathogenShortCode,
+          featureFlagSnapshot5_3_0Active);
       createObservationsForResistances(
           specimenDTO.getResistanceList(), patient, specimen, observation, pathogenShortCode);
     }

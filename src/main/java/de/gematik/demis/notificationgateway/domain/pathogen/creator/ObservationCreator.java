@@ -1,0 +1,268 @@
+package de.gematik.demis.notificationgateway.domain.pathogen.creator;
+
+/*-
+ * #%L
+ * DEMIS Notification-Gateway
+ * %%
+ * Copyright (C) 2025 gematik GmbH
+ * %%
+ * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
+ * European Commission – subsequent versions of the EUPL (the "Licence").
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You find a copy of the Licence in the "Licence" file or at
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied.
+ * In case of changes by gematik find details in the "Readme" file.
+ *
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * #L%
+ */
+
+import static de.gematik.demis.notificationgateway.domain.pathogen.mapper.RkiCodeUtil.getInterpretationValueCodeForResistance;
+import static de.gematik.demis.notificationgateway.domain.pathogen.mapper.RkiCodeUtil.getInterpretationValueCodeForResistanceGene;
+
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.PathogenDetectionDataBuilder;
+import de.gematik.demis.notificationgateway.common.dto.MethodPathogenDTO;
+import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
+import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
+import de.gematik.demis.notificationgateway.common.dto.ResistanceDTO;
+import de.gematik.demis.notificationgateway.common.dto.ResistanceGeneDTO;
+import de.gematik.demis.notificationgateway.domain.pathogen.mapper.RkiCodeUtil;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.DiagnosticReport;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Specimen;
+
+/**
+ * Utility class for creating FHIR {@link DiagnosticReport} objects.
+ *
+ * <p>This class provides methods to build a {@link DiagnosticReport} instance based on the provided
+ * {@link PathogenDTO}, {@link Patient}, and other related data.
+ */
+public class ObservationCreator {
+
+  /** SNOMED CT URL used for coding in FHIR {@link Observation} objects. */
+  public static final String SNOMED_CT_URL = "http://snomed.info/sct";
+
+  /**
+   * Private constructor to prevent instantiation of this utility class.
+   *
+   * <p>This class is designed as a utility class and should not be instantiated.
+   */
+  private ObservationCreator() {}
+
+  /**
+   * Creates a list of FHIR {@link Observation} objects for pathogen detection.
+   *
+   * @param pathogenDTO The {@link PathogenDTO} object containing pathogen details.
+   * @param methodPathogenDTOList A list of {@link MethodPathogenDTO} objects representing methods
+   *     used for detection.
+   * @param patient The {@link Patient} object representing the notified person.
+   * @param specimen The {@link Specimen} object representing the specimen used for testing.
+   * @param notificationCategory The {@link NotificationLaboratoryCategory} object containing
+   *     notification details.
+   * @return A list of {@link Observation} objects populated with the provided data.
+   */
+  public static List<Observation> createObservation(
+      PathogenDTO pathogenDTO,
+      List<MethodPathogenDTO> methodPathogenDTOList,
+      Patient patient,
+      Specimen specimen,
+      NotificationLaboratoryCategory notificationCategory) {
+    final List<Observation> collect = new ArrayList<>();
+    final String pathogenCode = notificationCategory.getPathogen().getCode();
+    final String pathogenDisplay = notificationCategory.getPathogen().getDisplay();
+
+    // Observation 1
+    final String pathogenShortCode = pathogenDTO.getCodeDisplay().getCode();
+    final MethodPathogenDTO firstMethodPathogenDTO = methodPathogenDTOList.getFirst();
+    collect.add(
+        createSingleObservation(
+            firstMethodPathogenDTO,
+            pathogenCode,
+            pathogenDisplay,
+            patient,
+            specimen,
+            pathogenShortCode));
+
+    // Observation 2 - only if analyt is not null
+    if (firstMethodPathogenDTO.getAnalyt() != null) {
+      collect.add(
+          createSingleObservation(
+              firstMethodPathogenDTO,
+              firstMethodPathogenDTO.getAnalyt().getCode(),
+              firstMethodPathogenDTO.getAnalyt().getDisplay(),
+              patient,
+              specimen,
+              pathogenShortCode));
+    }
+
+    // Observations for all other diagnostik input
+    for (int i = 1; i < methodPathogenDTOList.size(); i++) {
+      final MethodPathogenDTO pdto = methodPathogenDTOList.get(i);
+      String code;
+      String display;
+      if (pdto.getAnalyt() != null) {
+        code = pdto.getAnalyt().getCode();
+        display = pdto.getAnalyt().getDisplay();
+      } else {
+        code = pathogenCode;
+        display = pathogenDisplay;
+      }
+      collect.add(
+          createSingleObservation(pdto, code, display, patient, specimen, pathogenShortCode));
+    }
+
+    return collect;
+  }
+
+  /**
+   * Creates FHIR {@link Observation} objects for resistance genes.
+   *
+   * @param resistanceGenes A list of {@link ResistanceGeneDTO} objects representing resistance
+   *     genes.
+   * @param patient The {@link Patient} object representing the notified person.
+   * @param specimen The {@link Specimen} object representing the specimen used for testing.
+   * @param pathogenCode The code of the pathogen being tested.
+   * @param featureFlagSnapshot5_3_0Active A boolean indicating if the feature flag for snapshot
+   *     5.3.0 is active.
+   * @return A list of {@link Observation} objects populated with resistance gene data.
+   */
+  public static List<Observation> createObservationsForResistanceGenes(
+      List<ResistanceGeneDTO> resistanceGenes,
+      Patient patient,
+      Specimen specimen,
+      String pathogenCode,
+      boolean featureFlagSnapshot5_3_0Active) {
+    if (resistanceGenes == null || resistanceGenes.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<Observation> observations = new ArrayList<>();
+    for (ResistanceGeneDTO resistanceGene : resistanceGenes) {
+      final String code = resistanceGene.getResistanceGene().getCode();
+      final String display = resistanceGene.getResistanceGene().getDisplay();
+
+      RkiCodeUtil.InterpretationValueCode interpretationValueCodeForResistanceGene =
+          getInterpretationValueCodeForResistanceGene(resistanceGene.getResistanceGeneResult());
+      final String interpretation = interpretationValueCodeForResistanceGene.interpretation();
+      final String valueCode = interpretationValueCodeForResistanceGene.valueCode();
+      final String valueDisplay = "";
+
+      String methodCode;
+      String methodDisplay;
+      if (featureFlagSnapshot5_3_0Active) {
+        methodCode = "708068002";
+        methodDisplay = "Molecular genetics technique (qualifier value)";
+      } else {
+        methodCode = "116148004";
+        methodDisplay = "Molecular genetic procedure (procedure)";
+      }
+
+      observations.add(
+          new PathogenDetectionDataBuilder()
+              .setDefaultData()
+              .setMethodCode(methodCode)
+              .setMethodDisplay(methodDisplay)
+              .setInterpretationCode(interpretation)
+              .setValue(new CodeableConcept(new Coding(SNOMED_CT_URL, valueCode, valueDisplay)))
+              .setNotifiedPerson(patient)
+              .setSpecimen(specimen)
+              .setProfileUrlHelper(pathogenCode)
+              .setObservationCodeCode(code)
+              .setObservationCodeDisplay(display)
+              .setStatus(Observation.ObservationStatus.FINAL)
+              .build());
+    }
+    return observations;
+  }
+
+  /**
+   * Creates FHIR {@link Observation} objects for resistances.
+   *
+   * @param resistances A list of {@link ResistanceDTO} objects representing resistances.
+   * @param patient The {@link Patient} object representing the notified person.
+   * @param specimen The {@link Specimen} object representing the specimen used for testing.
+   * @param pathogenCode The code of the pathogen being tested.
+   * @return A list of {@link Observation} objects populated with resistance data.
+   */
+  public static List<Observation> createObservationsForResistances(
+      List<ResistanceDTO> resistances, Patient patient, Specimen specimen, String pathogenCode) {
+    if (resistances == null || resistances.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<Observation> observations = new ArrayList<>();
+    for (ResistanceDTO resistance : resistances) {
+      final String code = resistance.getResistance().getCode();
+      final String display = resistance.getResistance().getDisplay();
+
+      RkiCodeUtil.InterpretationValueCode interpretationValueCodeForResistance =
+          getInterpretationValueCodeForResistance(resistance.getResistanceResult());
+      final String interpretation = interpretationValueCodeForResistance.interpretation();
+      final String valueCode = interpretationValueCodeForResistance.valueCode();
+      final String valueDisplay = "";
+
+      observations.add(
+          new PathogenDetectionDataBuilder()
+              .setDefaultData()
+              .setMethodCode("14788002")
+              .setMethodDisplay("Antimicrobial susceptibility test (procedure)")
+              .setInterpretationCode(interpretation)
+              .setValue(new CodeableConcept(new Coding(SNOMED_CT_URL, valueCode, valueDisplay)))
+              .setNotifiedPerson(patient)
+              .setSpecimen(specimen)
+              .setProfileUrlHelper(pathogenCode)
+              .setObservationCodeCode(code)
+              .setObservationCodeDisplay(display)
+              .setStatus(Observation.ObservationStatus.FINAL)
+              .build());
+    }
+    return observations;
+  }
+
+  /**
+   * Creates a single FHIR {@link Observation} object with fixed values for observation code and
+   * display. These observations are not intended for resistance or resistance gene data.
+   *
+   * @param methodPathogenDTO The {@link MethodPathogenDTO} object containing method details.
+   * @param valueCode The code representing the observation value.
+   * @param valueDisplay The display text for the observation value.
+   * @param patient The {@link Patient} object representing the notified person.
+   * @param specimen The {@link Specimen} object representing the specimen used for testing.
+   * @param pathogenCode The code of the pathogen being tested.
+   * @return A {@link Observation} object populated with the provided data.
+   */
+  private static Observation createSingleObservation(
+      MethodPathogenDTO methodPathogenDTO,
+      String valueCode,
+      String valueDisplay,
+      Patient patient,
+      Specimen specimen,
+      String pathogenCode) {
+    return new PathogenDetectionDataBuilder()
+        .setDefaultData()
+        .setInterpretationCode(methodPathogenDTO.getResult().getValue())
+        .setMethodCode(methodPathogenDTO.getMethod().getCode())
+        .setMethodDisplay(methodPathogenDTO.getMethod().getDisplay())
+        .setValue(new CodeableConcept(new Coding(SNOMED_CT_URL, valueCode, valueDisplay)))
+        .setObservationCodeCode("41852-5")
+        .setObservationCodeDisplay("Microorganism or agent identified in Specimen")
+        .setStatus(Observation.ObservationStatus.FINAL)
+        .setNotifiedPerson(patient)
+        .setSpecimen(specimen)
+        .setProfileUrlHelper(pathogenCode)
+        .build();
+  }
+}

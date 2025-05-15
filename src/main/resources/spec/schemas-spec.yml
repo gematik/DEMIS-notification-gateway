@@ -27,6 +27,27 @@ components:
             $ref: '#/components/schemas/ContactPointInfo'
         info:
           $ref: '#/components/schemas/NotifiedPersonBasicInfo'
+    NotifiedPersonAnonymous:
+      description: Melder-Einrichtung
+      type: object
+      properties:
+        gender:
+          description: gender of the notified person
+          default: UNKNOWN
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNKNOWN
+        birthDate:
+          format: date
+          description: notified person's date of birth
+          type: string
+          example: '2021-01-30'
+        residenceAddress:
+          $ref: '#/components/schemas/NotifiedPersonAddressInfo'
+        currentAddress:
+          $ref: '#/components/schemas/NotifiedPersonAddressInfo'
     NotifierFacility:
       description: Melder-Einrichtung
       required:

@@ -17,9 +17,8 @@ istio:
         uri: /api/ng
       timeout: null
       retries:
-        enable: false
-#        attempts: 3
-#        perTryTimeout: 5s
+        enable: true
+        attempts: 0
         retryOn: null
     hosts: {}
   subsets:

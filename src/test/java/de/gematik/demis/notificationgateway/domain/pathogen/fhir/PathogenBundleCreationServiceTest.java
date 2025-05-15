@@ -26,9 +26,12 @@ package de.gematik.demis.notificationgateway.domain.pathogen.fhir;
  * #L%
  */
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import ca.uhn.fhir.context.FhirContext;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
+import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +48,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PathogenBundleCreationServiceTest {
 
   private final PathogenBundleCreationService pathogenBundleCreationService =
-      new PathogenBundleCreationService();
+      new PathogenBundleCreationService(true);
 
   private int counter;
 
@@ -126,5 +129,59 @@ class PathogenBundleCreationServiceTest {
             .encodeResourceToString(bundle);
     String expectedJson = FileUtils.loadJsonFromFile(expectedOutput);
     FileUtils.assertEqualJson(expectedJson, actualJson, "disease notification FHIR bundle");
+  }
+
+  private void testBundleCreation(
+      PathogenBundleCreationService instance,
+      String input,
+      String expectedOutput,
+      LaboratoryNotificationType type)
+      throws Exception {
+    PathogenTest pathogenTest = FileUtils.unmarshal(input, PathogenTest.class);
+    Bundle bundle = instance.toBundle(pathogenTest, type);
+    String actualJson =
+        FhirContext.forR4Cached()
+            .newJsonParser()
+            .setPrettyPrint(true)
+            .encodeResourceToString(bundle);
+    String expectedJson = FileUtils.loadJsonFromFile(expectedOutput);
+    FileUtils.assertEqualJson(expectedJson, actualJson, "disease notification FHIR bundle");
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle.json",
+    "portal/pathogen/pathogen-test-invalid.json, portal/pathogen/pathogen-test-invalid-bundle.json"
+  })
+  void toBundle_shouldHandleValidAndInvalidPathogenTest(String input, String expectedOutput)
+      throws Exception {
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      PathogenTest inputData = FileUtils.unmarshal(input, PathogenTest.class);
+      if (input.contains("invalid")) {
+        assertThatThrownBy(
+                () ->
+                    pathogenBundleCreationService.toBundle(
+                        inputData, LaboratoryNotificationType.LAB))
+            .isInstanceOf(NullPointerException.class)
+            .hasMessageContaining("NotifiedPerson must not be null");
+      } else {
+        testBundleCreation(pathogenBundleCreationService, input, expectedOutput);
+      }
+    }
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "portal/pathogen/pathogen-test.json, LAB, portal/pathogen/pathogen-test-bundle.json",
+    "portal/pathogen/pathogen-test.json, NON_NOMINAL, portal/pathogen/pathogen-test-bundle-non-nominal.json"
+  })
+  void toBundle_shouldCreateBundleForDifferentNotificationTypes(
+      String input, String notificationType, String expectedOutput) throws Exception {
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      LaboratoryNotificationType type = LaboratoryNotificationType.valueOf(notificationType);
+      testBundleCreation(pathogenBundleCreationService, input, expectedOutput, type);
+    }
   }
 }

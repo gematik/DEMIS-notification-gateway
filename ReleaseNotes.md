@@ -2,8 +2,17 @@
 
 # Release notes notification-gateway
 
+## Release 6.3.7
+- change base chart to istio hostnames
+- updating dependencies
+- §7.1 creation code is extended with §7.3 pathogen notifications.
+- update method code for resistance gene oberservations
+
 ## Release 6.3.6
 - Updated ospo-resources for adding additional notes and disclaimer
+- setting new ressources in helm chart
+- setting new timeouts and retries in helm chart
+- updating dependencies
 
 ## Release 6.3.2
 - second official GitHub-Release

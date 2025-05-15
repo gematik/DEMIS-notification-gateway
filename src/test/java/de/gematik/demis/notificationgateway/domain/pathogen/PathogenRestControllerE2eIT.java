@@ -59,7 +59,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @Slf4j
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "feature.flag.notification7_3=true")
 @EnabledIf(expression = "${testing.enable-e2e}", loadContext = true)
 class PathogenRestControllerE2eIT implements BaseTestUtils {
 
@@ -87,7 +89,8 @@ class PathogenRestControllerE2eIT implements BaseTestUtils {
     assert jsonContent != null;
     final MockHttpServletResponse response =
         this.mockMvc
-            .perform(post(PATHOGEN_PATH).headers(headers).content(jsonContent).with(csrf()))
+            .perform(
+                post(PATHOGEN_PATH + "/7_1").headers(headers).content(jsonContent).with(csrf()))
             .andReturn()
             .getResponse();
 
@@ -116,7 +119,10 @@ class PathogenRestControllerE2eIT implements BaseTestUtils {
     final MockHttpServletResponse response =
         this.mockMvc
             .perform(
-                post(PATHOGEN_PATH).content(getJsonContent(path)).headers(headers).with(csrf()))
+                post(PATHOGEN_PATH + "/7_1")
+                    .content(getJsonContent(path))
+                    .headers(headers)
+                    .with(csrf()))
             .andReturn()
             .getResponse();
 

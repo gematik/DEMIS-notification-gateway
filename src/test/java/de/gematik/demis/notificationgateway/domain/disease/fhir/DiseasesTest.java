@@ -57,17 +57,23 @@ class DiseasesTest {
     this.notification = new DiseaseNotification();
     this.notification.setStatus(this.status);
     Patient notifiedPerson = new Patient();
+    notifiedPerson.setId("Patient/123");
     NotificationBundleDiseaseDataBuilder bundle = new NotificationBundleDiseaseDataBuilder();
     bundle.setDefaults();
     bundle.setNotifiedPerson(notifiedPerson);
-    bundle.setCommonInformation(new QuestionnaireResponse());
-    bundle.setSpecificInformation(new QuestionnaireResponse());
+    QuestionnaireResponse commonInformation = new QuestionnaireResponse();
+    commonInformation.setId("QuestionnaireResponse/123");
+    bundle.setCommonInformation(commonInformation);
+    QuestionnaireResponse specificInformation = new QuestionnaireResponse();
+    specificInformation.setId("QuestionnaireResponse/456");
+    bundle.setSpecificInformation(specificInformation);
     this.context = new DiseaseNotificationContext(this.notification, bundle, notifiedPerson);
   }
 
   private Condition createCondition() {
     this.diseases.addDisease(this.context);
     Bundle bundle = this.context.bundle().build();
+    bundle.setId("Bundle/123");
     return bundle.getEntry().stream()
         .map(Bundle.BundleEntryComponent::getResource)
         .filter(Condition.class::isInstance)
@@ -88,6 +94,7 @@ class DiseasesTest {
       String status, String clinicalStatusCode, String verificationStatusCode) {
     this.status.setStatus(DiseaseStatus.StatusEnum.valueOf(status));
     Condition condition = createCondition();
+    condition.setId("Condition/123");
 
     // clinical status
     if (StringUtils.isBlank(clinicalStatusCode)) {

@@ -622,8 +622,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "116148004",
-              "display": "Molecular genetic procedure (procedure)"
+              "code": "708068002",
+              "display": "Molecular genetics technique (qualifier value)"
             }
           ]
         },
@@ -688,8 +688,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "116148004",
-              "display": "Molecular genetic procedure (procedure)"
+              "code": "708068002",
+              "display": "Molecular genetics technique (qualifier value)"
             }
           ]
         },

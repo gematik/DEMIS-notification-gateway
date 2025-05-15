@@ -57,7 +57,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PathogenSendServiceTest implements BaseTestUtils {
 
   private final OkResponseService okResponseService = new OkResponseService();
-  private final PathogenBundleCreationService mapper = new PathogenBundleCreationService();
+  private final PathogenBundleCreationService mapper = new PathogenBundleCreationService(false);
   private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
   @Mock private BundlePublisher bundlePublisher;

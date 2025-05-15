@@ -26,27 +26,24 @@ package de.gematik.demis.notificationgateway.common.mappers;
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.STRUCTURE_DEFINITION_ADDRESS_USE;
 import static de.gematik.demis.notificationgateway.common.utils.DateUtils.createDate;
+import static de.gematik.demis.notificationgateway.domain.pathogen.creator.AddressCreator.createAddress;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.LaboratoryReportDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.PathogenDetectionDataBuilder;
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.HumanNameDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.PractitionerRoleBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.TelecomDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
-import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.FacilityAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.FacilityInfo;
 import de.gematik.demis.notificationgateway.common.dto.MethodPathogenDTO;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
-import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonBasicInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
@@ -55,7 +52,6 @@ import de.gematik.demis.notificationgateway.common.dto.ResistanceDTO;
 import de.gematik.demis.notificationgateway.common.dto.ResistanceGeneDTO;
 import de.gematik.demis.notificationgateway.common.dto.SubmitterFacility;
 import de.gematik.demis.notificationgateway.common.dto.SubmittingFacilityInfo;
-import de.gematik.demis.notificationgateway.common.utils.ConfiguredCodeSystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -117,19 +113,6 @@ public interface BundleMapper {
             .addPrefix(practitionerInfo.getPrefix());
     findSalutation(practitionerInfo).ifPresent(humanNameDataBuilder::setSalutation);
     return humanNameDataBuilder.build();
-  }
-
-  default Address createAddress(FacilityAddressInfo addressInfo) {
-    if (addressInfo == null) {
-      return null;
-    }
-    return new AddressDataBuilder()
-        .setHouseNumber(addressInfo.getHouseNumber())
-        .setStreet(addressInfo.getStreet())
-        .setCity(addressInfo.getCity())
-        .setPostalCode(addressInfo.getZip())
-        .setCountry(addressInfo.getCountry())
-        .build();
   }
 
   default PractitionerRole createSubmitterPractitionerRole(
@@ -295,7 +278,8 @@ public interface BundleMapper {
       Patient patient,
       Specimen specimen,
       List<Observation> observationList,
-      String pathogenCode) {
+      String pathogenCode,
+      boolean featureFlagSnapshot5_3_0Active) {
     if (resistanceGenes == null || resistanceGenes.isEmpty()) {
       return;
     }
@@ -324,11 +308,21 @@ public interface BundleMapper {
         }
       }
 
+      String methodCode;
+      String methodDisplay;
+      if (featureFlagSnapshot5_3_0Active) {
+        methodCode = "708068002";
+        methodDisplay = "Molecular genetics technique (qualifier value)";
+      } else {
+        methodCode = "116148004";
+        methodDisplay = "Molecular genetic procedure (procedure)";
+      }
+
       observationList.add(
           new PathogenDetectionDataBuilder()
               .setDefaultData()
-              .setMethodCode("116148004")
-              .setMethodDisplay("Molecular genetic procedure (procedure)")
+              .setMethodCode(methodCode)
+              .setMethodDisplay(methodDisplay)
               .setInterpretationCode(interpretation)
               .setValue(
                   new CodeableConcept(
@@ -461,75 +455,6 @@ public interface BundleMapper {
         .setValue(contactPointInfo.getValue())
         .setUse(usage == null ? null : ContactPoint.ContactPointUse.fromCode(usage.getValue()))
         .build();
-  }
-
-  default Address createAddress(NotifiedPersonAddressInfo personAddress) {
-    if (personAddress == null) {
-      return null;
-    }
-
-    final Address address;
-    final AddressDataBuilder addressDataBuilder =
-        new AddressDataBuilder()
-            .setHouseNumber(personAddress.getHouseNumber())
-            .setStreet(personAddress.getStreet())
-            .setPostalCode(personAddress.getZip())
-            .setCity(personAddress.getCity())
-            .setCountry(personAddress.getCountry());
-
-    switch (personAddress.getAddressType()) {
-      case SUBMITTING_FACILITY:
-      case PRIMARY_AS_CURRENT:
-      case CURRENT:
-      case PRIMARY:
-      case ORDINARY:
-        addressDataBuilder.setAdditionalInfo(personAddress.getAdditionalInfo());
-        break;
-      case OTHER_FACILITY:
-        // NO-OP we don't want additional info for other facility, this is where we store the
-        // name of the facility...
-        break;
-      default:
-        throw new IllegalStateException("Unexpected value: " + personAddress.getAddressType());
-    }
-    address = addressDataBuilder.build();
-    final Coding addressUse = getAddressUseCoding(personAddress.getAddressType());
-    if (addressUse != null) {
-      address.addExtension().setUrl(STRUCTURE_DEFINITION_ADDRESS_USE).setValue(addressUse);
-    }
-
-    return address;
-  }
-
-  default Address createAddressWithoutAddressUse(NotifiedPersonAddressInfo personAddress) {
-    final Address address = createAddress(personAddress);
-    address.getExtension().clear();
-    return address;
-  }
-
-  /** Create an address referencing the given organization */
-  default Address createAddress(
-      final NotifiedPersonAddressInfo addressInfo, final Organization organization) {
-    final Address result =
-        new AddressDataBuilder().withOrganizationReferenceExtension(organization).build();
-    final Coding addressUse = getAddressUseCoding(addressInfo.getAddressType());
-    if (addressUse != null) {
-      result.addExtension().setUrl(STRUCTURE_DEFINITION_ADDRESS_USE).setValue(addressUse);
-    }
-
-    return result;
-  }
-
-  /** Translate front-end address types to the internal code system */
-  private static Coding getAddressUseCoding(final AddressType addressType) {
-    AddressType.fromValue(addressType.getValue());
-    final String referencedCodingValue =
-        switch (addressType) {
-          case SUBMITTING_FACILITY, OTHER_FACILITY, PRIMARY_AS_CURRENT -> "current";
-          default -> addressType.getValue();
-        };
-
-    return ConfiguredCodeSystems.getInstance().getAddressUseCoding(referencedCodingValue);
   }
 
   private Optional<HumanNameDataBuilder.Salutation> findSalutation(PractitionerInfo contact) {

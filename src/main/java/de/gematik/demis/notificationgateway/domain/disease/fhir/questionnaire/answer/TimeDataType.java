@@ -44,6 +44,26 @@ final class TimeDataType implements DataType<TimeType> {
   }
 
   private String getValue(QuestionnaireResponseAnswer answer) {
-    return Objects.requireNonNull(answer.getValueTime(), "time value not set");
+    final String input = Objects.requireNonNull(answer.getValueTime(), "time value not set");
+    // Supported formats: HH:mm, HH:mm:ss, HH:mm:ss.SSS
+    if (!input.matches("^\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,3})?)?$")) {
+      throw new IllegalArgumentException("Invalid time format: " + input);
+    }
+    final String[] parts = input.split("[:\\.]");
+    final int hour = Integer.parseInt(parts[0]);
+    if (hour < 0 || hour > 23) {
+      throw new IllegalArgumentException("Hour out of valid range: " + hour);
+    }
+    final int minute = Integer.parseInt(parts[1]);
+    if (minute < 0 || minute > 59) {
+      throw new IllegalArgumentException("Minute out of valid range: " + minute);
+    }
+    if (parts.length > 2) {
+      final int second = Integer.parseInt(parts[2]);
+      if (second < 0 || second > 59) {
+        throw new IllegalArgumentException("Second out of valid range: " + second);
+      }
+    }
+    return input;
   }
 }

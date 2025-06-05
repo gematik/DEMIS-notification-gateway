@@ -30,6 +30,7 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseAnswer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.DateType;
@@ -41,6 +42,16 @@ final class DateDataType implements DataType<DateType> {
   private static final String MONTH_OF_YEAR_ISO = "yyyy-MM";
   private static final String DAY_OF_YEAR_ISO = "yyyy-MM-dd";
   private static final String UNSUPPORTED_DATE_FORMAT = "Unsupported date format: ";
+
+  private static Date parse(String text, String pattern) {
+    try {
+      final SimpleDateFormat parser = new SimpleDateFormat(pattern);
+      parser.setLenient(false);
+      return parser.parse(text);
+    } catch (ParseException e) {
+      throw new IllegalArgumentException(UNSUPPORTED_DATE_FORMAT + text, e);
+    }
+  }
 
   @Override
   public DateType toFhir(QuestionnaireResponseAnswer answer) {
@@ -66,14 +77,10 @@ final class DateDataType implements DataType<DateType> {
   }
 
   private DateType createMonthOfYearFrom7Chars(String text) {
-    String pattern = getMonthOfYearPattern(text);
-    try {
-      final DateType value = new DateType();
-      value.setValue(new SimpleDateFormat(pattern).parse(text), TemporalPrecisionEnum.MONTH);
-      return value;
-    } catch (ParseException e) {
-      throw new IllegalArgumentException(UNSUPPORTED_DATE_FORMAT + text, e);
-    }
+    final String pattern = getMonthOfYearPattern(text);
+    final DateType value = new DateType();
+    value.setValue(parse(text, pattern), TemporalPrecisionEnum.MONTH);
+    return value;
   }
 
   private DateType createYearFrom4Chars(String text) {
@@ -84,14 +91,10 @@ final class DateDataType implements DataType<DateType> {
   }
 
   private DateType createDateFrom10Chars(String text) {
-    String pattern = getDayOfYearPattern(text);
-    try {
-      final DateType date = new DateType();
-      date.setValue(new SimpleDateFormat(pattern).parse(text), TemporalPrecisionEnum.DAY);
-      return date;
-    } catch (ParseException e) {
-      throw new IllegalArgumentException(UNSUPPORTED_DATE_FORMAT + text, e);
-    }
+    final String pattern = getDayOfYearPattern(text);
+    final DateType date = new DateType();
+    date.setValue(parse(text, pattern), TemporalPrecisionEnum.DAY);
+    return date;
   }
 
   private boolean isGerman(String text) {

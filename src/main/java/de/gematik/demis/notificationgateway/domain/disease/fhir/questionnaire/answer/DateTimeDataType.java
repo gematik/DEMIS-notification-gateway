@@ -68,7 +68,9 @@ final class DateTimeDataType implements DataType<DateTimeType> {
 
   private Date parseGermanDateTime(String text) {
     try {
-      return new SimpleDateFormat(DATE_TIME_PATTERN_GERMAN).parse(text);
+      final SimpleDateFormat parser = new SimpleDateFormat(DATE_TIME_PATTERN_GERMAN);
+      parser.setLenient(false);
+      return parser.parse(text);
     } catch (ParseException e) {
       throw new IllegalArgumentException("Invalid date time format: " + text, e);
     }

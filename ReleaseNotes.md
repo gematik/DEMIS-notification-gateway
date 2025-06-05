@@ -1,6 +1,8 @@
 <img align="right" width="200" height="37" src="media/Gematik_Logo_Flag.png"/> <br/>
 
 # Release notes notification-gateway
+## Release 6.3.9
+- updating dependencies
 
 ## Release 6.3.7
 - change base chart to istio hostnames

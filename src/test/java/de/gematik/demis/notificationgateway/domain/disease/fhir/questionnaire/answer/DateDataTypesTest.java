@@ -30,7 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseAnswer;
+import org.assertj.core.api.Assertions;
 import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.TimeType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -95,13 +97,58 @@ class DateDataTypesTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"15:45,15:45"})
-  void testTimeDataType(String input, String expected) {
+  @CsvSource({"15:45,15,45,0", "13:45:11,13,45,11", "13:45:11.500,13,45,11.5f"})
+  void testTimeDataType(String input, int expectedHour, int expectedMinute, float expectedSecond) {
     QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer();
     answer.setValueTime(input);
     TimeDataType timeDataType = new TimeDataType();
     assertThat(timeDataType.test(answer)).isTrue();
-    String text = timeDataType.toFhir(answer).getValueAsString();
-    assertThat(text).isEqualTo(expected);
+    TimeType timeType = timeDataType.toFhir(answer);
+    assertThat(timeType.getHour()).isEqualTo(expectedHour);
+    assertThat(timeType.getMinute()).isEqualTo(expectedMinute);
+    assertThat(timeType.getSecond()).isEqualTo(expectedSecond);
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "foobar",
+    "50.17.2000",
+    "17.2000",
+    "20001",
+    "201",
+    "21",
+    "2",
+    "2000-17-50",
+    "2000-17"
+  })
+  void testIllegalDateInputs(String input) {
+    QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer();
+    answer.setValueDate(input);
+    DateDataType dateDataType = new DateDataType();
+    Assertions.assertThatException().isThrownBy(() -> dateDataType.toFhir(answer));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "foobar",
+    "24.05.2001 32:45",
+    "24.05.2001 13:77",
+    "2001-05-24T32:45:00+02:00",
+    "2001-05-24T13:77:00+02:00"
+  })
+  void testIllegalDateTimeInputs(String input) {
+    QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer();
+    answer.setValueDateTime(input);
+    DateTimeDataType dateTimeDataType = new DateTimeDataType();
+    Assertions.assertThatException().isThrownBy(() -> dateTimeDataType.toFhir(answer));
+  }
+
+  @ParameterizedTest
+  @CsvSource({"foobar", "32:45", "13:77", "13:45:77", "13:45:32.1234"})
+  void testIllegalTimeInputs(String input) {
+    QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer();
+    answer.setValueTime(input);
+    TimeDataType timeDataType = new TimeDataType();
+    Assertions.assertThatException().isThrownBy(() -> timeDataType.toFhir(answer).getHour());
   }
 }

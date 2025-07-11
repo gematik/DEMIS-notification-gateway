@@ -54,7 +54,7 @@ public class QuestionnaireResponses {
     common.setNotifiedPerson(context.notifiedPerson());
     common.setStandardStatus(QuestionnaireResponseStatus.COMPLETED);
     createItems(context, questionnaireResponse, common::addItem);
-    context.bundle().setCommonInformation(common.build());
+    context.bundleBuilder().setCommonInformation(common.build());
   }
 
   /**
@@ -71,7 +71,7 @@ public class QuestionnaireResponses {
     specific.setNotifiedPerson(context.notifiedPerson());
     specific.setStandardStatus(QuestionnaireResponseStatus.COMPLETED);
     createItems(context, questionnaireResponse, specific::addItem);
-    context.bundle().setSpecificInformation(specific.build());
+    context.bundleBuilder().setSpecificInformation(specific.build());
   }
 
   private void setSpecifics(

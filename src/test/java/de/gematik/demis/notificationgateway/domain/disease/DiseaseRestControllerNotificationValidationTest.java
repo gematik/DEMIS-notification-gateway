@@ -62,7 +62,7 @@ class DiseaseRestControllerNotificationValidationTest {
 
   private static void createController() {
     final var validator = Validation.buildDefaultValidatorFactory().getValidator();
-    controller = new DiseaseRestController(validator, null);
+    controller = new DiseaseRestController(validator, null, false);
   }
 
   @AfterAll

@@ -28,6 +28,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
 
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.*;
 
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
@@ -40,7 +41,6 @@ import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreat
 import de.gematik.demis.notificationgateway.common.utils.ConfiguredCodeSystems;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Coding;
@@ -49,13 +49,21 @@ import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.StringType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@AllArgsConstructor
 @Service
 class OrganizationCreationService {
 
   private final FhirObjectCreationService fhirObjectCreationService;
+  private final boolean isNotification73active;
+
+  OrganizationCreationService(
+      FhirObjectCreationService fhirObjectCreationService,
+      @Value("${feature.flag.notifications.7_3}") boolean isNotification73active) {
+    this.fhirObjectCreationService = fhirObjectCreationService;
+    this.isNotification73active = isNotification73active;
+  }
 
   public Organization createNotifierFacility(final NotifierFacility notifierFacilityContent) {
     final String organizationType = notifierFacilityContent.getFacilityInfo().getOrganizationType();
@@ -177,8 +185,20 @@ class OrganizationCreationService {
   }
 
   private void addAddress(Organization notifierFacility, NotifierFacility notifierFacilityContent) {
-    final Address fhirAddress =
-        fhirObjectCreationService.createAddress(notifierFacilityContent.getAddress());
+    var address = notifierFacilityContent.getAddress();
+    final Address fhirAddress;
+    if (isNotification73active)
+      fhirAddress =
+          new AddressDataBuilder()
+              .setStreet(address.getStreet())
+              .setHouseNumber(address.getHouseNumber())
+              .setCity(address.getCity())
+              .setPostalCode(address.getZip())
+              .setCountry(address.getCountry())
+              .build();
+    else {
+      fhirAddress = fhirObjectCreationService.createAddress(notifierFacilityContent.getAddress());
+    }
     notifierFacility.addAddress(fhirAddress);
   }
 

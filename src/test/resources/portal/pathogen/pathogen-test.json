@@ -109,6 +109,7 @@
     "codeDisplay": {
       "code": "banp",
       "display": "Bacillus anthracis",
+      "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
       "designations": [
         {
           "language": "de-DE",
@@ -123,6 +124,7 @@
         "material":{
           "code":"258450006",
           "display":"Cerebrospinal fluid specimen (specimen)",
+          "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
           "designations":[
             {
               "language":"de-DE",
@@ -139,6 +141,7 @@
             "method":{
               "code":"121276004",
               "display":"Antigen assay (procedure)",
+              "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
               "designations":[
                 {
                   "language":"en-US",
@@ -160,6 +163,7 @@
         "material":{
           "code":"119339001",
           "display":"Stool specimen (specimen)",
+          "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
           "designations":[
             {
               "language":"en-US",
@@ -176,6 +180,7 @@
             "method":{
               "code":"117040002",
               "display":"Nucleic acid sequencing (procedure)",
+              "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
               "designations":[
                 {
                   "language":"en-US",
@@ -193,6 +198,7 @@
             "method":{
               "code":"14788002",
               "display":"Antimicrobial susceptibility test (procedure)",
+              "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
               "designations":[
                 {
                   "language":"en-US",
@@ -212,6 +218,7 @@
             "resistance":{
               "code":"100049-6",
               "display":"Eravacycline [Susceptibility]",
+              "system" : "http://loinc.org|2.79",
               "designations":[
                 {
                   "language":"de-DE",
@@ -225,6 +232,7 @@
             "resistance":{
               "code":"18860-7",
               "display":"Amikacin [Susceptibility]",
+              "system" : "http://loinc.org|2.79",
               "designations":[
                 {
                   "language":"de-DE",
@@ -240,6 +248,7 @@
             "resistanceGene":{
               "code":"73982-1",
               "display":"Carbapenem resistance blaNDM gene [Presence] by Molecular method",
+              "system" : "http://loinc.org|2.79",
               "designations":[
                 {
                   "language":"de-DE",
@@ -253,6 +262,7 @@
             "resistanceGene":{
               "code":"85501-5",
               "display":"Carbapenem resistance blaVIM gene [Presence] by Molecular method",
+              "system" : "http://loinc.org|2.79",
               "designations":[
                 {
                   "language":"de-DE",

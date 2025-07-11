@@ -111,7 +111,7 @@ public class Organizations implements ResourceFactory {
     if (organization == null) {
       organization = createOrganization(organizationItem);
     }
-    context.bundle().addOrganization(organization);
+    context.bundleBuilder().addOrganization(organization);
     return organization;
   }
 
@@ -334,7 +334,7 @@ public class Organizations implements ResourceFactory {
 
   @Nullable
   private Organization getNotifierOrganization(DiseaseNotificationContext context) {
-    final PractitionerRole notifier = context.bundle().getNotifierRole();
+    final PractitionerRole notifier = context.bundleBuilder().getNotifierRole();
     if (notifier != null) {
       final Reference reference = notifier.getOrganization();
       if (reference != null) {

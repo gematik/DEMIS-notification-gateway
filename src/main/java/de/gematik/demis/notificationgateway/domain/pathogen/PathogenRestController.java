@@ -27,9 +27,9 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  */
 
 import static de.gematik.demis.notificationgateway.common.constants.WebConstants.API_NG_NOTIFICATION;
-import static de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType.ANONYMOUS;
-import static de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType.LAB;
-import static de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType.NON_NOMINAL;
+import static de.gematik.demis.notificationgateway.common.enums.NotificationType.ANONYMOUS;
+import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NOMINAL;
+import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NON_NOMINAL;
 
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
@@ -58,25 +58,25 @@ public class PathogenRestController {
 
   public PathogenRestController(
       PathogenSendService sendService,
-      @Value("${feature.flag.notification7_3}") Boolean notification7_3Active) {
+      @Value("${feature.flag.notifications.7_3}") Boolean notification7_3Active) {
     this.sendService = sendService;
     this.notification7_3Active = notification7_3Active;
   }
 
-  @PostMapping({"/pathogen", "/pathogen/7_1"})
+  @PostMapping({"/pathogen", "/pathogen/7.1"})
   ResponseEntity<OkResponse> send(
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
       throws AuthException {
 
     if (notification7_3Active) {
       return ResponseEntity.ok(
-          sendService.processPortalNotificationData(pathogenTest, Token.of(headers), LAB));
+          sendService.processPortalNotificationData(pathogenTest, Token.of(headers), NOMINAL));
     } else {
       return ResponseEntity.ok(sendService.send(pathogenTest, Token.of(headers)));
     }
   }
 
-  @PostMapping("/pathogen/7_3/non_nominal")
+  @PostMapping("/pathogen/7.3/non_nominal")
   ResponseEntity<OkResponse> send7_3_non_nominal(
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
       throws BadRequestException, AuthException {
@@ -85,7 +85,7 @@ public class PathogenRestController {
         sendService.processPortalNotificationData(pathogenTest, Token.of(headers), NON_NOMINAL));
   }
 
-  @PostMapping("/pathogen/7_3/anonymous")
+  @PostMapping("/pathogen/7.3/anonymous")
   ResponseEntity<OkResponse> send7_3_anonymous(
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
       throws BadRequestException, AuthException {

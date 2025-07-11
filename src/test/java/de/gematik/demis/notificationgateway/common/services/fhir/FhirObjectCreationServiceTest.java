@@ -51,7 +51,7 @@ import org.junit.jupiter.api.Test;
 
 class FhirObjectCreationServiceTest {
 
-  private final FhirObjectCreationService creationService = new FhirObjectCreationService();
+  private final FhirObjectCreationService creationService = new FhirObjectCreationService(false);
 
   @Test
   void testCreateParameters() {
@@ -94,21 +94,6 @@ class FhirObjectCreationServiceTest {
     assertEquals("Derzeitiger Aufenthaltsort", value.getDisplay());
 
     assertFalse(address.hasLine());
-    assertEquals("Buchhorst", address.getCity());
-    assertEquals("DE", address.getCountry());
-    assertEquals("21481", address.getPostalCode());
-  }
-
-  @Test
-  void testCreateAddressWithoutAddressType() throws JsonProcessingException {
-    final QuickTest quickTest =
-        FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
-
-    final Address address =
-        creationService.createAddress(quickTest.getNotifierFacility().getAddress());
-
-    assertFalse(address.hasExtension());
-    assertEquals("Straße 1", address.getLine().get(0).asStringValue());
     assertEquals("Buchhorst", address.getCity());
     assertEquals("DE", address.getCountry());
     assertEquals("21481", address.getPostalCode());

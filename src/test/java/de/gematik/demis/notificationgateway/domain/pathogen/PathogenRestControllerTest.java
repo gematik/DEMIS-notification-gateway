@@ -31,8 +31,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.utils.Token;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
 import de.gematik.demis.notificationgateway.domain.pathogen.services.PathogenSendService;
 import jakarta.security.auth.message.AuthException;
 import org.junit.jupiter.api.Test;
@@ -57,6 +57,6 @@ class PathogenRestControllerTest {
 
     verify(pathogenSendService)
         .processPortalNotificationData(
-            eq(pathogenTest), any(Token.class), eq(LaboratoryNotificationType.LAB));
+            eq(pathogenTest), any(Token.class), eq(NotificationType.NOMINAL));
   }
 }

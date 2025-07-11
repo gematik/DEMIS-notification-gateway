@@ -134,6 +134,7 @@
         "material":{
           "code":"119342007",
           "display":"Saliva specimen (specimen)",
+          "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
           "designations":[
             {
               "language":"en-US",
@@ -150,6 +151,7 @@
             "method":{
               "code":"31651002",
               "display":"Immunoglobulin A measurement (procedure)",
+              "system" : "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115",
               "designations":[
                 {
                   "language":"en-US",

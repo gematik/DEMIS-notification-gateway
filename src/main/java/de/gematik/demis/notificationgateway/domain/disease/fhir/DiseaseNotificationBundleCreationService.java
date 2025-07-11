@@ -27,12 +27,14 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  */
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationBundleDiseaseDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationBundleDiseaseNonNominalDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationDiseaseDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.DemisConstants;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponse;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.QuestionnaireResponses;
 import jakarta.annotation.Nullable;
@@ -60,23 +62,37 @@ public class DiseaseNotificationBundleCreationService {
   private final QuestionnaireResponses questionnaireResponses;
 
   /**
-   * Create FHIR bundle for disease notification
+   * @deprecated should be removed with feature.flag.notifications.7_3
+   * @param diseaseNotification
+   * @return
+   * @throws BadRequestException
+   */
+  @Deprecated
+  public Bundle createBundle(DiseaseNotification diseaseNotification) throws BadRequestException {
+    return createBundle(diseaseNotification, NotificationType.NOMINAL);
+  }
+
+  /**
+   * Create FHIR bundleBuilder for disease notification
    *
    * @param diseaseNotification disease notification
-   * @return FHIR bundle
+   * @return FHIR bundleBuilder
    */
-  public Bundle createBundle(DiseaseNotification diseaseNotification) throws BadRequestException {
+  public Bundle createBundle(
+      DiseaseNotification diseaseNotification, NotificationType notificationType)
+      throws BadRequestException {
     PractitionerRole notifier = createNotifier(diseaseNotification);
     Patient patient =
         this.notifiedPersonCreationService.createPatient(
             diseaseNotification.getNotifiedPerson(), notifier);
 
-    DiseaseNotificationContext context = createContext(diseaseNotification, notifier, patient);
+    DiseaseNotificationContext context =
+        createContext(diseaseNotification, notifier, patient, notificationType);
     createDisease(context);
     createCommonQuestionnaireResponse(diseaseNotification, context);
     createDiseaseQuestionnaireResponse(diseaseNotification, context);
     createComposition(context);
-    return context.bundle().build();
+    return context.bundleBuilder().build();
   }
 
   private PractitionerRole createNotifier(DiseaseNotification diseaseNotification)
@@ -89,12 +105,20 @@ public class DiseaseNotificationBundleCreationService {
   private DiseaseNotificationContext createContext(
       DiseaseNotification diseaseNotification,
       PractitionerRole notifierRole,
-      Patient notifiedPerson) {
-    NotificationBundleDiseaseDataBuilder bundle = new NotificationBundleDiseaseDataBuilder();
-    bundle.setDefaults();
-    bundle.setNotifierRole(notifierRole);
-    setNotifiedPerson(notifiedPerson, bundle);
-    return new DiseaseNotificationContext(diseaseNotification, bundle, notifiedPerson);
+      Patient notifiedPerson,
+      NotificationType notificationType)
+      throws BadRequestException {
+    NotificationBundleDiseaseDataBuilder bundleBuilder;
+    switch (notificationType) {
+      case NOMINAL -> bundleBuilder = new NotificationBundleDiseaseDataBuilder();
+      case NON_NOMINAL, ANONYMOUS ->
+          bundleBuilder = new NotificationBundleDiseaseNonNominalDataBuilder();
+      default -> throw new BadRequestException("Unsupported notification type");
+    }
+    bundleBuilder.setDefaults();
+    bundleBuilder.setNotifierRole(notifierRole);
+    setNotifiedPerson(notifiedPerson, bundleBuilder);
+    return new DiseaseNotificationContext(diseaseNotification, bundleBuilder, notifiedPerson);
   }
 
   private void setNotifiedPerson(
@@ -133,7 +157,10 @@ public class DiseaseNotificationBundleCreationService {
 
   private void createCommonQuestionnaireResponse(
       DiseaseNotification diseaseNotification, DiseaseNotificationContext context) {
-    this.questionnaireResponses.addCommon(context, diseaseNotification.getCommon());
+    var common = diseaseNotification.getCommon();
+    if ((common != null) && !common.getItem().isEmpty()) {
+      this.questionnaireResponses.addCommon(context, diseaseNotification.getCommon());
+    }
   }
 
   private void createDiseaseQuestionnaireResponse(
@@ -145,7 +172,7 @@ public class DiseaseNotificationBundleCreationService {
   }
 
   private void createComposition(DiseaseNotificationContext context) {
-    NotificationBundleDiseaseDataBuilder bundle = context.bundle();
+    NotificationBundleDiseaseDataBuilder bundle = context.bundleBuilder();
     NotificationDiseaseDataBuilder composition = bundle.createComposition();
     DiseaseStatus status = context.notification().getStatus();
     Composition.CompositionStatus compositionStatus =

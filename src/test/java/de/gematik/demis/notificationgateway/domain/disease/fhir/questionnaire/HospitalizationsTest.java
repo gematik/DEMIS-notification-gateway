@@ -67,7 +67,7 @@ class HospitalizationsTest {
   void setUp() {
     Answers answers = new AnswersFactory().get();
     hospitalizations = new Hospitalizations(answers, organizations);
-    when(context.bundle()).thenReturn(new NotificationBundleDiseaseDataBuilder());
+    when(context.bundleBuilder()).thenReturn(new NotificationBundleDiseaseDataBuilder());
   }
 
   @Test

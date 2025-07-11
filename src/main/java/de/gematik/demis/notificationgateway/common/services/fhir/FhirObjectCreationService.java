@@ -45,10 +45,18 @@ import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FhirObjectCreationService {
+
+  private final boolean isNotification73active;
+
+  public FhirObjectCreationService(
+      @Value("${feature.flag.notifications.7_3}") boolean isNotification73active) {
+    this.isNotification73active = isNotification73active;
+  }
 
   public Parameters createParameters(Bundle bundle) {
     Parameters parameters = new Parameters();
@@ -58,14 +66,27 @@ public class FhirObjectCreationService {
   }
 
   public Address createAddress(NotifiedPersonAddressInfo address, boolean withAddressUse) {
-    final Address fhirAddress =
-        createAddress(
-            address.getStreet(),
-            address.getHouseNumber(),
-            address.getAdditionalInfo(),
-            address.getZip(),
-            address.getCity(),
-            address.getCountry());
+    final Address fhirAddress;
+    if (isNotification73active) {
+      fhirAddress =
+          new AddressDataBuilder()
+              .setStreet(address.getStreet())
+              .setHouseNumber(address.getHouseNumber())
+              .setAdditionalInfo(address.getAdditionalInfo())
+              .setCountry(address.getCountry())
+              .setPostalCode(address.getZip())
+              .setCountry(address.getCountry())
+              .build();
+    } else {
+      fhirAddress =
+          createAddress(
+              address.getStreet(),
+              address.getHouseNumber(),
+              address.getAdditionalInfo(),
+              address.getZip(),
+              address.getCity(),
+              address.getCountry());
+    }
 
     final AddressType addressType = address.getAddressType();
     if (withAddressUse && addressType != null) {
@@ -79,6 +100,12 @@ public class FhirObjectCreationService {
     return fhirAddress;
   }
 
+  /**
+   * @deprecated remove with feature.flag.notifications.7_3
+   * @param address
+   * @return
+   */
+  @Deprecated(forRemoval = true)
   public Address createAddress(FacilityAddressInfo address) {
     return createAddress(
         address.getStreet(),
@@ -135,6 +162,17 @@ public class FhirObjectCreationService {
     return ConfiguredCodeSystems.getInstance().getAddressUseCoding(referencedCodingValue);
   }
 
+  /**
+   * @deprecated remove with feature.flag.notifications.7_3
+   * @param street
+   * @param houseNumber
+   * @param additionalInfo
+   * @param zip
+   * @param city
+   * @param country
+   * @return
+   */
+  @Deprecated(forRemoval = true)
   public Address createAddress(
       String street,
       String houseNumber,

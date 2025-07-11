@@ -57,9 +57,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class NotifiedPersonCreationServiceTest {
 
   private final FhirObjectCreationService fhirObjectCreationService =
-      new FhirObjectCreationService();
+      new FhirObjectCreationService(false);
   private final OrganizationCreationService organizationCreationService =
-      new OrganizationCreationService(fhirObjectCreationService);
+      new OrganizationCreationService(fhirObjectCreationService, false);
   private final NotifiedPersonCreationService notifiedPersonCreationService =
       new NotifiedPersonCreationService(fhirObjectCreationService, organizationCreationService);
 

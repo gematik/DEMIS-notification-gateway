@@ -39,9 +39,9 @@ import java.util.List;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Organization;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -49,10 +49,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrganizationCreationServiceTest {
 
   @Mock private FhirObjectCreationService fhirObjectCreationServiceMock;
-  @InjectMocks private OrganizationCreationService creationService;
+  private OrganizationCreationService creationService;
+  private OrganizationCreationService creationServiceActiveFlag;
+
+  @BeforeEach()
+  void setUp() {
+    creationService = new OrganizationCreationService(fhirObjectCreationServiceMock, false);
+    creationServiceActiveFlag =
+        new OrganizationCreationService(fhirObjectCreationServiceMock, true);
+  }
 
   @Test
-  void createNotifierFacilitySuccessfully() throws JsonProcessingException {
+  void createNotifierFacilitySuccessfullyRegression() throws JsonProcessingException {
     final QuickTest quickTest =
         FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
 
@@ -67,13 +75,40 @@ class OrganizationCreationServiceTest {
   }
 
   @Test
-  void testNotifierFacilityIsHospital() throws JsonProcessingException {
+  void testNotifierFacilityIsHospitalRegression() throws JsonProcessingException {
     final QuickTest quickTest =
         FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
 
     final NotifierFacility notifierFacilityContent = quickTest.getNotifierFacility();
     final Organization notifierFacility =
         creationService.createHospitalNotifierFacility(notifierFacilityContent);
+
+    assertOrgaType("hospital", "Krankenhaus", notifierFacility);
+  }
+
+  @Test
+  void createNotifierFacilitySuccessfully() throws JsonProcessingException {
+    final QuickTest quickTest =
+        FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
+
+    final NotifierFacility notifierFacility = quickTest.getNotifierFacility();
+    final FacilityInfo facilityInfo = notifierFacility.getFacilityInfo();
+    final String orgaTypeCode = "mySpecialCodeValue";
+    facilityInfo.setOrganizationType(orgaTypeCode);
+
+    final Organization result = creationServiceActiveFlag.createNotifierFacility(notifierFacility);
+
+    assertOrgaType(orgaTypeCode, null, result);
+  }
+
+  @Test
+  void testNotifierFacilityIsHospital() throws JsonProcessingException {
+    final QuickTest quickTest =
+        FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
+
+    final NotifierFacility notifierFacilityContent = quickTest.getNotifierFacility();
+    final Organization notifierFacility =
+        creationServiceActiveFlag.createHospitalNotifierFacility(notifierFacilityContent);
 
     assertOrgaType("hospital", "Krankenhaus", notifierFacility);
   }

@@ -1,0 +1,170 @@
+{
+  "status": {
+    "category": "toxd",
+    "status": "final",
+    "note": "Wichtiger Hinweis zum Status der betroffenen Person."
+  },
+  "notifierFacility": {
+    "address": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Im Himmelreich",
+      "city": "Frühling",
+      "houseNumber": "1"
+    },
+    "contact": {
+      "firstname": "Test",
+      "lastname": "Person"
+    },
+    "contacts": [
+      {
+        "contactType": "email",
+        "value": "t.person@gmail.com"
+      },
+      {
+        "contactType": "email",
+        "value": "test.person@kh-rie.de"
+      },
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "01234567"
+      }
+    ],
+    "facilityInfo": {
+      "existsBsnr": true,
+      "bsnr": "123456789",
+      "institutionName": "Kreiskrankenhaus Riedlingen",
+      "organizationType": "hospital"
+    }
+  },
+  "notifiedPerson": {
+    "info": {
+      "gender": "MALE",
+      "firstname": "Max",
+      "lastname": "Melderson",
+      "birthDate": "1970-01-01"
+    },
+    "currentAddress": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Wohnsitzstraße",
+      "city": "Berlin",
+      "houseNumber": "1",
+      "addressType": "primaryAsCurrent"
+    },
+    "residenceAddress": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Wohnsitzstraße",
+      "city": "Berlin",
+      "houseNumber": "1",
+      "addressType": "primary"
+    },
+    "contacts": []
+  },
+  "condition": {
+    "recordedDate": "",
+    "onset": "",
+    "note": ""
+  },
+  "common": {
+    "questionnaire": "common",
+    "item": []
+  },
+  "disease": {
+    "questionnaire": "toxd",
+    "item": [
+      {
+        "linkId": "motherEvidence",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "newbornEvidence",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "46627006",
+              "display": "Chorioretinale Entzündung",
+              "designations": null,
+              "system": "http://snomed.info/sct",
+              "selected": true
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "pregnancyWeek",
+        "answer": [
+          {
+            "valueQuantity": {
+              "value": "33",
+              "unit": "days",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "newbornWeight",
+        "answer": [
+          {
+            "valueQuantity": {
+              "value": "2222",
+              "unit": "gram",
+              "system": "http://unitsofmeasure.org"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "newbornStatus",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "281050002",
+              "display": "Lebendgeburt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "infectionRiscDuringPregnancy",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "102432000",
+              "display": "Kontakt mit kontaminierter Erde",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "countryOriginMother",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "34051000087100:{370130000=41277001}",
+              "display": "Staatenlos",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

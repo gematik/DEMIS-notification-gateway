@@ -48,7 +48,7 @@ public class Immunizations implements ResourceFactory {
       DiseaseNotificationContext context, QuestionnaireResponseItem item) {
     QuestionnaireResponseItem immunizationItem = item.getAnswer().getFirst().getItem().getFirst();
     Immunization immunization = createImmunization(context, immunizationItem);
-    context.bundle().addImmunization(immunization);
+    context.bundleBuilder().addImmunization(immunization);
     return createFhirResource(immunization, item.getLinkId());
   }
 

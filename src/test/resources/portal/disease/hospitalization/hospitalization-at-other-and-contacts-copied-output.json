@@ -271,20 +271,6 @@
             "line": [
               "Im Himmelreich 1"
             ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Im Himmelreich"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
-            ],
             "city": "Frühling",
             "postalCode": "21481",
             "country": "DE"
@@ -319,21 +305,6 @@
             "line": [
               "Straße zur betroffenen Personeneinrichtung 42"
             ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Straße zur betroffenen Personeneinrichtung"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "42"
-                  }
-                ]
-              }
-            ],
-            "city": "Personeneinrichtungsstadt",
             "postalCode": "54321",
             "country": "DE"
           }
@@ -367,21 +338,6 @@
             "line": [
               "Straße zur betroffenen Personeneinrichtung 42"
             ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Straße zur betroffenen Personeneinrichtung"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "42"
-                  }
-                ]
-              }
-            ],
-            "city": "Personeneinrichtungsstadt",
             "postalCode": "54321",
             "country": "DE"
           }

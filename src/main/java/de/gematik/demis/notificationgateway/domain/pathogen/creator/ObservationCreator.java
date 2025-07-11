@@ -30,6 +30,7 @@ import static de.gematik.demis.notificationgateway.domain.pathogen.mapper.RkiCod
 import static de.gematik.demis.notificationgateway.domain.pathogen.mapper.RkiCodeUtil.getInterpretationValueCodeForResistanceGene;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.PathogenDetectionDataBuilder;
+import de.gematik.demis.notificationgateway.common.dto.CodeDisplay;
 import de.gematik.demis.notificationgateway.common.dto.MethodPathogenDTO;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
@@ -56,6 +57,9 @@ public class ObservationCreator {
 
   /** SNOMED CT URL used for coding in FHIR {@link Observation} objects. */
   public static final String SNOMED_CT_URL = "http://snomed.info/sct";
+
+  public static final String SNOMED_CT_VERSION =
+      "http://snomed.info/sct/11000274103/version/20241115";
 
   /**
    * Private constructor to prevent instantiation of this utility class.
@@ -152,8 +156,22 @@ public class ObservationCreator {
     }
     List<Observation> observations = new ArrayList<>();
     for (ResistanceGeneDTO resistanceGene : resistanceGenes) {
-      final String code = resistanceGene.getResistanceGene().getCode();
-      final String display = resistanceGene.getResistanceGene().getDisplay();
+      CodeDisplay gene = resistanceGene.getResistanceGene();
+      final String code = gene != null ? gene.getCode() : null;
+      final String display = gene != null ? gene.getDisplay() : null;
+      String obsercationSystem = null;
+      String observationVersion = null;
+      // TODO remove when with feature_flag_notifications_7_3 as it should be given every time
+      if (gene != null) {
+        String systemWithVersion = gene.getSystem();
+        if (systemWithVersion != null) {
+          String[] splitSystem = systemWithVersion.split("\\|");
+          obsercationSystem = splitSystem[0];
+          if (splitSystem.length > 1) {
+            observationVersion = splitSystem[1];
+          }
+        }
+      }
 
       RkiCodeUtil.InterpretationValueCode interpretationValueCodeForResistanceGene =
           getInterpretationValueCodeForResistanceGene(resistanceGene.getResistanceGeneResult());
@@ -170,21 +188,28 @@ public class ObservationCreator {
         methodCode = "116148004";
         methodDisplay = "Molecular genetic procedure (procedure)";
       }
-
-      observations.add(
+      Observation observation =
           new PathogenDetectionDataBuilder()
               .setDefaultData()
               .setMethodCode(methodCode)
               .setMethodDisplay(methodDisplay)
+              .setMethodSystem(SNOMED_CT_VERSION)
+              .setMethodCodingVersion(SNOMED_CT_URL)
               .setInterpretationCode(interpretation)
-              .setValue(new CodeableConcept(new Coding(SNOMED_CT_URL, valueCode, valueDisplay)))
+              .setValue(
+                  new CodeableConcept(
+                      new Coding(SNOMED_CT_URL, valueCode, valueDisplay)
+                          .setVersion(SNOMED_CT_VERSION)))
               .setNotifiedPerson(patient)
               .setSpecimen(specimen)
               .setProfileUrlHelper(pathogenCode)
               .setObservationCodeCode(code)
               .setObservationCodeDisplay(display)
+              .setObservationCodeSystem(obsercationSystem)
+              .setObservationCodeVersion(observationVersion)
               .setStatus(Observation.ObservationStatus.FINAL)
-              .build());
+              .build();
+      observations.add(observation);
     }
     return observations;
   }
@@ -205,8 +230,10 @@ public class ObservationCreator {
     }
     List<Observation> observations = new ArrayList<>();
     for (ResistanceDTO resistance : resistances) {
-      final String code = resistance.getResistance().getCode();
-      final String display = resistance.getResistance().getDisplay();
+      CodeDisplay resistanceCodeDisplay = resistance.getResistance();
+      final String code = resistanceCodeDisplay != null ? resistanceCodeDisplay.getCode() : null;
+      final String display =
+          resistanceCodeDisplay != null ? resistanceCodeDisplay.getDisplay() : null;
 
       RkiCodeUtil.InterpretationValueCode interpretationValueCodeForResistance =
           getInterpretationValueCodeForResistance(resistance.getResistanceResult());
@@ -214,20 +241,42 @@ public class ObservationCreator {
       final String valueCode = interpretationValueCodeForResistance.valueCode();
       final String valueDisplay = "";
 
-      observations.add(
+      String obsercationSystem = null;
+      String observationVersion = null;
+      // TODO remove when with feature_flag_notifications_7_3 as it should be given every time
+      if (resistanceCodeDisplay != null) {
+        String systemWithVersion = resistanceCodeDisplay.getSystem();
+        if (systemWithVersion != null) {
+          String[] splitSystem = systemWithVersion.split("\\|");
+          obsercationSystem = splitSystem[0];
+          if (splitSystem.length > 1) {
+            observationVersion = splitSystem[1];
+          }
+        }
+      }
+
+      Observation observation =
           new PathogenDetectionDataBuilder()
               .setDefaultData()
               .setMethodCode("14788002")
               .setMethodDisplay("Antimicrobial susceptibility test (procedure)")
+              .setMethodSystem(SNOMED_CT_URL)
+              .setMethodCodingVersion(SNOMED_CT_VERSION)
               .setInterpretationCode(interpretation)
-              .setValue(new CodeableConcept(new Coding(SNOMED_CT_URL, valueCode, valueDisplay)))
+              .setValue(
+                  new CodeableConcept(
+                      new Coding(SNOMED_CT_URL, valueCode, valueDisplay)
+                          .setVersion(SNOMED_CT_VERSION)))
               .setNotifiedPerson(patient)
               .setSpecimen(specimen)
               .setProfileUrlHelper(pathogenCode)
               .setObservationCodeCode(code)
               .setObservationCodeDisplay(display)
+              .setObservationCodeSystem(obsercationSystem)
+              .setObservationCodeVersion(observationVersion)
               .setStatus(Observation.ObservationStatus.FINAL)
-              .build());
+              .build();
+      observations.add(observation);
     }
     return observations;
   }
@@ -251,14 +300,33 @@ public class ObservationCreator {
       Patient patient,
       Specimen specimen,
       String pathogenCode) {
+
+    String methodSystem = null;
+    String methodVersion = null;
+    CodeDisplay method = methodPathogenDTO.getMethod();
+    // TODO remove when with feature_flag_notifications_7_3 as it should be given every time
+    if (method.getSystem() != null) {
+      String[] splitSystem = method.getSystem().split("\\|");
+      methodSystem = splitSystem[0];
+      if (splitSystem.length > 1) {
+        methodVersion = splitSystem[1];
+      }
+    }
+
     return new PathogenDetectionDataBuilder()
         .setDefaultData()
         .setInterpretationCode(methodPathogenDTO.getResult().getValue())
         .setMethodCode(methodPathogenDTO.getMethod().getCode())
         .setMethodDisplay(methodPathogenDTO.getMethod().getDisplay())
-        .setValue(new CodeableConcept(new Coding(SNOMED_CT_URL, valueCode, valueDisplay)))
+        .setMethodCodingVersion(methodVersion)
+        .setMethodSystem(methodSystem)
+        .setValue(
+            new CodeableConcept(
+                new Coding(SNOMED_CT_URL, valueCode, valueDisplay).setVersion(SNOMED_CT_VERSION)))
         .setObservationCodeCode("41852-5")
         .setObservationCodeDisplay("Microorganism or agent identified in Specimen")
+        .setObservationCodeSystem("http://loinc.org")
+        .setObservationCodeVersion("2.79")
         .setStatus(Observation.ObservationStatus.FINAL)
         .setNotifiedPerson(patient)
         .setSpecimen(specimen)

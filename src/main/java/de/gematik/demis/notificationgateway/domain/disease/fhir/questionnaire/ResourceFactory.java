@@ -38,8 +38,8 @@ import org.hl7.fhir.r4.model.Resource;
 
 interface ResourceFactory extends Predicate<QuestionnaireResponseItem> {
   /**
-   * Create FHIR resource from item data. Adds resource to the bundle and returns an item containing
-   * a <code>valueReference</code>.
+   * Create FHIR resource from item data. Adds resource to the bundleBuilder and returns an item
+   * containing a <code>valueReference</code>.
    *
    * @param context context
    * @param item item with resource data

@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.gematik.demis.notificationgateway.common.dto.*;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import java.time.LocalDate;
 import java.util.List;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -113,7 +113,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, LaboratoryNotificationType.LAB, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);
@@ -130,7 +130,8 @@ class BundleCreatorTest {
                 .map(Bundle.BundleEntryComponent::getResource)
                 .filter(resource -> resource instanceof Patient)
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Patient resource not found in bundle"));
+                .orElseThrow(
+                    () -> new AssertionError("Patient resource not found in bundleBuilder"));
     assertThat(patient.getNameFirstRep().getFamily()).isEqualTo("ExpectedFamilyName");
     //    assertThat(patient.getN().getFamily()).isEqualTo("ExpectedFamilyName");
 
@@ -149,7 +150,8 @@ class BundleCreatorTest {
                 .map(Bundle.BundleEntryComponent::getResource)
                 .filter(resource -> resource instanceof Specimen)
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Specimen resource not found in bundle"));
+                .orElseThrow(
+                    () -> new AssertionError("Specimen resource not found in bundleBuilder"));
     assertThat(specimen.getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
     assertThat(specimen.getCollection().getCollectedDateTimeType().getValue())
         .isEqualTo(java.sql.Date.valueOf(date));
@@ -162,7 +164,8 @@ class BundleCreatorTest {
                 .filter(resource -> resource instanceof DiagnosticReport)
                 .findFirst()
                 .orElseThrow(
-                    () -> new AssertionError("DiagnosticReport resource not found in bundle"));
+                    () ->
+                        new AssertionError("DiagnosticReport resource not found in bundleBuilder"));
     assertThat(diagnosticReport.getConclusionCodeFirstRep().getCodingFirstRep().getCode())
         .isEqualTo("pathogenDetected");
     assertThat(diagnosticReport.getStatus())
@@ -175,7 +178,8 @@ class BundleCreatorTest {
                 .map(Bundle.BundleEntryComponent::getResource)
                 .filter(resource -> resource instanceof Composition)
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Composition resource not found in bundle"));
+                .orElseThrow(
+                    () -> new AssertionError("Composition resource not found in bundleBuilder"));
     assertThat(composition.getSubject().getReference()).isEqualTo(patient.getId());
     assertThat(composition.getSectionFirstRep().getEntryFirstRep().getResource())
         .isEqualTo(diagnosticReport);
@@ -235,7 +239,7 @@ class BundleCreatorTest {
 
     assertThrows(
             IllegalArgumentException.class,
-            () -> createBundle(pathogenTest, LaboratoryNotificationType.LAB, false))
+            () -> createBundle(pathogenTest, NotificationType.NOMINAL, false))
         .getMessage()
         .contains("Submitting facility must not be null");
     ;
@@ -308,7 +312,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, LaboratoryNotificationType.LAB, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);
@@ -322,7 +326,8 @@ class BundleCreatorTest {
                 .map(Bundle.BundleEntryComponent::getResource)
                 .filter(resource -> resource instanceof Patient)
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Patient resource not found in bundle"));
+                .orElseThrow(
+                    () -> new AssertionError("Patient resource not found in bundleBuilder"));
     assertThat(patient.getNameFirstRep().getFamily()).isEqualTo("ExpectedFamilyName");
 
     // Verify Patient address matches SubmitterFacility address through an extension
@@ -351,7 +356,8 @@ class BundleCreatorTest {
                 .map(Bundle.BundleEntryComponent::getResource)
                 .filter(resource -> resource instanceof Specimen)
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Specimen resource not found in bundle"));
+                .orElseThrow(
+                    () -> new AssertionError("Specimen resource not found in bundleBuilder"));
     assertThat(specimen.getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
     assertThat(specimen.getCollection().getCollectedDateTimeType().getValue())
         .isEqualTo(java.sql.Date.valueOf(date));
@@ -364,7 +370,8 @@ class BundleCreatorTest {
                 .filter(resource -> resource instanceof DiagnosticReport)
                 .findFirst()
                 .orElseThrow(
-                    () -> new AssertionError("DiagnosticReport resource not found in bundle"));
+                    () ->
+                        new AssertionError("DiagnosticReport resource not found in bundleBuilder"));
     assertThat(diagnosticReport.getConclusionCodeFirstRep().getCodingFirstRep().getCode())
         .isEqualTo("pathogenDetected");
     assertThat(diagnosticReport.getStatus())
@@ -377,7 +384,8 @@ class BundleCreatorTest {
                 .map(Bundle.BundleEntryComponent::getResource)
                 .filter(resource -> resource instanceof Composition)
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Composition resource not found in bundle"));
+                .orElseThrow(
+                    () -> new AssertionError("Composition resource not found in bundleBuilder"));
     assertThat(composition.getSubject().getReference()).isEqualTo(patient.getId());
     assertThat(composition.getSectionFirstRep().getEntryFirstRep().getResource())
         .isEqualTo(diagnosticReport);

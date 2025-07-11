@@ -1,6 +1,13 @@
 <img align="right" width="200" height="37" src="media/Gematik_Logo_Flag.png"/> <br/>
 
 # Release notes notification-gateway
+
+## Release 6.4.0
+- Removed Notification-Object from the data model
+- Updated dependencies
+- add pathogen/laboratory strict processing
+- use AddressDataBuilder 
+
 ## Release 6.3.9
 - updating dependencies
 

@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import org.hl7.fhir.r4.model.Composition;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.Patient;
@@ -58,7 +58,7 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            LaboratoryNotificationType.LAB);
+            NotificationType.NOMINAL);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
     assertThat(composition.getTitle()).isEqualTo("Erregernachweismeldung");
@@ -85,7 +85,7 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            LaboratoryNotificationType.ANONYMOUS);
+            NotificationType.ANONYMOUS);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
     assertThat(composition.getTitle()).isEqualTo("Erregernachweismeldung");
@@ -112,7 +112,7 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            LaboratoryNotificationType.NON_NOMINAL);
+            NotificationType.NON_NOMINAL);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
     assertThat(composition.getTitle()).isEqualTo("Erregernachweismeldung");
@@ -141,7 +141,7 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            LaboratoryNotificationType.LAB);
+            NotificationType.NOMINAL);
 
     assertThat(
             ((Reference) composition.getRelatesToFirstRep().getTarget()).getIdentifier().getValue())
@@ -166,7 +166,7 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            LaboratoryNotificationType.LAB);
+            NotificationType.NOMINAL);
 
     assertThat(composition.getRelatesTo()).isEmpty();
   }
@@ -191,6 +191,6 @@ class CompositionCreatorTest {
                 practitionerRole,
                 diagnosticReport,
                 notificationCategory,
-                LaboratoryNotificationType.LAB));
+                NotificationType.NOMINAL));
   }
 }

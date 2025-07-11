@@ -90,6 +90,17 @@ public class SpecimenCreator {
 
     // Iterate through the specimen DTOs and build the Specimen object.
     for (SpecimenDTO specimenDTO : specimenDTOList) {
+      String system = null;
+      String version = null;
+      String systemWithVersion = specimenDTO.getMaterial().getSystem();
+      if (systemWithVersion != null) {
+        String[] split = systemWithVersion.split("\\|");
+        system = split[0];
+        if (split.length > 1) {
+          version = split[1];
+        }
+      }
+
       Specimen specimen = null;
       SpecimenDataBuilder specimenDataBuilder =
           new SpecimenDataBuilder()
@@ -98,6 +109,8 @@ public class SpecimenCreator {
               .setReceivedTime(createDate(specimenDTO.getReceivedDate()))
               .setTypeCode(specimenDTO.getMaterial().getCode())
               .setTypeDisplay(specimenDTO.getMaterial().getDisplay())
+              .setTypeCodingVersion(version)
+              .setTypeSystem(system)
               .setNotifiedPerson(patient)
               .setSubmittingRole(submittingRole);
 

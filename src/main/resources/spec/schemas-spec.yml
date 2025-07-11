@@ -227,21 +227,6 @@ components:
         organizationType: 'hospital'
         bsnr: '810481329'
         existsBsnr: true
-    Notification:
-      required:
-        - notificationType
-      type: object
-      properties:
-        notificationType:
-          description: Meldungstyp
-          enum:
-            - BED_OCCUPANCY
-            - PATHOGEN_TEST
-          type: string
-        bedOccupancy:
-          $ref: '#/components/schemas/BedOccupancy'
-        pathogenTest:
-          $ref: '#/components/schemas/PathogenTest'
     NotificationContent:
       required:
         - notifiedPerson
@@ -690,8 +675,6 @@ components:
         - notifiedPerson
         - status
         - condition
-        - common
-        - disease
       properties:
         notifierFacility:
           $ref: '#/components/schemas/NotifierFacility'

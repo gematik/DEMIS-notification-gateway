@@ -26,12 +26,15 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #L%
  */
 
+import static de.gematik.demis.notificationgateway.utils.FileUtils.loadJsonFromFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.Hospitalizations;
@@ -96,8 +99,8 @@ class DiseaseNotificationBundleCreationServiceTest {
 
   /**
    * Creates predictable, increasing resource IDs that will be matched against a static document.
-   * The test fails if the order of the FHIR bundle entries changes. The generated resource IDs
-   * start at 555-42-23-1.
+   * The test fails if the order of the FHIR bundleBuilder entries changes. The generated resource
+   * IDs start at 555-42-23-1.
    *
    * @param utils the mocked static utils
    */
@@ -120,8 +123,8 @@ class DiseaseNotificationBundleCreationServiceTest {
             .newJsonParser()
             .setPrettyPrint(true)
             .encodeResourceToString(bundle);
-    String expectedJson = FileUtils.loadJsonFromFile(outputFile);
-    FileUtils.assertEqualJson(expectedJson, actualJson, "disease notification FHIR bundle");
+    String expectedJson = loadJsonFromFile(outputFile);
+    FileUtils.assertEqualJson(expectedJson, actualJson, "disease notification FHIR bundleBuilder");
   }
 
   @Test
@@ -131,5 +134,25 @@ class DiseaseNotificationBundleCreationServiceTest {
     input.getNotifierFacility().getFacilityInfo().setOrganizationType(null);
 
     assertThrows(BadRequestException.class, () -> service.createBundle(input));
+  }
+
+  @Test
+  void createDiseaseWithQuantites() throws BadRequestException {
+    input =
+        FileUtils.createDiseaseNotification("portal/disease/73.notifications/input/disease_1.json");
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      Bundle bundle = service.createBundle(input, NotificationType.NON_NOMINAL);
+
+      assertThat(bundle).isNotNull();
+
+      String expectedJson =
+          loadJsonFromFile("portal/disease/73.notifications/output/fhir_disease_1.json");
+
+      IParser iParser = FhirContext.forR4Cached().newJsonParser().setPrettyPrint(true);
+      String actualJson = iParser.encodeResourceToString(bundle);
+
+      assertThat(actualJson).isEqualToIgnoringWhitespace(expectedJson);
+    }
   }
 }

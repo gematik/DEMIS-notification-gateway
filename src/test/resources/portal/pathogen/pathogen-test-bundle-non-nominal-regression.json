@@ -37,17 +37,6 @@
             }
           ]
         },
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://loinc.org",
-                "code": "11502-2",
-                "display": "Laboratory report"
-              }
-            ]
-          }
-        ],
         "subject": {
           "reference": "Patient/555-42-23-7"
         },
@@ -837,7 +826,7 @@
         "id": "555-42-23-17",
         "meta": {
           "profile": [
-            "https://demis.rki.de/fhir/StructureDefinition/LaboratoryReportNonNominalBANP"
+            "https://demis.rki.de/fhir/StructureDefinition/LaboratoryReportBANP"
           ]
         },
         "basedOn": [

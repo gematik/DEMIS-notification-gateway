@@ -37,17 +37,6 @@
             }
           ]
         },
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://loinc.org",
-                "code": "11502-2",
-                "display": "Laboratory report"
-              }
-            ]
-          }
-        ],
         "subject": {
           "reference": "Patient/555-42-23-7"
         },
@@ -317,6 +306,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "258450006",
               "display": "Cerebrospinal fluid specimen (specimen)"
             }
@@ -348,6 +338,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "119339001",
               "display": "Stool specimen (specimen)"
             }
@@ -391,6 +382,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
+              "version": "2.79",
               "code": "41852-5",
               "display": "Microorganism or agent identified in Specimen"
             }
@@ -403,6 +395,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "21927003",
               "display": "Bacillus anthracis (organism)"
             }
@@ -422,6 +415,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "121276004",
               "display": "Antigen assay (procedure)"
             }
@@ -458,6 +452,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
+              "version": "2.79",
               "code": "41852-5",
               "display": "Microorganism or agent identified in Specimen"
             }
@@ -470,6 +465,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "21927003",
               "display": "Bacillus anthracis (organism)"
             }
@@ -489,6 +485,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "117040002",
               "display": "Nucleic acid sequencing (procedure)"
             }
@@ -525,6 +522,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
+              "version": "2.79",
               "code": "41852-5",
               "display": "Microorganism or agent identified in Specimen"
             }
@@ -537,6 +535,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "21927003",
               "display": "Bacillus anthracis (organism)"
             }
@@ -556,6 +555,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "14788002",
               "display": "Antimicrobial susceptibility test (procedure)"
             }
@@ -592,6 +592,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
+              "version": "2.79",
               "code": "73982-1",
               "display": "Carbapenem resistance blaNDM gene [Presence] by Molecular method"
             }
@@ -604,6 +605,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "260373001"
             }
           ]
@@ -621,7 +623,8 @@
         "method": {
           "coding": [
             {
-              "system": "http://snomed.info/sct",
+              "system": "http://snomed.info/sct/11000274103/version/20241115",
+              "version": "http://snomed.info/sct",
               "code": "708068002",
               "display": "Molecular genetics technique (qualifier value)"
             }
@@ -658,6 +661,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
+              "version": "2.79",
               "code": "85501-5",
               "display": "Carbapenem resistance blaVIM gene [Presence] by Molecular method"
             }
@@ -670,6 +674,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "260415000"
             }
           ]
@@ -687,7 +692,8 @@
         "method": {
           "coding": [
             {
-              "system": "http://snomed.info/sct",
+              "system": "http://snomed.info/sct/11000274103/version/20241115",
+              "version": "http://snomed.info/sct",
               "code": "708068002",
               "display": "Molecular genetics technique (qualifier value)"
             }
@@ -724,6 +730,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
+              "version": "2.79",
               "code": "100049-6",
               "display": "Eravacycline [Susceptibility]"
             }
@@ -736,6 +743,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "30714006"
             }
           ]
@@ -754,6 +762,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "14788002",
               "display": "Antimicrobial susceptibility test (procedure)"
             }
@@ -790,6 +799,7 @@
           "coding": [
             {
               "system": "http://loinc.org",
+              "version": "2.79",
               "code": "18860-7",
               "display": "Amikacin [Susceptibility]"
             }
@@ -802,6 +812,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "1255965005"
             }
           ]
@@ -820,6 +831,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "14788002",
               "display": "Antimicrobial susceptibility test (procedure)"
             }

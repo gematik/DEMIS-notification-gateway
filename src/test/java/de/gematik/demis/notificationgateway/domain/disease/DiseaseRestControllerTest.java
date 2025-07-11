@@ -28,6 +28,8 @@ package de.gematik.demis.notificationgateway.domain.disease;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
@@ -37,9 +39,7 @@ import jakarta.validation.Validator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 
@@ -49,10 +49,12 @@ class DiseaseRestControllerTest {
   @Mock private DiseaseNotificationService notificationService;
   @Mock private Validator validator;
   @Mock private HttpHeaders headers;
-  @InjectMocks private DiseaseRestController controller;
+  private DiseaseRestController controller;
 
   @Test
-  void addDiseaseNotification_shouldSucceed() throws Exception {
+  void addDiseaseNotification_shouldSucceedRegression() throws Exception {
+    controller = new DiseaseRestController(validator, notificationService, false);
+
     DiseaseNotification diseaseNotification =
         FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");
     when(this.notificationService.sendNotification(eq(diseaseNotification), any()))
@@ -60,6 +62,23 @@ class DiseaseRestControllerTest {
     when(headers.get("Authorization")).thenReturn(List.of("Bearer " + "token"));
 
     this.controller.addDiseaseNotification(diseaseNotification, headers);
-    Mockito.verify(this.notificationService).sendNotification(eq(diseaseNotification), any());
+    verify(this.notificationService).sendNotification(eq(diseaseNotification), any());
+    verify(this.notificationService, never())
+        .sendNotification((eq(diseaseNotification)), any(), any());
+  }
+
+  @Test
+  void addDiseaseNotification_shouldSucceed() throws Exception {
+    controller = new DiseaseRestController(validator, notificationService, true);
+
+    DiseaseNotification diseaseNotification =
+        FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");
+    when(this.notificationService.sendNotification(eq(diseaseNotification), any(), any()))
+        .thenReturn(new OkResponse());
+    when(headers.get("Authorization")).thenReturn(List.of("Bearer " + "token"));
+
+    this.controller.addDiseaseNotification(diseaseNotification, headers);
+    verify(this.notificationService).sendNotification(eq(diseaseNotification), any(), any());
+    verify(this.notificationService, never()).sendNotification(eq(diseaseNotification), any());
   }
 }

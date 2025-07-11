@@ -31,8 +31,8 @@ import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.Resource;
 
 /**
- * FHIR resource created from a questionnaire response item. It is already added to the bundle as
- * bundle entry.
+ * FHIR resource created from a questionnaire response item. It is already added to the
+ * bundleBuilder as bundleBuilder entry.
  *
  * @param resource resource
  * @param referenceItem questionnaire response item with reference answer value

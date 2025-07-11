@@ -31,7 +31,6 @@ import static de.gematik.demis.notificationgateway.common.creator.HumanNameCreat
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonByNameDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
-import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.creator.ContactPointCreator;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
@@ -60,7 +59,7 @@ public class PatientCreator {
    * Creates a FHIR {@link Patient} object using the provided parameters.
    *
    * @param bundleBuilder The {@link NotificationBundleLaboratoryDataBuilder} used to build the
-   *     notification bundle.
+   *     notification bundleBuilder.
    * @param rawData The {@link PathogenTest} object containing data about the notified person.
    * @param submittingRole The {@link PractitionerRole} object representing the submitting facility.
    * @return A {@link Patient} object populated with the provided data.
@@ -85,7 +84,7 @@ public class PatientCreator {
 
     NotifiedPersonByNameDataBuilder patientBuilder =
         new NotifiedPersonByNameDataBuilder()
-            .setId(Utils.generateUuidString())
+            .setDefault()
             .setBirthdate(
                 new DateType(DateUtils.createDate(rawPatientData.getInfo().getBirthDate())))
             .setHumanName(createHumanName(rawPatientData.getInfo()))
@@ -105,7 +104,7 @@ public class PatientCreator {
    * Creates a FHIR {@link Address} object for the whereabouts of the notified person.
    *
    * @param bundleBuilder The {@link NotificationBundleLaboratoryDataBuilder} used to build the
-   *     notification bundle.
+   *     notification bundleBuilder.
    * @param whereaboutsInfo The {@link NotifiedPersonAddressInfo} object containing address details.
    * @param submittingRole The {@link PractitionerRole} object representing the submitting facility.
    * @return A {@link Address} object populated with the provided data.

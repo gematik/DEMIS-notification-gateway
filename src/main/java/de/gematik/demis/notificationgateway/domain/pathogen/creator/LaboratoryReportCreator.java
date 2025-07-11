@@ -31,7 +31,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import java.util.List;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -61,8 +61,8 @@ public class LaboratoryReportCreator {
    * @param observationList A list of {@link Observation} objects related to the diagnostic report.
    * @param notificationCategory The {@link NotificationLaboratoryCategory} object containing
    *     details about the notification category.
-   * @param laboratoryNotificationType The {@link LaboratoryNotificationType} enum indicating the
-   *     type of laboratory notification (e.g., ANONYMOUS, NON_NOMINAL, LAB).
+   * @param notificationType The {@link NotificationType} enum indicating the type of laboratory
+   *     notification (e.g., ANONYMOUS, NON_NOMINAL, LAB).
    * @return A {@link DiagnosticReport} object populated with the provided data.
    */
   public static DiagnosticReport createDiagnosticReport(
@@ -70,17 +70,17 @@ public class LaboratoryReportCreator {
       Patient patient,
       List<Observation> observationList,
       NotificationLaboratoryCategory notificationCategory,
-      LaboratoryNotificationType laboratoryNotificationType) {
+      NotificationType notificationType) {
 
     final String value = notificationCategory.getReportStatus().getValue();
     final String conclusionCode = notificationCategory.getInterpretation();
     final String laboratoryOrderId = notificationCategory.getLaboratoryOrderId();
 
     final LaboratoryReportDataBuilder laboratoryReportDataBuilder =
-        switch (laboratoryNotificationType) {
+        switch (notificationType) {
           case ANONYMOUS -> new LaboratoryReportNonNominalDataBuilder();
           case NON_NOMINAL -> new LaboratoryReportNonNominalDataBuilder();
-          case LAB -> new LaboratoryReportDataBuilder();
+          case NOMINAL -> new LaboratoryReportDataBuilder();
         };
     laboratoryReportDataBuilder
         .setDefaultData()

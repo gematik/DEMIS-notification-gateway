@@ -271,20 +271,6 @@
             "line": [
               "Im Himmelreich 1"
             ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Im Himmelreich"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
-            ],
             "city": "Frühling",
             "postalCode": "21481",
             "country": "DE"
@@ -334,20 +320,6 @@
             "line": [
               "Im Himmelreich 1"
             ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Im Himmelreich"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
-            ],
             "city": "Frühling",
             "postalCode": "21481",
             "country": "DE"
@@ -381,20 +353,6 @@
           {
             "line": [
               "Im Himmelreich 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Im Himmelreich"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Frühling",
             "postalCode": "21481",

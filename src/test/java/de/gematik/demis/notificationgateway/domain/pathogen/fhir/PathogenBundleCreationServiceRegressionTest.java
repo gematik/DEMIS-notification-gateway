@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import ca.uhn.fhir.context.FhirContext;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -135,7 +135,7 @@ class PathogenBundleCreationServiceRegressionTest {
       PathogenBundleCreationService instance,
       String input,
       String expectedOutput,
-      LaboratoryNotificationType type)
+      NotificationType type)
       throws Exception {
     PathogenTest pathogenTest = FileUtils.unmarshal(input, PathogenTest.class);
     Bundle bundle = instance.toBundle(pathogenTest, type);
@@ -161,27 +161,12 @@ class PathogenBundleCreationServiceRegressionTest {
         PathogenTest pathogenTest = FileUtils.unmarshal(input, PathogenTest.class);
         assertThatThrownBy(
                 () ->
-                    pathogenBundleCreationService.toBundle(
-                        pathogenTest, LaboratoryNotificationType.LAB))
+                    pathogenBundleCreationService.toBundle(pathogenTest, NotificationType.NOMINAL))
             .isInstanceOf(NullPointerException.class)
             .hasMessageContaining("NotifiedPerson must not be null");
       } else {
         testBundleCreation(pathogenBundleCreationService, input, expectedOutput);
       }
-    }
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    "portal/pathogen/pathogen-test.json, LAB, portal/pathogen/pathogen-test-bundle-regression.json",
-    "portal/pathogen/pathogen-test.json, NON_NOMINAL, portal/pathogen/pathogen-test-bundle-non-nominal-regression.json"
-  })
-  void toBundle_shouldCreateBundleForDifferentNotificationTypes(
-      String input, String notificationType, String expectedOutput) throws Exception {
-    try (final var utils = Mockito.mockStatic(Utils.class)) {
-      mockNblUtils(utils);
-      LaboratoryNotificationType type = LaboratoryNotificationType.valueOf(notificationType);
-      testBundleCreation(pathogenBundleCreationService, input, expectedOutput, type);
     }
   }
 }

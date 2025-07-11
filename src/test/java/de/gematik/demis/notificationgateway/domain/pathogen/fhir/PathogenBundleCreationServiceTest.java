@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import ca.uhn.fhir.context.FhirContext;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -54,7 +54,7 @@ class PathogenBundleCreationServiceTest {
 
   @ParameterizedTest
   @CsvSource({
-    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle.json",
+    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle-regression2.json",
     "portal/pathogen/pathogen-test-prefix.json, portal/pathogen/pathogen-test-prefix-bundle.json",
     "portal/pathogen/pathogen-test-salutation.json, portal/pathogen/pathogen-test-salutation-bundle.json",
     "portal/pathogen/pathogen-test-salutation-prefix.json, portal/pathogen/pathogen-test-salutation-prefix-bundle.json",
@@ -85,7 +85,7 @@ class PathogenBundleCreationServiceTest {
 
   @ParameterizedTest
   @CsvSource({
-    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle.json",
+    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle-regression2.json",
     "portal/pathogen/pathogen-test-prefix.json, portal/pathogen/pathogen-test-prefix-bundle.json",
     "portal/pathogen/pathogen-test-salutation.json, portal/pathogen/pathogen-test-salutation-bundle.json",
     "portal/pathogen/pathogen-test-salutation-prefix.json, portal/pathogen/pathogen-test-salutation-prefix-bundle.json",
@@ -135,7 +135,7 @@ class PathogenBundleCreationServiceTest {
       PathogenBundleCreationService instance,
       String input,
       String expectedOutput,
-      LaboratoryNotificationType type)
+      NotificationType type)
       throws Exception {
     PathogenTest pathogenTest = FileUtils.unmarshal(input, PathogenTest.class);
     Bundle bundle = instance.toBundle(pathogenTest, type);
@@ -150,7 +150,7 @@ class PathogenBundleCreationServiceTest {
 
   @ParameterizedTest
   @CsvSource({
-    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle.json",
+    "portal/pathogen/pathogen-test.json, portal/pathogen/pathogen-test-bundle-regression2.json",
     "portal/pathogen/pathogen-test-invalid.json, portal/pathogen/pathogen-test-invalid-bundle.json"
   })
   void toBundle_shouldHandleValidAndInvalidPathogenTest(String input, String expectedOutput)
@@ -160,9 +160,7 @@ class PathogenBundleCreationServiceTest {
       PathogenTest inputData = FileUtils.unmarshal(input, PathogenTest.class);
       if (input.contains("invalid")) {
         assertThatThrownBy(
-                () ->
-                    pathogenBundleCreationService.toBundle(
-                        inputData, LaboratoryNotificationType.LAB))
+                () -> pathogenBundleCreationService.toBundle(inputData, NotificationType.NOMINAL))
             .isInstanceOf(NullPointerException.class)
             .hasMessageContaining("NotifiedPerson must not be null");
       } else {
@@ -173,14 +171,14 @@ class PathogenBundleCreationServiceTest {
 
   @ParameterizedTest
   @CsvSource({
-    "portal/pathogen/pathogen-test.json, LAB, portal/pathogen/pathogen-test-bundle.json",
+    "portal/pathogen/pathogen-test.json, NOMINAL, portal/pathogen/pathogen-test-bundle.json",
     "portal/pathogen/pathogen-test.json, NON_NOMINAL, portal/pathogen/pathogen-test-bundle-non-nominal.json"
   })
   void toBundle_shouldCreateBundleForDifferentNotificationTypes(
       String input, String notificationType, String expectedOutput) throws Exception {
     try (final var utils = Mockito.mockStatic(Utils.class)) {
       mockNblUtils(utils);
-      LaboratoryNotificationType type = LaboratoryNotificationType.valueOf(notificationType);
+      NotificationType type = NotificationType.valueOf(notificationType);
       testBundleCreation(pathogenBundleCreationService, input, expectedOutput, type);
     }
   }

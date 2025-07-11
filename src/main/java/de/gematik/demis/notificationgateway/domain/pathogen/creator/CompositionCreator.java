@@ -30,7 +30,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NonNominalCompositionBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationLaboratoryDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import org.hl7.fhir.r4.model.Composition;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.Patient;
@@ -60,8 +60,8 @@ public class CompositionCreator {
    * @param diagnosticReport The {@link DiagnosticReport} object containing laboratory results.
    * @param notificationCategory The {@link NotificationLaboratoryCategory} object containing
    *     details about the notification category.
-   * @param laboratoryNotificationType The {@link LaboratoryNotificationType} enum indicating the
-   *     type of laboratory notification (e.g., NON_NOMINAL, ANONYMOUS, LAB).
+   * @param notificationType The {@link NotificationType} enum indicating the type of laboratory
+   *     notification (e.g., NON_NOMINAL, ANONYMOUS, LAB).
    * @return A {@link Composition} object populated with the provided data.
    */
   public static Composition createComposition(
@@ -69,7 +69,7 @@ public class CompositionCreator {
       PractitionerRole practitionerRole,
       DiagnosticReport diagnosticReport,
       NotificationLaboratoryCategory notificationCategory,
-      LaboratoryNotificationType laboratoryNotificationType) {
+      NotificationType notificationType) {
 
     final Composition.CompositionStatus compositionStatus =
         Composition.CompositionStatus.fromCode(notificationCategory.getReportStatus().getValue());
@@ -78,10 +78,10 @@ public class CompositionCreator {
     final String notificationLaboratorySectionCompomentyDisplay = "Laboratory report";
 
     final NotificationLaboratoryDataBuilder builder =
-        switch (laboratoryNotificationType) {
+        switch (notificationType) {
           case NON_NOMINAL -> new NonNominalCompositionBuilder();
           case ANONYMOUS -> new AnonymousCompositionBuilder();
-          case LAB -> new NotificationLaboratoryDataBuilder();
+          case NOMINAL -> new NotificationLaboratoryDataBuilder();
         };
 
     builder

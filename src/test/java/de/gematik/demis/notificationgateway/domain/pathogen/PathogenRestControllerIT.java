@@ -75,7 +75,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ActiveProfiles("test")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "feature.flag.notification7_3=true")
+    properties = "feature.flag.notifications.7_3=true")
 class PathogenRestControllerIT implements BaseTestUtils {
 
   @Autowired private ObjectMapper objectMapper;
@@ -106,7 +106,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post("/api/ng/notification/pathogen/7_3/non_nominal")
+                  post("/api/ng/notification/pathogen/7.3/non_nominal")
                       .headers(headers)
                       .content(jsonContent)
                       .with(csrf()))
@@ -138,7 +138,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post(PATHOGEN_PATH + "/7_1")
+                  post(PATHOGEN_PATH + "/7.1")
                       .content(getJsonContent(path))
                       .headers(headers)
                       .with(csrf()))
@@ -153,7 +153,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.CONTENT_NOT_ACCEPTED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7_1")
+          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.1")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .isNullOrEmpty();
@@ -172,7 +172,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post(PATHOGEN_PATH + "/7_1")
+                  post(PATHOGEN_PATH + "/7.1")
                       .content(getJsonContent(path))
                       .headers(headers)
                       .with(csrf()))
@@ -187,7 +187,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.VALIDATION_ERROR_OCCURRED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7_1")
+          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.1")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .hasSize(1)
@@ -226,7 +226,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post(PATHOGEN_PATH + "/7_3/non_nominal")
+                  post(PATHOGEN_PATH + "/7.3/non_nominal")
                       .headers(headers)
                       .content(jsonContent)
                       .with(csrf()))
@@ -325,7 +325,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post("/api/ng/notification/pathogen/7_3/non_nominal")
+                  post("/api/ng/notification/pathogen/7.3/non_nominal")
                       .content(getJsonContent(path))
                       .headers(headers)
                       .with(csrf()))
@@ -340,7 +340,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.CONTENT_NOT_ACCEPTED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7_3/non_nominal")
+          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.3/non_nominal")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .isNullOrEmpty();
@@ -359,7 +359,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post("/api/ng/notification/pathogen/7_3/non_nominal")
+                  post("/api/ng/notification/pathogen/7.3/non_nominal")
                       .content(getJsonContent(path))
                       .headers(headers)
                       .with(csrf()))
@@ -374,7 +374,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.VALIDATION_ERROR_OCCURRED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7_3/non_nominal")
+          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.3/non_nominal")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .hasSize(1)

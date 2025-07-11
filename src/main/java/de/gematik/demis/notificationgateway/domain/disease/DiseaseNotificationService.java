@@ -28,6 +28,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
 
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.exceptions.HoneypotException;
 import de.gematik.demis.notificationgateway.common.properties.NESProperties;
@@ -82,6 +83,35 @@ class DiseaseNotificationService {
    * @return response of DEMIS core
    * @throws BadRequestException illegal disease notification structure or data
    */
+  OkResponse sendNotification(
+      DiseaseNotification notification, Token token, NotificationType notificationType)
+      throws BadRequestException {
+    validateHoneypot(notification);
+    final Bundle bundle = this.bundleCreationService.createBundle(notification, notificationType);
+    final String url = this.nesProperties.hospitalizationUrl();
+    final String operation = NESProperties.OPERATION_NAME;
+    log.info(LOG_SEND);
+    Parameters result =
+        this.bundlePublisher.postRequest(
+            bundle,
+            url,
+            operation,
+            this.headerProperties.getDiseaseNotificationProfile(),
+            this.headerProperties.getDiseaseNotificationVersion(),
+            token);
+    return this.okResponseService.buildOkResponse(result);
+  }
+
+  /**
+   * Convert disease notification to FHIR document. Send the FHIR document to DEMIS core API.
+   *
+   * @deprecated remove with feature.flag.notifications.7_3
+   * @param notification disease notification
+   * @param token inbound JWT
+   * @return response of DEMIS core
+   * @throws BadRequestException illegal disease notification structure or data
+   */
+  @Deprecated(forRemoval = true)
   OkResponse sendNotification(DiseaseNotification notification, Token token)
       throws BadRequestException {
     validateHoneypot(notification);

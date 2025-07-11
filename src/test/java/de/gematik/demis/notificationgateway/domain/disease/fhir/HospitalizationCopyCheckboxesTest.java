@@ -74,7 +74,8 @@ import org.springframework.test.context.TestPropertySource;
     properties = {
       "feature.flag.disease_address_patient=true",
       "feature.flag.hosp_copy_checkboxes=true",
-      "logging.level.de.gematik=DEBUG"
+      "logging.level.de.gematik=DEBUG",
+      "feature.flag.notifications.7_3=true"
     })
 class HospitalizationCopyCheckboxesTest {
 
@@ -100,8 +101,8 @@ class HospitalizationCopyCheckboxesTest {
 
   /**
    * Creates predictable, increasing resource IDs that will be matched against a static document.
-   * The test fails if the order of the FHIR bundle entries changes. The generated resource IDs
-   * start at 555-42-23-1.
+   * The test fails if the order of the FHIR bundleBuilder entries changes. The generated resource
+   * IDs start at 555-42-23-1.
    *
    * @param utils the mocked static utils
    */
@@ -125,6 +126,6 @@ class HospitalizationCopyCheckboxesTest {
             .setPrettyPrint(true)
             .encodeResourceToString(bundle);
     String expectedJson = FileUtils.loadJsonFromFile(outputFile);
-    FileUtils.assertEqualJson(expectedJson, actualJson, "disease notification FHIR bundle");
+    FileUtils.assertEqualJson(expectedJson, actualJson, "disease notification FHIR bundleBuilder");
   }
 }

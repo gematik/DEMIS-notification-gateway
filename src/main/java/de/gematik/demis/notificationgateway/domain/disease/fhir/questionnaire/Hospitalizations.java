@@ -55,7 +55,7 @@ public class Hospitalizations implements ResourceFactory {
     QuestionnaireResponseItem hospitalizationItem =
         item.getAnswer().getFirst().getItem().getFirst();
     Encounter hospitalization = createEncounter(context, hospitalizationItem);
-    context.bundle().addHospitalization(hospitalization);
+    context.bundleBuilder().addHospitalization(hospitalization);
     return createFhirResource(hospitalization, item.getLinkId());
   }
 

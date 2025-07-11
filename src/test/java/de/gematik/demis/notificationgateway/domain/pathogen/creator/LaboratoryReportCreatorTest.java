@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import de.gematik.demis.notificationgateway.common.dto.CodeDisplay;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import java.util.List;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,7 @@ class LaboratoryReportCreatorTest {
             patient,
             List.of(positiveObservation),
             notificationCategory,
-            LaboratoryNotificationType.LAB);
+            NotificationType.NOMINAL);
 
     assertThat(report.getConclusion()).isEqualTo("Positive");
     assertThat(report.getStatus()).isEqualTo(DiagnosticReport.DiagnosticReportStatus.FINAL);
@@ -89,7 +89,7 @@ class LaboratoryReportCreatorTest {
             patient,
             List.of(negativeObservation),
             notificationCategory,
-            LaboratoryNotificationType.LAB);
+            NotificationType.NOMINAL);
 
     assertThat(report.getConclusion()).isEqualTo("Negative");
     assertThat(report.getStatus()).isEqualTo(DiagnosticReport.DiagnosticReportStatus.FINAL);
@@ -118,7 +118,7 @@ class LaboratoryReportCreatorTest {
             patient,
             List.of(observation),
             notificationCategory,
-            LaboratoryNotificationType.LAB);
+            NotificationType.NOMINAL);
 
     assertThat(report.getBasedOnFirstRep().getIdentifier().getValue()).isEqualTo("LAB123");
   }
@@ -146,7 +146,7 @@ class LaboratoryReportCreatorTest {
             patient,
             List.of(observation),
             notificationCategory,
-            LaboratoryNotificationType.LAB);
+            NotificationType.NOMINAL);
 
     assertThat(report.getBasedOn()).isEmpty();
   }
@@ -173,7 +173,7 @@ class LaboratoryReportCreatorTest {
                     patient,
                     observations,
                     notificationCategory,
-                    LaboratoryNotificationType.LAB))
+                    NotificationType.NOMINAL))
         .isInstanceOf(NullPointerException.class);
   }
 
@@ -190,11 +190,7 @@ class LaboratoryReportCreatorTest {
 
     DiagnosticReport report =
         LaboratoryReportCreator.createDiagnosticReport(
-            pathogenDTO,
-            patient,
-            emptyList(),
-            notificationCategory,
-            LaboratoryNotificationType.LAB);
+            pathogenDTO, patient, emptyList(), notificationCategory, NotificationType.NOMINAL);
 
     assertThat(report.getConclusion()).isNotEqualTo("pathogenDetected");
   }

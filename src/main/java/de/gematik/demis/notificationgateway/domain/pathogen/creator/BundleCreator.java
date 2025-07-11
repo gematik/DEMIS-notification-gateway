@@ -43,7 +43,7 @@ import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -59,7 +59,7 @@ import org.hl7.fhir.r4.model.Specimen;
  * Utility class for creating FHIR {@link Bundle} objects.
  *
  * <p>This class provides methods to build a FHIR {@link Bundle} based on the provided {@link
- * PathogenTest} and {@link LaboratoryNotificationType}.
+ * PathogenTest} and {@link NotificationType}.
  */
 public class BundleCreator {
 
@@ -81,7 +81,7 @@ public class BundleCreator {
    */
   public static Bundle createBundle(
       PathogenTest pathogenTest,
-      LaboratoryNotificationType laboratoryNotificationType,
+      NotificationType notificationType,
       boolean featureFlagSnapshot5_3_0Active) {
 
     // DTOs
@@ -106,12 +106,12 @@ public class BundleCreator {
         createSubmitterPractitionerRole(
             pathogenTest.getSubmittingFacility(), isNotifiedPersonFacility);
 
-    // check for notification type and use the appropriate bundle builder
+    // check for notification type and use the appropriate bundleBuilder builder
     final NotificationBundleLaboratoryDataBuilder bundleBuilder =
-        switch (laboratoryNotificationType) {
+        switch (notificationType) {
           case NON_NOMINAL -> new NonNominalBundleBuilder().setDefaults();
           case ANONYMOUS -> new AnonymousBundleBuilder().setDefaults();
-          case LAB -> new NotificationBundleLaboratoryDataBuilder().setDefaults();
+          case NOMINAL -> new NotificationBundleLaboratoryDataBuilder().setDefaults();
         };
     final Patient patient = createPatient(bundleBuilder, pathogenTest, submittingRole);
 
@@ -129,11 +129,7 @@ public class BundleCreator {
 
     final DiagnosticReport diagnosticReport =
         createDiagnosticReport(
-            pathogenDTO,
-            patient,
-            observation,
-            notificationLaboratoryCategory,
-            laboratoryNotificationType);
+            pathogenDTO, patient, observation, notificationLaboratoryCategory, notificationType);
 
     return bundleBuilder
         .setPathogenDetection(observation)
@@ -147,7 +143,7 @@ public class BundleCreator {
                 notifierRole,
                 diagnosticReport,
                 notificationLaboratoryCategory,
-                laboratoryNotificationType))
+                notificationType))
         .setLaboratoryReport(diagnosticReport)
         .build();
   }

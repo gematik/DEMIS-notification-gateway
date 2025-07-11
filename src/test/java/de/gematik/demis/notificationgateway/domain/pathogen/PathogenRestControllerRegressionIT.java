@@ -66,7 +66,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ActiveProfiles("test")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "feature.flag.notification7_3=false")
+    properties = "feature.flag.notifications.7_3=false")
 class PathogenRestControllerRegressionIT implements BaseTestUtils {
 
   @MockitoBean BundlePublisher bundlePublisher;

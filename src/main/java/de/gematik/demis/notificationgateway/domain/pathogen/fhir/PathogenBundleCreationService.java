@@ -35,8 +35,8 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.SpecimenDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notificationgateway.common.dto.*;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.mappers.BundleMapper;
-import de.gematik.demis.notificationgateway.domain.pathogen.enums.LaboratoryNotificationType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -104,23 +104,21 @@ public class PathogenBundleCreationService implements BundleMapper {
   /**
    * Creates a complete FHIR {@link Bundle} that can be sent to the DEMIS core services.
    *
-   * <p>This method uses the provided {@link LaboratoryNotificationType} to determine the type of
-   * notification to create, which corresponds to different notification paragraphs.
+   * <p>This method uses the provided {@link NotificationType} to determine the type of notification
+   * to create, which corresponds to different notification paragraphs.
    *
    * @param pathogenTest The {@link PathogenTest} object containing the data for the notification.
-   * @param laboratoryNotificationType The {@link LaboratoryNotificationType} specifying the type of
-   *     notification.
+   * @param notificationType The {@link NotificationType} specifying the type of notification.
    * @return A {@link Bundle} object representing the complete notification.
    */
-  public Bundle toBundle(
-      PathogenTest pathogenTest, LaboratoryNotificationType laboratoryNotificationType) {
-    return createBundle(pathogenTest, laboratoryNotificationType, featureFlagSnapshot5_3_0Active);
+  public Bundle toBundle(PathogenTest pathogenTest, NotificationType notificationType) {
+    return createBundle(pathogenTest, notificationType, featureFlagSnapshot5_3_0Active);
   }
 
   /**
-   * @deprecated this only works for §7.1 notifications Creates FHIR bundle from POJO input
+   * @deprecated this only works for §7.1 notifications Creates FHIR bundleBuilder from POJO input
    * @param pathogenTest pathogen test business details
-   * @return FHIR bundle
+   * @return FHIR bundleBuilder
    */
   @Deprecated(forRemoval = true)
   public Bundle toBundle(PathogenTest pathogenTest) {

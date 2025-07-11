@@ -31,15 +31,15 @@ import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import org.hl7.fhir.r4.model.Patient;
 
 /**
- * Context for building a FHIR bundle
+ * Context for building a FHIR bundleBuilder
  *
  * @param notification disease notification
- * @param bundle bundle
+ * @param bundleBuilder bundleBuilder
  * @param notifiedPerson notified person
  */
 public record DiseaseNotificationContext(
     DiseaseNotification notification,
-    NotificationBundleDiseaseDataBuilder bundle,
+    NotificationBundleDiseaseDataBuilder bundleBuilder,
     Patient notifiedPerson) {
   /**
    * Get category, aka. disease code

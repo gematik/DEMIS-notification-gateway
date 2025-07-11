@@ -46,7 +46,7 @@ import org.springframework.stereotype.Service;
 class Diseases {
 
   /**
-   * Create and add disease block to the bundle
+   * Create and add disease block to the bundleBuilder
    *
    * @param context context
    */
@@ -55,7 +55,7 @@ class Diseases {
     DiseaseDataBuilder condition = new DiseaseDataBuilder();
     setGeneralInfo(notification, context.notifiedPerson(), condition);
     setConditionInfo(notification, condition);
-    context.bundle().setDisease(condition.build());
+    context.bundleBuilder().setDisease(condition.build());
   }
 
   private void setClinicalStatus(DiseaseNotification notification, DiseaseDataBuilder condition) {

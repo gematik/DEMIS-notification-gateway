@@ -1,4 +1,4 @@
-package de.gematik.demis.notificationgateway.domain.pathogen.enums;
+package de.gematik.demis.notificationgateway.common.enums;
 
 /*-
  * #%L
@@ -32,20 +32,20 @@ package de.gematik.demis.notificationgateway.domain.pathogen.enums;
  * <p>This enum is used to categorize different types of notifications that can be sent by
  * laboratories.
  */
-public enum LaboratoryNotificationType {
+public enum NotificationType {
 
-  /** Represents a standard laboratory notification. */
-  LAB,
+  /** Represents a standard laboratory notification (§7.1) or disease notification (§6.1). */
+  NOMINAL,
 
   /**
    * Represents a non-nominal laboratory notification. This type of notification does not include
    * personal identifiers when delivered to a health office or other receivers. The personal
-   * identifiers are removed while processing the notification in the DEMIS core system.
+   * identifiers are removed while processing the notification in the DEMIS core system. (§7.3)
    */
   NON_NOMINAL,
 
   /**
-   * Represents an anonymous laboratory notification. This type of notification is completely
+   * Represents an anonymous laboratory notification. This type of notification is completely (§7.3)
    * anonymized.
    */
   ANONYMOUS

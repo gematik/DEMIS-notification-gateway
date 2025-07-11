@@ -40,6 +40,7 @@ import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.DecimalType;
 import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
@@ -53,6 +54,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public final class Answers {
 
+  private final QuantityDataType quantities = new QuantityDataType();
   private final BooleanDataType booleans = new BooleanDataType();
   private final DecimalDataType decimals = new DecimalDataType();
   private final IntegerDataType integers = new IntegerDataType();
@@ -82,6 +84,7 @@ public final class Answers {
             this.dateTimes,
             this.uris,
             this.booleans,
+            this.quantities,
             this.decimals,
             this.integers,
             this.times);
@@ -126,9 +129,14 @@ public final class Answers {
   }
 
   @RequiredArgsConstructor
-  private final class FhirAnswerImpl implements FhirAnswer, FhirAnswer.Value {
+  final class FhirAnswerImpl implements FhirAnswer, FhirAnswer.Value {
 
     private final QuestionnaireResponseAnswer answer;
+
+    @Override
+    public Quantity toQuantity() {
+      return quantities.toFhir(this.answer);
+    }
 
     @Override
     public BooleanType toBooleanType() {

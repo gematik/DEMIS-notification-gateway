@@ -72,7 +72,7 @@ class DiseasesTest {
 
   private Condition createCondition() {
     this.diseases.addDisease(this.context);
-    Bundle bundle = this.context.bundle().build();
+    Bundle bundle = this.context.bundleBuilder().build();
     bundle.setId("Bundle/123");
     return bundle.getEntry().stream()
         .map(Bundle.BundleEntryComponent::getResource)

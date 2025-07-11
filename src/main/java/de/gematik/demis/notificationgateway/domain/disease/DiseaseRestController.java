@@ -29,6 +29,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
 import de.gematik.demis.notificationgateway.common.constants.WebConstants;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.utils.Token;
 import jakarta.security.auth.message.AuthException;
@@ -36,8 +37,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,15 +50,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(path = WebConstants.API_NG_NOTIFICATION)
 class DiseaseRestController {
 
   private final Validator validator;
   private final DiseaseNotificationService notificationService;
+  private final Boolean notification7_3Active;
+
+  public DiseaseRestController(
+      Validator validator,
+      DiseaseNotificationService notificationService,
+      @Value("${feature.flag.notifications.7_3}") Boolean notification7_3Active) {
+    this.validator = validator;
+    this.notificationService = notificationService;
+    this.notification7_3Active = notification7_3Active;
+  }
 
   @PostMapping(
-      path = "/disease",
+      path = {"/disease", "/disease/6.1"},
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = "application/json")
   public ResponseEntity<OkResponse> addDiseaseNotification(
@@ -75,6 +85,22 @@ class DiseaseRestController {
     return ResponseEntity.ok(okResponse);
   }
 
+  @PostMapping({"/disease/7.3/non_nominal"})
+  public ResponseEntity<OkResponse> send7_3_non_nominal(
+      @RequestBody DiseaseNotification notification, @RequestHeader HttpHeaders headers)
+      throws AuthException, BadRequestException {
+    OkResponse okResponse = send(notification, headers, NotificationType.NON_NOMINAL);
+    return ResponseEntity.ok(okResponse);
+  }
+
+  @PostMapping({"/disease/7.3/anonymous"})
+  public ResponseEntity<OkResponse> send7_3_anonymous(
+      @RequestBody DiseaseNotification notification, @RequestHeader HttpHeaders headers)
+      throws AuthException, BadRequestException {
+    OkResponse okResponse = send(notification, headers, NotificationType.ANONYMOUS);
+    return ResponseEntity.ok(okResponse);
+  }
+
   private void validate(DiseaseNotification notification) {
     Set<ConstraintViolation<ValidationDiseaseNotification>> violations =
         this.validator.validate(ValidationDiseaseNotification.of(notification));
@@ -85,6 +111,16 @@ class DiseaseRestController {
 
   private OkResponse send(DiseaseNotification content, HttpHeaders headers)
       throws BadRequestException, AuthException {
-    return this.notificationService.sendNotification(content, Token.of(headers));
+    if (this.notification7_3Active) {
+      return send(content, headers, NotificationType.NOMINAL);
+    } else {
+      return this.notificationService.sendNotification(content, Token.of(headers));
+    }
+  }
+
+  private OkResponse send(
+      DiseaseNotification content, HttpHeaders headers, NotificationType notificationType)
+      throws AuthException, BadRequestException {
+    return this.notificationService.sendNotification(content, Token.of(headers), notificationType);
   }
 }

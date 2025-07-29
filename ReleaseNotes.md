@@ -2,6 +2,11 @@
 
 # Release notes notification-gateway
 
+## Release 6.4.1
+- Update Spring-Parent
+- fix missing version for codes in different resources in laboratory notification creation
+- add default feature flags FEATURE_FLAG_NOTIFICATIONS_7_3, FEATURE_FLAG_SNAPSHOT_5_3_0_ACTIVE to values.yaml
+
 ## Release 6.4.0
 - Removed Notification-Object from the data model
 - Updated dependencies

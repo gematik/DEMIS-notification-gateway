@@ -32,6 +32,7 @@ import ca.uhn.fhir.context.FhirContext;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
+import de.gematik.demis.notificationgateway.common.utils.PropertyUtil;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -176,8 +177,12 @@ class PathogenBundleCreationServiceTest {
   })
   void toBundle_shouldCreateBundleForDifferentNotificationTypes(
       String input, String notificationType, String expectedOutput) throws Exception {
-    try (final var utils = Mockito.mockStatic(Utils.class)) {
+    try (final var utils = Mockito.mockStatic(Utils.class);
+        final var propertyUtils = Mockito.mockStatic(PropertyUtil.class)) {
       mockNblUtils(utils);
+      propertyUtils
+          .when(() -> PropertyUtil.getProperty("lab.notification.category.version"))
+          .thenReturn("1.0.0");
       NotificationType type = NotificationType.valueOf(notificationType);
       testBundleCreation(pathogenBundleCreationService, input, expectedOutput, type);
     }

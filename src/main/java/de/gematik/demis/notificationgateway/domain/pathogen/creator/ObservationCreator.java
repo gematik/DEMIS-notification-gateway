@@ -193,8 +193,8 @@ public class ObservationCreator {
               .setDefaultData()
               .setMethodCode(methodCode)
               .setMethodDisplay(methodDisplay)
-              .setMethodSystem(SNOMED_CT_VERSION)
-              .setMethodCodingVersion(SNOMED_CT_URL)
+              .setMethodSystem(SNOMED_CT_URL)
+              .setMethodCodingVersion(SNOMED_CT_VERSION)
               .setInterpretationCode(interpretation)
               .setValue(
                   new CodeableConcept(

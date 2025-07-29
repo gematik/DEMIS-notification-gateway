@@ -1,4 +1,4 @@
-package de.gematik.demis.notificationgateway;
+package de.gematik.demis.notificationgateway.common.utils;
 
 /*-
  * #%L
@@ -26,20 +26,21 @@ package de.gematik.demis.notificationgateway;
  * #L%
  */
 
-import de.gematik.demis.notificationgateway.common.utils.PropertyUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
-@SpringBootApplication
-@ConfigurationPropertiesScan
-@RequiredArgsConstructor
-public class NotificationGatewayApplication {
+@Component
+public class PropertyUtil implements ApplicationContextAware {
+  private static Environment env;
 
-  private final PropertyUtil propertyUtil; // purpose is to create an instance of this util class
+  @Override
+  public void setApplicationContext(ApplicationContext ctx) {
+    env = ctx.getEnvironment();
+  }
 
-  public static void main(String[] args) {
-    SpringApplication.run(NotificationGatewayApplication.class, args);
+  public static String getProperty(String key) {
+    return env.getProperty(key);
   }
 }

@@ -435,6 +435,7 @@
           "coding": [
             {
               "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory",
+              "version":"1.0.0",
               "code": "hivp",
               "display": "Humanes Immundefizienz-Virus (HIV)"
             }

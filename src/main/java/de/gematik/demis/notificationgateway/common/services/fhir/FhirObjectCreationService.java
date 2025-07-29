@@ -75,7 +75,7 @@ public class FhirObjectCreationService {
               .setAdditionalInfo(address.getAdditionalInfo())
               .setCountry(address.getCountry())
               .setPostalCode(address.getZip())
-              .setCountry(address.getCountry())
+              .setCity(address.getCity())
               .build();
     } else {
       fhirAddress =

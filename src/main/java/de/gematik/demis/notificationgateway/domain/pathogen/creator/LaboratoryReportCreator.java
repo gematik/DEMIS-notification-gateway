@@ -32,6 +32,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
+import de.gematik.demis.notificationgateway.common.utils.PropertyUtil;
 import java.util.List;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -82,11 +83,16 @@ public class LaboratoryReportCreator {
           case NON_NOMINAL -> new LaboratoryReportNonNominalDataBuilder();
           case NOMINAL -> new LaboratoryReportDataBuilder();
         };
+
+    String codeVersion = PropertyUtil.getProperty("lab.notification.category.version");
+    codeVersion = codeVersion == null ? "" : codeVersion; // fallback
+
     laboratoryReportDataBuilder
         .setDefaultData()
         .setStatus(DiagnosticReport.DiagnosticReportStatus.fromCode(value))
         .setCodeCode(pathogenDTO.getCodeDisplay().getCode())
         .setCodeDisplay(pathogenDTO.getCodeDisplay().getDisplay())
+        .setCodeVersion(codeVersion)
         .setIssued(Utils.getCurrentDate())
         .setProfileUrlHelper(pathogenDTO.getCodeDisplay().getCode())
         .setNotifiedPerson(patient)

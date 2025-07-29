@@ -623,8 +623,8 @@
         "method": {
           "coding": [
             {
-              "system": "http://snomed.info/sct/11000274103/version/20241115",
-              "version": "http://snomed.info/sct",
+              "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "708068002",
               "display": "Molecular genetics technique (qualifier value)"
             }
@@ -692,8 +692,8 @@
         "method": {
           "coding": [
             {
-              "system": "http://snomed.info/sct/11000274103/version/20241115",
-              "version": "http://snomed.info/sct",
+              "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
               "code": "708068002",
               "display": "Molecular genetics technique (qualifier value)"
             }
@@ -866,6 +866,7 @@
           "coding": [
             {
               "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory",
+              "version": "1.0.0",
               "code": "banp",
               "display": "Bacillus anthracis"
             }

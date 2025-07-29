@@ -37,7 +37,9 @@ import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import java.util.List;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 class LaboratoryReportCreatorTest {
 
   @Test

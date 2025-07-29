@@ -305,6 +305,7 @@
             "line": [
               "Straße zur betroffenen Personeneinrichtung 42"
             ],
+            "city": "Personeneinrichtungsstadt",
             "postalCode": "54321",
             "country": "DE"
           }
@@ -338,6 +339,7 @@
             "line": [
               "Straße zur betroffenen Personeneinrichtung 42"
             ],
+            "city": "Personeneinrichtungsstadt",
             "postalCode": "54321",
             "country": "DE"
           }

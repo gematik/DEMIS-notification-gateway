@@ -1,7 +1,7 @@
 # Default values for notification-gateway.
 
 # Number of Pod Replicas desired
-replicaCount: 1
+replicaCount: 2
 
 # Enables debug mode
 debug:
@@ -63,6 +63,8 @@ customEnvVars:
   GATEWAY_SERVER_PORT: "8080"
   # new checkboxes at hospitalization to copy the address and contact data
   FEATURE_FLAG_HOSP_COPY_CHECKBOXES: "false"
+  FEATURE_FLAG_NOTIFICATIONS_7_3: "false"
+  FEATURE_FLAG_SNAPSHOT_5_3_0_ACTIVE: "false"
   RPS_BASE_URL: http://report-processing-service.demis.svc.cluster.local/
   NES_BASE_URL: http://notification-processing-service.demis.svc.cluster.local/
   FHIR_DATA_TRANSLATION_SERVICE_URL: http://futs.demis.svc.cluster.local/fhir-ui-data-model-translation

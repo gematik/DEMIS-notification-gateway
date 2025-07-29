@@ -1,4 +1,4 @@
-package de.gematik.demis.notificationgateway;
+package de.gematik.demis.notificationgateway.common.utils;
 
 /*-
  * #%L
@@ -26,20 +26,21 @@ package de.gematik.demis.notificationgateway;
  * #L%
  */
 
-import de.gematik.demis.notificationgateway.common.utils.PropertyUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootApplication
-@ConfigurationPropertiesScan
-@RequiredArgsConstructor
-public class NotificationGatewayApplication {
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 
-  private final PropertyUtil propertyUtil; // purpose is to create an instance of this util class
+@SpringBootTest(properties = "test.key=integration-value")
+class PropertyUtilIntegrationTest {
 
-  public static void main(String[] args) {
-    SpringApplication.run(NotificationGatewayApplication.class, args);
+  @Autowired Environment environment;
+
+  @Test
+  void getProperty_shouldReturnValueFromSpringContext() {
+    String value = PropertyUtil.getProperty("test.key");
+    assertThat(value).isEqualTo("integration-value");
   }
 }

@@ -28,7 +28,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
 
 import static de.gematik.demis.notificationgateway.common.creator.HumanNameCreator.createHumanName;
 
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonByNameDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonNominalDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notificationgateway.common.creator.ContactPointCreator;
@@ -82,8 +82,8 @@ public class PatientCreator {
     List<Address> addresses =
         List.of(whereabouts, AddressCreator.createAddress(rawPatientData.getResidenceAddress()));
 
-    NotifiedPersonByNameDataBuilder patientBuilder =
-        new NotifiedPersonByNameDataBuilder()
+    NotifiedPersonNominalDataBuilder patientBuilder =
+        new NotifiedPersonNominalDataBuilder()
             .setDefault()
             .setBirthdate(
                 new DateType(DateUtils.createDate(rawPatientData.getInfo().getBirthDate())))

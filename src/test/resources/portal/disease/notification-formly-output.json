@@ -43,7 +43,7 @@
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/notificationType",
                 "code": "6.1_2",
-                "display": "Meldung gemäß IfSG §6 Absatz 1, 2"
+                "display": "Meldung gemäß §6 Absatz 1, 2 IfSG"
               }
             ]
           }

@@ -26,9 +26,9 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #L%
  */
 
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.AnonymousCompositionBuilder;
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NonNominalCompositionBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationLaboratoryAnonymousDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationLaboratoryDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationLaboratoryNonNominalDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import org.hl7.fhir.r4.model.Composition;
@@ -79,15 +79,14 @@ public class CompositionCreator {
 
     final NotificationLaboratoryDataBuilder builder =
         switch (notificationType) {
-          case NON_NOMINAL -> new NonNominalCompositionBuilder();
-          case ANONYMOUS -> new AnonymousCompositionBuilder();
+          case NON_NOMINAL -> new NotificationLaboratoryNonNominalDataBuilder();
+          case ANONYMOUS -> new NotificationLaboratoryAnonymousDataBuilder();
           case NOMINAL -> new NotificationLaboratoryDataBuilder();
         };
 
     builder
         .setDefault()
         .setCompositionStatus(compositionStatus)
-        .setTitle("Erregernachweismeldung")
         .setSectionComponentCode(notificationLaboratorySectionCompomentyCode)
         .setSectionComponentDisplay(notificationLaboratorySectionCompomentyDisplay)
         .setNotifiedPerson(patient)

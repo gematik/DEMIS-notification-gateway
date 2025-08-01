@@ -46,7 +46,7 @@
             "reference": "PractitionerRole/555-42-23-2"
           }
         ],
-        "title": "Erregernachweismeldung",
+        "title": "Meldung gemäß §7 Absatz 3 IfSG",
         "relatesTo": [
           {
             "code": "appends",

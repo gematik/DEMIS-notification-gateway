@@ -43,7 +43,7 @@
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/notificationType",
                 "code": "6.1_2",
-                "display": "Meldung gemäß IfSG §6 Absatz 1, 2"
+                "display": "Meldung gemäß §6 Absatz 1, 2 IfSG"
               }
             ]
           }
@@ -170,6 +170,55 @@
       }
     },
     {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
+          ]
+        },
+        "name": "Kreiskrankenhaus Riedlingen",
+        "telecom": [
+          {
+            "system": "email",
+            "value": "t.person@gmail.com"
+          },
+          {
+            "system": "email",
+            "value": "test.person@kh-rie.de"
+          },
+          {
+            "system": "phone",
+            "value": "01234567",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Im Himmelreich 1"
+            ],
+            "city": "Frühling",
+            "postalCode": "21481",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Melder-Kontakt-Vorname Melder-Kontakt-Nachname",
+              "family": "Melder-Kontakt-Nachname",
+              "given": [
+                "Melder-Kontakt-Vorname"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
       "fullUrl": "https://demis.rki.de/fhir/Condition/555-42-23-7",
       "resource": {
         "resourceType": "Condition",
@@ -250,55 +299,6 @@
             ]
           }
         ],
-        "name": "Kreiskrankenhaus Riedlingen",
-        "telecom": [
-          {
-            "system": "email",
-            "value": "t.person@gmail.com"
-          },
-          {
-            "system": "email",
-            "value": "test.person@kh-rie.de"
-          },
-          {
-            "system": "phone",
-            "value": "01234567",
-            "use": "work"
-          }
-        ],
-        "address": [
-          {
-            "line": [
-              "Im Himmelreich 1"
-            ],
-            "city": "Frühling",
-            "postalCode": "21481",
-            "country": "DE"
-          }
-        ],
-        "contact": [
-          {
-            "name": {
-              "text": "Melder-Kontakt-Vorname Melder-Kontakt-Nachname",
-              "family": "Melder-Kontakt-Nachname",
-              "given": [
-                "Melder-Kontakt-Vorname"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
-      "resource": {
-        "resourceType": "Organization",
-        "id": "555-42-23-4",
-        "meta": {
-          "profile": [
-            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
-          ]
-        },
         "name": "Kreiskrankenhaus Riedlingen",
         "telecom": [
           {

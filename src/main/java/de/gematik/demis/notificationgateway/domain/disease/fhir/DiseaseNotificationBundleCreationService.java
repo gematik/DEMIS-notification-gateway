@@ -132,7 +132,7 @@ public class DiseaseNotificationBundleCreationService {
           .map(Reference.class::cast)
           .map(Reference::getResource)
           .map(Organization.class::cast)
-          .forEach(bundle::addOrganization);
+          .forEach(bundle::addNotifiedPersonFacilities);
     }
   }
 

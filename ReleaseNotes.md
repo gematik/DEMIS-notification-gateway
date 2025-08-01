@@ -2,33 +2,37 @@
 
 # Release notes notification-gateway
 
-## Release 6.4.1
-- Update Spring-Parent
+## 6.4.2
+- Update spring-parent to 2.12.11
+- fix laboratory notification creation process
+
+## 6.4.1
+- Update Spring-Parent 
 - fix missing version for codes in different resources in laboratory notification creation
 - add default feature flags FEATURE_FLAG_NOTIFICATIONS_7_3, FEATURE_FLAG_SNAPSHOT_5_3_0_ACTIVE to values.yaml
 
-## Release 6.4.0
+## 6.4.0
 - Removed Notification-Object from the data model
 - Updated dependencies
 - add pathogen/laboratory strict processing
 - use AddressDataBuilder 
 
-## Release 6.3.9
+## 6.3.9
 - updating dependencies
 
-## Release 6.3.7
+## 6.3.7
 - change base chart to istio hostnames
 - updating dependencies
 - §7.1 creation code is extended with §7.3 pathogen notifications.
 - update method code for resistance gene oberservations
 
-## Release 6.3.6
+## 6.3.6
 - Updated ospo-resources for adding additional notes and disclaimer
 - setting new ressources in helm chart
 - setting new timeouts and retries in helm chart
 - updating dependencies
 
-## Release 6.3.2
+## 6.3.2
 - second official GitHub-Release
 - updated dependencies
 - remove Komfort-Client
@@ -41,6 +45,6 @@
 - deactivation of not authorized notifications
 
 
-## Release 3.0.0 (2023-12-15)
+## 3.0.0 (2023-12-15)
 - first official GitHub-Release
 - Migration to SpringBoot 3.2.1 as standalone JAR

@@ -61,7 +61,7 @@ class CompositionCreatorTest {
             NotificationType.NOMINAL);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
-    assertThat(composition.getTitle()).isEqualTo("Erregernachweismeldung");
+    assertThat(composition.getTitle()).isEqualTo("Meldung gemäß §7 Absatz 1 IfSG");
     assertThat(composition.getSectionFirstRep().getCode().getCodingFirstRep().getCode())
         .isEqualTo("11502-2");
     assertThat(composition.getMeta().getProfile().getFirst().getValue())
@@ -88,7 +88,7 @@ class CompositionCreatorTest {
             NotificationType.ANONYMOUS);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
-    assertThat(composition.getTitle()).isEqualTo("Erregernachweismeldung");
+    assertThat(composition.getTitle()).isEqualTo("Meldung gemäß §7 Absatz 3 IfSG");
     assertThat(composition.getSectionFirstRep().getCode().getCodingFirstRep().getCode())
         .isEqualTo("11502-2");
     assertThat(composition.getMeta().getProfile().getFirst().getValue())
@@ -115,7 +115,7 @@ class CompositionCreatorTest {
             NotificationType.NON_NOMINAL);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
-    assertThat(composition.getTitle()).isEqualTo("Erregernachweismeldung");
+    assertThat(composition.getTitle()).isEqualTo("Meldung gemäß §7 Absatz 3 IfSG");
     assertThat(composition.getSectionFirstRep().getCode().getCodingFirstRep().getCode())
         .isEqualTo("11502-2");
     assertThat(composition.getMeta().getProfile().getFirst().getValue())

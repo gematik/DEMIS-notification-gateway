@@ -33,9 +33,9 @@ import static de.gematik.demis.notificationgateway.domain.pathogen.creator.Pract
 import static de.gematik.demis.notificationgateway.domain.pathogen.creator.PractitionerOrganizationCreator.createSubmitterPractitionerRole;
 import static de.gematik.demis.notificationgateway.domain.pathogen.creator.SpecimenCreator.createSpecimen;
 
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.AnonymousBundleBuilder;
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NonNominalBundleBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryAnonymousDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryNonNominalDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
@@ -74,7 +74,6 @@ public class BundleCreator {
    * Retrieves the {@link Coding} object representing the address use based on the provided {@link
    * AddressType}.
    *
-   * @param addressType The type of the address.
    * @param featureFlagSnapshot5_3_0Active A boolean flag indicating if the feature is active.
    * @return A {@link Coding} object representing the address use.
    * @throws IllegalArgumentException if the address type is null.
@@ -109,8 +108,8 @@ public class BundleCreator {
     // check for notification type and use the appropriate bundleBuilder builder
     final NotificationBundleLaboratoryDataBuilder bundleBuilder =
         switch (notificationType) {
-          case NON_NOMINAL -> new NonNominalBundleBuilder().setDefaults();
-          case ANONYMOUS -> new AnonymousBundleBuilder().setDefaults();
+          case NON_NOMINAL -> new NotificationBundleLaboratoryNonNominalDataBuilder().setDefaults();
+          case ANONYMOUS -> new NotificationBundleLaboratoryAnonymousDataBuilder().setDefaults();
           case NOMINAL -> new NotificationBundleLaboratoryDataBuilder().setDefaults();
         };
     final Patient patient = createPatient(bundleBuilder, pathogenTest, submittingRole);

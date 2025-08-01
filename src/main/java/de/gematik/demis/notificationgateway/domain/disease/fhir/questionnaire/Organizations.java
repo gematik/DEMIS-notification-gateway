@@ -93,7 +93,7 @@ public class Organizations implements ResourceFactory {
   public FhirResource createFhirResource(
       DiseaseNotificationContext context, QuestionnaireResponseItem item) {
     QuestionnaireResponseItem organizationItem = item.getAnswer().getFirst().getItem().getFirst();
-    Organization organization = createOrganization(context, organizationItem);
+    Organization organization = creatHospitalizationOrganization(context, organizationItem);
     setContactAndTelecom(context, organizationItem, organization);
     return createFhirResource(organization, item.getLinkId());
   }
@@ -105,13 +105,13 @@ public class Organizations implements ResourceFactory {
    * @param organizationItem form input
    * @return organization
    */
-  private Organization createOrganization(
+  private Organization creatHospitalizationOrganization(
       DiseaseNotificationContext context, QuestionnaireResponseItem organizationItem) {
     Organization organization = copyOrganizationIfRequested(context, organizationItem);
     if (organization == null) {
-      organization = createOrganization(organizationItem);
+      organization = creatHospitalizationOrganization(organizationItem);
     }
-    context.bundleBuilder().addOrganization(organization);
+    context.bundleBuilder().addEncounterOrganization(organization);
     return organization;
   }
 
@@ -183,7 +183,7 @@ public class Organizations implements ResourceFactory {
     return null;
   }
 
-  private Organization createOrganization(QuestionnaireResponseItem item) {
+  private Organization creatHospitalizationOrganization(QuestionnaireResponseItem item) {
     final var organization = new OrganizationBuilder();
     organization.setDefaults();
     setFacilityName(item, organization);

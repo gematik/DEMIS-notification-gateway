@@ -43,7 +43,7 @@
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/notificationType",
                 "code": "7.3",
-                "display": "Meldung gemäß IfSG §7 Absatz 3"
+                "display": "Meldung gemäß §7 Absatz 3 IfSG"
               }
             ]
           }
@@ -57,7 +57,7 @@
             "reference": "PractitionerRole/555-42-23-2"
           }
         ],
-        "title": "Meldung gemäß §6 Absatz 1, 2 IfSG",
+        "title": "Meldung gemäß §7 Absatz 3 IfSG",
         "section": [
           {
             "title": "disease",

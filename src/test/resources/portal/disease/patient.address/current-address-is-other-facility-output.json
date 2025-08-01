@@ -43,7 +43,7 @@
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/notificationType",
                 "code": "6.1_2",
-                "display": "Meldung gemäß IfSG §6 Absatz 1, 2"
+                "display": "Meldung gemäß §6 Absatz 1, 2 IfSG"
               }
             ]
           }
@@ -184,6 +184,43 @@
             "city": "Oederingen",
             "postalCode": "21481",
             "country": "20422"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
+          ]
+        },
+        "name": "The other facility",
+        "address": [
+          {
+            "line": [
+              "Otherfacilitystraße 1"
+            ],
+            "_line": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+                    "valueString": "Otherfacilitystraße"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+                    "valueString": "1"
+                  }
+                ]
+              }
+            ],
+            "city": "Berlin",
+            "postalCode": "21481",
+            "country": "DE"
           }
         ]
       }
@@ -348,43 +385,6 @@
                 "Wolfgang"
               ]
             }
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
-      "resource": {
-        "resourceType": "Organization",
-        "id": "555-42-23-4",
-        "meta": {
-          "profile": [
-            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
-          ]
-        },
-        "name": "The other facility",
-        "address": [
-          {
-            "line": [
-              "Otherfacilitystraße 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Otherfacilitystraße"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
-            ],
-            "city": "Berlin",
-            "postalCode": "21481",
-            "country": "DE"
           }
         ]
       }

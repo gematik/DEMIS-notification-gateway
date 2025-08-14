@@ -26,10 +26,14 @@ package de.gematik.demis.notificationgateway.common.creator;
  * #L%
  */
 
+import static java.util.Collections.*;
+
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.HumanNameDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonBasicInfo;
 import de.gematik.demis.notificationgateway.common.dto.PractitionerInfo;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.HumanName;
@@ -98,8 +102,30 @@ public class HumanNameCreator {
       throw new IllegalArgumentException("PersonInfo cannot be null");
     }
     return new HumanNameDataBuilder()
-        .addGivenName(personInfo.getFirstname())
+        .setGivenEntry(extractGivenName(personInfo))
         .setFamilyName(personInfo.getLastname())
         .build();
+  }
+
+  /**
+   * Extracts individual given names from a provided string.
+   *
+   * <p>This method splits the given name string by whitespace and returns a list of the individual
+   * names. This is useful for creating FHIR-compliant HumanName resources, where the given names
+   * are expected as a list.
+   *
+   * @param givenName The given name as a string, possibly containing multiple names separated by
+   *     spaces.
+   * @return A list of individual given names.
+   */
+  private static List<String> extractGivenName(NotifiedPersonBasicInfo personInfo) {
+    if (personInfo == null) {
+      return emptyList();
+    }
+    String firstname = personInfo.getFirstname();
+    if (firstname == null) {
+      return emptyList();
+    }
+    return Arrays.stream(firstname.split("\\s+")).map(String::new).toList();
   }
 }

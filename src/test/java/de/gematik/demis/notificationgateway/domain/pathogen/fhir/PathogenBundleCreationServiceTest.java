@@ -49,7 +49,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PathogenBundleCreationServiceTest {
 
   private final PathogenBundleCreationService pathogenBundleCreationService =
-      new PathogenBundleCreationService(true);
+      new PathogenBundleCreationService(true, false);
 
   private int counter;
 
@@ -163,7 +163,8 @@ class PathogenBundleCreationServiceTest {
         assertThatThrownBy(
                 () -> pathogenBundleCreationService.toBundle(inputData, NotificationType.NOMINAL))
             .isInstanceOf(NullPointerException.class)
-            .hasMessageContaining("NotifiedPerson must not be null");
+            .hasMessageContaining(
+                "Either NotifiedPerson or NotifiedPersonAnonymous must not be null");
       } else {
         testBundleCreation(pathogenBundleCreationService, input, expectedOutput);
       }
@@ -172,11 +173,17 @@ class PathogenBundleCreationServiceTest {
 
   @ParameterizedTest
   @CsvSource({
-    "portal/pathogen/pathogen-test.json, NOMINAL, portal/pathogen/pathogen-test-bundle.json",
-    "portal/pathogen/pathogen-test.json, NON_NOMINAL, portal/pathogen/pathogen-test-bundle-non-nominal.json"
+    "portal/pathogen/pathogen-test.json, NOMINAL, portal/pathogen/pathogen-test-bundle.json, false",
+    "portal/pathogen/pathogen-test.json, NON_NOMINAL, portal/pathogen/pathogen-test-bundle-non-nominal.json, false",
+    "portal/FollowUpPathogen.json, NOMINAL, portal/FollowUpPathogen_expected.json, true",
+    "portal/FollowUpPathogen2.json, NOMINAL, portal/FollowUpPathogen2_expected.json, true"
   })
   void toBundle_shouldCreateBundleForDifferentNotificationTypes(
-      String input, String notificationType, String expectedOutput) throws Exception {
+      String input, String notificationType, String expectedOutput, Boolean followUpActive)
+      throws Exception {
+    PathogenBundleCreationService pathogenBundleCreationService =
+        new PathogenBundleCreationService(true, followUpActive);
+
     try (final var utils = Mockito.mockStatic(Utils.class);
         final var propertyUtils = Mockito.mockStatic(PropertyUtil.class)) {
       mockNblUtils(utils);

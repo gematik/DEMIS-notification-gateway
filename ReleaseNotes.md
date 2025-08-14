@@ -2,6 +2,15 @@
 
 # Release notes notification-gateway
 
+### 
+
+## 6.5.0
+- add Support for new API Endpoint for Backend-Services (NES, RPS)
+- set headers x-fhir-profile and x-fhir-api-version for rps and nps requests
+- add support for follow-up notifications through possibility to create a notifiedPersonAnonymous and fixes
+- fix: initial notification id used as notification identifier instead of
+  relates-to parameter and fixes
+ 
 ## 6.4.2
 - Update spring-parent to 2.12.11
 - fix laboratory notification creation process

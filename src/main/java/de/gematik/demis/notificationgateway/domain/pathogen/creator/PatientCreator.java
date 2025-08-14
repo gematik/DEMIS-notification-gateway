@@ -28,12 +28,14 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
 
 import static de.gematik.demis.notificationgateway.common.creator.HumanNameCreator.createHumanName;
 
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonAnonymousDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonNominalDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notificationgateway.common.creator.ContactPointCreator;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
+import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAnonymous;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.utils.DateUtils;
 import java.util.List;
@@ -68,8 +70,21 @@ public class PatientCreator {
   public static Patient createPatient(
       NotificationBundleLaboratoryDataBuilder bundleBuilder,
       PathogenTest rawData,
-      PractitionerRole submittingRole) {
+      PractitionerRole submittingRole,
+      boolean featureFlagFollowUpActive) {
 
+    if (featureFlagFollowUpActive) {
+
+      return createPatientWithFollowUpOptions(bundleBuilder, rawData, submittingRole);
+    } else {
+      return legacyPatientCreation(bundleBuilder, rawData, submittingRole);
+    }
+  }
+
+  private static Patient legacyPatientCreation(
+      NotificationBundleLaboratoryDataBuilder bundleBuilder,
+      PathogenTest rawData,
+      PractitionerRole submittingRole) {
     NotifiedPerson rawPatientData = rawData.getNotifiedPerson();
     NotifiedPersonAddressInfo whereaboutsInfo = rawPatientData.getCurrentAddress();
 
@@ -92,6 +107,73 @@ public class PatientCreator {
                 Enumerations.AdministrativeGender.valueOf(
                     rawPatientData.getInfo().getGender().getValue()));
 
+    addresses.stream().filter(Objects::nonNull).forEach(patientBuilder::addAddress);
+    rawPatientData.getContacts().stream()
+        .map(ContactPointCreator::createContactPoint)
+        .forEach(patientBuilder::addTelecom);
+
+    return patientBuilder.build();
+  }
+
+  private static Patient createPatientWithFollowUpOptions(
+      NotificationBundleLaboratoryDataBuilder bundleBuilder,
+      PathogenTest rawData,
+      PractitionerRole submittingRole) {
+    if (rawData.getNotifiedPerson() != null) {
+      return createNotifiedPersonNominal(bundleBuilder, rawData, submittingRole);
+    } else {
+      return createNotifiedPersonAnonymous(rawData);
+    }
+  }
+
+  private static Patient createNotifiedPersonAnonymous(PathogenTest rawData) {
+    NotifiedPersonAnonymous notifiedPersonAnonymous = rawData.getNotifiedPersonAnonymous();
+    if (notifiedPersonAnonymous == null) {
+      throw new IllegalArgumentException("NotifiedPersonAnonymous cannot be null");
+    }
+    String zip =
+        notifiedPersonAnonymous.getResidenceAddress() != null
+            ? notifiedPersonAnonymous.getResidenceAddress().getZip()
+            : null;
+    String country =
+        notifiedPersonAnonymous.getResidenceAddress() != null
+            ? notifiedPersonAnonymous.getResidenceAddress().getCountry()
+            : null;
+    return new NotifiedPersonAnonymousDataBuilder()
+        .setDefault()
+        .addAddress(new Address().setPostalCode(zip).setCountry(country))
+        .setGender(
+            Enumerations.AdministrativeGender.valueOf(
+                notifiedPersonAnonymous.getGender().getValue()))
+        .setBirthdate(new DateType(notifiedPersonAnonymous.getBirthDate()))
+        .build();
+  }
+
+  private static Patient createNotifiedPersonNominal(
+      NotificationBundleLaboratoryDataBuilder bundleBuilder,
+      PathogenTest rawData,
+      PractitionerRole submittingRole) {
+    NotifiedPerson rawPatientData = rawData.getNotifiedPerson();
+    NotifiedPersonAddressInfo whereaboutsInfo = rawPatientData.getCurrentAddress();
+
+    if (whereaboutsInfo == null) {
+      throw new IllegalArgumentException("Current address of patient cannot be null");
+    }
+
+    Address whereabouts = createWhereaboutsAddress(bundleBuilder, whereaboutsInfo, submittingRole);
+
+    List<Address> addresses =
+        List.of(whereabouts, AddressCreator.createAddress(rawPatientData.getResidenceAddress()));
+
+    NotifiedPersonNominalDataBuilder patientBuilder =
+        new NotifiedPersonNominalDataBuilder()
+            .setHumanName(createHumanName(rawPatientData.getInfo()))
+            .setDefault()
+            .setBirthdate(
+                new DateType(DateUtils.createDate(rawPatientData.getInfo().getBirthDate())))
+            .setGender(
+                Enumerations.AdministrativeGender.valueOf(
+                    rawPatientData.getInfo().getGender().getValue()));
     addresses.stream().filter(Objects::nonNull).forEach(patientBuilder::addAddress);
     rawPatientData.getContacts().stream()
         .map(ContactPointCreator::createContactPoint)

@@ -1,0 +1,122 @@
+{
+  "notifierFacility": {
+    "facilityInfo": {
+      "institutionName": "TEST Organisation",
+      "bsnr": "248123512",
+      "existsBsnr": true
+    },
+    "address": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Im Himmelreich",
+      "city": "Frühling",
+      "houseNumber": "1",
+      "addressType": "current"
+    },
+    "contact": {
+      "salutation": "Mr",
+      "prefix": "Dr",
+      "firstname": "Melderina",
+      "lastname": "Melderson"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "value": "0182736912388889",
+        "usage": "work"
+      },
+      {
+        "contactType": "email",
+        "value": "testerino@test.de"
+      }
+    ]
+  },
+  "notifiedPersonAnonymous": {
+    "gender": "MALE",
+    "birthDate": "2020-06",
+    "residenceAddress": {
+      "country": "DE",
+      "zip": "123",
+      "addressType": "primary"
+    }
+  },
+  "submittingFacility": {
+    "address": {
+      "country": "DE",
+      "zip": "21481",
+      "street": "Im Himmelreich",
+      "city": "Frühling",
+      "houseNumber": "1"
+    },
+    "contacts": [
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "0182736912388889"
+      },
+      {
+        "contactType": "email",
+        "value": "testerino@test.de"
+      }
+    ],
+    "facilityInfo": {
+      "institutionName": "TEST Organisation"
+    },
+    "contact": {
+      "salutation": "Mr",
+      "prefix": "Dr",
+      "firstname": "Melderina",
+      "lastname": "Melderson"
+    }
+  },
+  "pathogen": "acbp",
+  "notificationCategory": {
+    "pathogen": {
+      "code": "1085801000112101",
+      "display": "Carbapenemase-produzierende Acinetobacter junii",
+      "designations": [],
+      "system": "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115"
+    },
+    "reportStatus": "final"
+  },
+  "pathogenDTO": {
+    "codeDisplay": {
+      "code": "acbp",
+      "display": "Acinetobacter spp. bei Nachweis einer Carbapenemase-Determinante oder mit verminderter Empfindlichkeit gegenüber Carbapenemen außer bei natürlicher Resistenz; Meldepflicht nur bei Infektion oder Kolonisation",
+      "designations": [
+        {
+          "language": "de-DE",
+          "value": "Acinetobacter spp., Carbapenem"
+        }
+      ]
+    },
+    "specimenList": [
+      {
+        "extractionDate": "2025-08-11",
+        "receivedDate": "2025-08-12",
+        "material": {
+          "code": "410580001",
+          "display": "Atemwegssekretprobe",
+          "designations": [],
+          "system": "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115"
+        },
+        "methodPathogenList": [
+          {
+            "method": {
+              "code": "83581000052107",
+              "display": "Matrix assisted laser desorption ionization time of flight mass spectrometry technique (qualifier value)",
+              "designations": [
+                {
+                  "language": "de-DE",
+                  "value": "MALDI-TOF"
+                }
+              ],
+              "system": "http://snomed.info/sct|http://snomed.info/sct/11000274103/version/20241115"
+            },
+            "result": "POS"
+          }
+        ]
+      }
+    ]
+  }
+}

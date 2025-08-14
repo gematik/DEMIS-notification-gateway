@@ -13,7 +13,6 @@ components:
       required:
         - info
         - residenceAddress
-        - currentAddress
       type: object
       properties:
         residenceAddress:
@@ -40,13 +39,11 @@ components:
             - OTHER
             - UNKNOWN
         birthDate:
-          format: date
-          description: notified person's date of birth
           type: string
-          example: '2021-01-30'
+          description: |
+            Date of birth. Format: "yyyy-MM" (month and year), or "yyyy" (year only).
+          example: "1980-05-23"
         residenceAddress:
-          $ref: '#/components/schemas/NotifiedPersonAddressInfo'
-        currentAddress:
           $ref: '#/components/schemas/NotifiedPersonAddressInfo'
     NotifierFacility:
       description: Melder-Einrichtung
@@ -182,8 +179,6 @@ components:
     NotifiedPersonBasicInfo:
       description: 'firstname, lastname, gender, date of birth'
       required:
-        - firstname
-        - lastname
         - gender
       type: object
       properties:
@@ -229,12 +224,13 @@ components:
         existsBsnr: true
     NotificationContent:
       required:
-        - notifiedPerson
         - notifierFacility
       type: object
       properties:
         notifiedPerson:
           $ref: '#/components/schemas/NotifiedPerson'
+        notifiedPersonAnonymous:
+          $ref: '#/components/schemas/NotifiedPersonAnonymous'
         notifierFacility:
           $ref: '#/components/schemas/NotifierFacility'
         submittingFacility:
@@ -672,7 +668,6 @@ components:
       type: object
       required:
         - notifierFacility
-        - notifiedPerson
         - status
         - condition
       properties:
@@ -680,6 +675,8 @@ components:
           $ref: '#/components/schemas/NotifierFacility'
         notifiedPerson:
           $ref: '#/components/schemas/NotifiedPerson'
+        notifiedPersonAnonymous:
+          $ref: '#/components/schemas/NotifiedPersonAnonymous'
         status:
           $ref: '#/components/schemas/DiseaseStatus'
         condition:

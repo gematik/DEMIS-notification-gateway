@@ -55,8 +55,8 @@ class FhirRequestInterceptorTest {
     // Assert
     verify(mockRequest).removeHeaders("User-Agent");
     verify(mockRequest).addHeader("User-Agent", identifier);
-    verify(mockRequest).addHeader("fhir-profile", fhirProfile);
-    verify(mockRequest).addHeader("fhir-profile-version", fhirProfileVersion);
+    verify(mockRequest).addHeader("x-fhir-profile", fhirProfile);
+    verify(mockRequest).addHeader("x-fhir-api-version", fhirProfileVersion);
     verifyNoMoreInteractions(mockRequest);
   }
 }

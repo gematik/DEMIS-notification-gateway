@@ -46,6 +46,8 @@ public class FhirConstants {
   // profiles for laboratory and disease notification
   public static final String PROFILE_NOTIFIED_PERSON =
       DEMIS_RKI_DE_FHIR + "StructureDefinition/NotifiedPerson";
+  public static final String PROFILE_NOTIFIED_PERSON_ANONYMOUS =
+      DEMIS_RKI_DE_FHIR + "StructureDefinition/NotifiedPersonAnonymous";
   public static final String PROFILE_NOTIFIER_FACILITY =
       DEMIS_RKI_DE_FHIR + "StructureDefinition/NotifierFacility";
   public static final String PROFILE_NOTIFIED_PERSON_FACILITY =

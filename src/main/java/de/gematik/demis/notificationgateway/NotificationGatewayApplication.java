@@ -26,7 +26,6 @@ package de.gematik.demis.notificationgateway;
  * #L%
  */
 
-import de.gematik.demis.notificationgateway.common.utils.PropertyUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,8 +35,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @ConfigurationPropertiesScan
 @RequiredArgsConstructor
 public class NotificationGatewayApplication {
-
-  private final PropertyUtil propertyUtil; // purpose is to create an instance of this util class
 
   public static void main(String[] args) {
     SpringApplication.run(NotificationGatewayApplication.class, args);

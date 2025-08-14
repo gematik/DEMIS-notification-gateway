@@ -106,8 +106,8 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
             any(Bundle.class),
             any(String.class),
             any(String.class),
-            eq("rki.demis.r4.core"),
-            eq("1.24.0"),
+            eq("fhir-profile-snapshots"),
+            eq("v6"),
             any(Token.class));
   }
 

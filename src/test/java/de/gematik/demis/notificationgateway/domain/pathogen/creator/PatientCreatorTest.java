@@ -38,6 +38,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
+import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAnonymous;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonBasicInfo;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import java.time.LocalDate;
@@ -49,9 +50,161 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class PatientCreatorTest {
+
+  @DisplayName("Regression Test for follow up notifications")
+  @Nested
+  class RegressionTest {
+    @Test
+    void createsPatientWithValidData() {
+      NotificationBundleLaboratoryDataBuilder bundleBuilder =
+          mock(NotificationBundleLaboratoryDataBuilder.class);
+      PathogenTest rawData = new PathogenTest();
+      PractitionerRole submittingRole = new PractitionerRole();
+      NotifiedPerson notifiedPerson = new NotifiedPerson();
+      rawData.setNotifiedPerson(notifiedPerson);
+      NotifiedPersonAddressInfo addressInfo = new NotifiedPersonAddressInfo();
+      notifiedPerson.setResidenceAddress(addressInfo);
+      addressInfo.setAddressType(AddressType.PRIMARY);
+      NotifiedPersonAddressInfo addressInfo2 = new NotifiedPersonAddressInfo();
+      notifiedPerson.setCurrentAddress(addressInfo2);
+      addressInfo2.setAddressType(AddressType.CURRENT);
+      NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
+      notifiedPerson.setInfo(basicInfo);
+
+      basicInfo.setBirthDate(LocalDate.of(1990, 1, 1));
+      basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+      basicInfo.setFirstname("Max");
+      basicInfo.setLastname("Mustermann");
+
+      Organization organization = mock(Organization.class);
+      submittingRole.setOrganization(new Reference(organization));
+
+      Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
+
+      assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEqualTo("Max");
+      assertThat(result.getNameFirstRep().getFamily()).isEqualTo("Mustermann");
+      assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
+      assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
+      verifyNoInteractions(bundleBuilder);
+    }
+
+    @Test
+    void shouldReturnExceptionForMissingAddressData() {
+      NotificationBundleLaboratoryDataBuilder bundleBuilder =
+          mock(NotificationBundleLaboratoryDataBuilder.class);
+      PathogenTest rawData = mock(PathogenTest.class);
+      PractitionerRole submittingRole = mock(PractitionerRole.class);
+      NotifiedPerson notifiedPerson = mock(NotifiedPerson.class);
+
+      when(rawData.getNotifiedPerson()).thenReturn(notifiedPerson);
+      when(notifiedPerson.getCurrentAddress()).thenReturn(null);
+
+      assertThatThrownBy(
+              () -> PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Current address of patient cannot be null");
+    }
+
+    @Test
+    void shouldUseFacilityAddressWithOtherFacilityAsType() {
+      NotificationBundleLaboratoryDataBuilder bundleBuilder =
+          mock(NotificationBundleLaboratoryDataBuilder.class);
+
+      NotifiedPersonAddressInfo addressInfoResidence = new NotifiedPersonAddressInfo();
+      addressInfoResidence.setAddressType(AddressType.PRIMARY);
+      addressInfoResidence.setStreet("Straße");
+
+      NotifiedPersonAddressInfo addressInfoSubmittingAddress = new NotifiedPersonAddressInfo();
+      addressInfoSubmittingAddress.setAddressType(AddressType.OTHER_FACILITY);
+
+      NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
+      basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+      basicInfo.setFirstname("Max");
+      basicInfo.setLastname("Mustermann");
+      NotifiedPerson notifiedPerson = new NotifiedPerson();
+      notifiedPerson.setResidenceAddress(addressInfoResidence);
+      notifiedPerson.setCurrentAddress(addressInfoSubmittingAddress);
+      notifiedPerson.setInfo(basicInfo);
+
+      PathogenTest rawData = new PathogenTest();
+      rawData.setNotifiedPerson(notifiedPerson);
+
+      PractitionerRole submittingRole = new PractitionerRole();
+      Organization submittingOrganization = new Organization();
+      submittingOrganization.setName("submitter");
+      submittingOrganization.addAddress(
+          new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
+      submittingRole.setOrganization(new Reference(submittingOrganization));
+
+      Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
+
+      assertThat(result.getAddress()).hasSize(2);
+      assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
+      assertThat(result.getAddress().get(0).getExtension().get(0).getUrl())
+          .contains("FacilityAddressNotifiedPerson");
+      assertThat(result.getAddress().get(0).getExtension().get(1).getUrl()).contains("AddressUse");
+      assertThat(result.getAddress().get(0).getExtension().get(1).getValue())
+          .extracting("code")
+          .isEqualTo("current");
+      assertThat(result.getAddress().get(1).getExtension().get(0).getUrl()).contains("AddressUse");
+      assertThat(result.getAddress().get(1).getExtension().get(0).getValue())
+          .extracting("code")
+          .isEqualTo("primary");
+      verify(bundleBuilder).addAdditionalEntry(any(Organization.class));
+    }
+
+    @Test
+    void addsSubmittingFacilityAddress() {
+      NotificationBundleLaboratoryDataBuilder bundleBuilder =
+          new NotificationBundleLaboratoryDataBuilder();
+
+      NotifiedPersonAddressInfo addressInfoResidence = new NotifiedPersonAddressInfo();
+      addressInfoResidence.setAddressType(AddressType.PRIMARY);
+      addressInfoResidence.setStreet("Straße");
+
+      NotifiedPersonAddressInfo addressInfoSubmittingAddress = new NotifiedPersonAddressInfo();
+      addressInfoSubmittingAddress.setAddressType(AddressType.SUBMITTING_FACILITY);
+
+      NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
+      basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+      basicInfo.setLastname("Lastname");
+      basicInfo.setFirstname("Firstname");
+      NotifiedPerson notifiedPerson = new NotifiedPerson();
+      notifiedPerson.setResidenceAddress(addressInfoResidence);
+      notifiedPerson.setCurrentAddress(addressInfoSubmittingAddress);
+      notifiedPerson.setInfo(basicInfo);
+
+      PathogenTest rawData = new PathogenTest();
+      rawData.setNotifiedPerson(notifiedPerson);
+
+      PractitionerRole submittingRole = new PractitionerRole();
+      Organization submittingOrganization = new Organization();
+      submittingOrganization.setName("submitter");
+      submittingOrganization.addAddress(
+          new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
+      submittingRole.setOrganization(new Reference(submittingOrganization));
+
+      Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
+
+      assertThat(result.getAddress()).hasSize(2);
+      assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
+      assertThat(result.getAddress().get(0).getExtension().get(0).getUrl())
+          .contains("FacilityAddressNotifiedPerson");
+      assertThat(result.getAddress().get(0).getExtension().get(1).getUrl()).contains("AddressUse");
+      assertThat(result.getAddress().get(0).getExtension().get(1).getValue())
+          .extracting("code")
+          .isEqualTo("current");
+      assertThat(result.getAddress().get(1).getExtension().get(0).getUrl()).contains("AddressUse");
+      assertThat(result.getAddress().get(1).getExtension().get(0).getValue())
+          .extracting("code")
+          .isEqualTo("primary");
+    }
+  }
 
   @Test
   void createsPatientWithValidData() {
@@ -78,7 +231,7 @@ class PatientCreatorTest {
     Organization organization = mock(Organization.class);
     submittingRole.setOrganization(new Reference(organization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
 
     assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEqualTo("Max");
     assertThat(result.getNameFirstRep().getFamily()).isEqualTo("Mustermann");
@@ -98,13 +251,14 @@ class PatientCreatorTest {
     when(rawData.getNotifiedPerson()).thenReturn(notifiedPerson);
     when(notifiedPerson.getCurrentAddress()).thenReturn(null);
 
-    assertThatThrownBy(() -> PatientCreator.createPatient(bundleBuilder, rawData, submittingRole))
+    assertThatThrownBy(
+            () -> PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Current address of patient cannot be null");
   }
 
   @Test
-  void shouldUseDifferentFacilityAdress() {
+  void shouldUseDifferentFacilityAddress() {
     NotificationBundleLaboratoryDataBuilder bundleBuilder =
         mock(NotificationBundleLaboratoryDataBuilder.class);
 
@@ -112,14 +266,16 @@ class PatientCreatorTest {
     addressInfoResidence.setAddressType(AddressType.PRIMARY);
     addressInfoResidence.setStreet("Straße");
 
-    NotifiedPersonAddressInfo addressInfoSubmittingAdress = new NotifiedPersonAddressInfo();
-    addressInfoSubmittingAdress.setAddressType(AddressType.OTHER_FACILITY);
+    NotifiedPersonAddressInfo addressInfoSubmittingAddress = new NotifiedPersonAddressInfo();
+    addressInfoSubmittingAddress.setAddressType(AddressType.OTHER_FACILITY);
 
     NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
     basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+    basicInfo.setFirstname("Max");
+    basicInfo.setLastname("Mustermann");
     NotifiedPerson notifiedPerson = new NotifiedPerson();
     notifiedPerson.setResidenceAddress(addressInfoResidence);
-    notifiedPerson.setCurrentAddress(addressInfoSubmittingAdress);
+    notifiedPerson.setCurrentAddress(addressInfoSubmittingAddress);
     notifiedPerson.setInfo(basicInfo);
 
     PathogenTest rawData = new PathogenTest();
@@ -132,7 +288,7 @@ class PatientCreatorTest {
         new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
     submittingRole.setOrganization(new Reference(submittingOrganization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
 
     assertThat(result.getAddress()).hasSize(2);
     assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
@@ -158,14 +314,16 @@ class PatientCreatorTest {
     addressInfoResidence.setAddressType(AddressType.PRIMARY);
     addressInfoResidence.setStreet("Straße");
 
-    NotifiedPersonAddressInfo addressInfoSubmittingAdress = new NotifiedPersonAddressInfo();
-    addressInfoSubmittingAdress.setAddressType(AddressType.SUBMITTING_FACILITY);
+    NotifiedPersonAddressInfo addressInfoSubmittingAddress = new NotifiedPersonAddressInfo();
+    addressInfoSubmittingAddress.setAddressType(AddressType.SUBMITTING_FACILITY);
 
     NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
     basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+    basicInfo.setLastname("Lastname");
+    basicInfo.setFirstname("Firstname");
     NotifiedPerson notifiedPerson = new NotifiedPerson();
     notifiedPerson.setResidenceAddress(addressInfoResidence);
-    notifiedPerson.setCurrentAddress(addressInfoSubmittingAdress);
+    notifiedPerson.setCurrentAddress(addressInfoSubmittingAddress);
     notifiedPerson.setInfo(basicInfo);
 
     PathogenTest rawData = new PathogenTest();
@@ -178,7 +336,7 @@ class PatientCreatorTest {
         new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
     submittingRole.setOrganization(new Reference(submittingOrganization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
 
     assertThat(result.getAddress()).hasSize(2);
     assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
@@ -192,5 +350,32 @@ class PatientCreatorTest {
     assertThat(result.getAddress().get(1).getExtension().get(0).getValue())
         .extracting("code")
         .isEqualTo("primary");
+  }
+
+  @Test
+  void shouldCreateNotifiedPersonAnonymous() {
+    NotificationBundleLaboratoryDataBuilder bundleBuilder =
+        mock(NotificationBundleLaboratoryDataBuilder.class);
+    PathogenTest rawData = new PathogenTest();
+    PractitionerRole submittingRole = new PractitionerRole();
+    NotifiedPersonAnonymous notifiedPersonAnonymous = new NotifiedPersonAnonymous();
+    rawData.setNotifiedPersonAnonymous(notifiedPersonAnonymous);
+    NotifiedPersonAddressInfo addressInfo = new NotifiedPersonAddressInfo();
+    notifiedPersonAnonymous.setResidenceAddress(addressInfo);
+    addressInfo.setAddressType(AddressType.PRIMARY);
+
+    notifiedPersonAnonymous.setBirthDate("1990-01");
+    notifiedPersonAnonymous.setGender(NotifiedPersonAnonymous.GenderEnum.MALE);
+
+    Organization organization = mock(Organization.class);
+    submittingRole.setOrganization(new Reference(organization));
+
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
+
+    assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEmpty();
+    assertThat(result.getNameFirstRep().getFamily()).isNull();
+    assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
+    assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
+    verifyNoInteractions(bundleBuilder);
   }
 }

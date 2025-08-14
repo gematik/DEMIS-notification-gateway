@@ -50,7 +50,7 @@ final class FhirRequestInterceptor extends SimpleRequestHeaderInterceptor {
 
   private void setFhirProfile(IHttpRequest theRequest) {
     // add request header for validation service selection through k8s
-    theRequest.addHeader("fhir-profile", this.fhirProfile);
-    theRequest.addHeader("fhir-profile-version", this.fhirProfileVersion);
+    theRequest.addHeader("x-fhir-profile", this.fhirProfile);
+    theRequest.addHeader("x-fhir-api-version", this.fhirProfileVersion);
   }
 }

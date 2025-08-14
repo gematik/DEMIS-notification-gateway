@@ -85,7 +85,7 @@ class PathogenRestControllerRegressionIT implements BaseTestUtils {
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     when(bundlePublisher.postRequest(
-            any(), any(), any(), eq("rki.demis.r4.core"), eq("1.24.0"), any()))
+            any(), any(), any(), eq("fhir-profile-snapshots"), eq("v6"), any()))
         .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
 
     final String jsonContent = loadJsonFromFile("/portal/pathogen/specimenPrep.json");

@@ -29,6 +29,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationBundleDiseaseDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationBundleDiseaseNonNominalDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationDiseaseDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.RelatesToBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.DemisConstants;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
@@ -39,7 +40,6 @@ import de.gematik.demis.notificationgateway.common.exceptions.BadRequestExceptio
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.QuestionnaireResponses;
 import jakarta.annotation.Nullable;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -49,9 +49,9 @@ import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Reference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
 public class DiseaseNotificationBundleCreationService {
 
@@ -60,6 +60,22 @@ public class DiseaseNotificationBundleCreationService {
   private final PractitionerRoleCreationService practitionerRoleCreationService;
   private final Diseases diseases;
   private final QuestionnaireResponses questionnaireResponses;
+  private final boolean featureFlagFollowUpActive;
+
+  public DiseaseNotificationBundleCreationService(
+      NotifiedPersonCreationService notifiedPersonCreationService,
+      OrganizationCreationService organizationCreationService,
+      PractitionerRoleCreationService practitionerRoleCreationService,
+      Diseases diseases,
+      QuestionnaireResponses questionnaireResponses,
+      @Value("${feature.flag.follow.up.notification.active}") boolean featureFlagFollowUpActive) {
+    this.notifiedPersonCreationService = notifiedPersonCreationService;
+    this.organizationCreationService = organizationCreationService;
+    this.practitionerRoleCreationService = practitionerRoleCreationService;
+    this.diseases = diseases;
+    this.questionnaireResponses = questionnaireResponses;
+    this.featureFlagFollowUpActive = featureFlagFollowUpActive;
+  }
 
   /**
    * @deprecated should be removed with feature.flag.notifications.7_3
@@ -82,9 +98,20 @@ public class DiseaseNotificationBundleCreationService {
       DiseaseNotification diseaseNotification, NotificationType notificationType)
       throws BadRequestException {
     PractitionerRole notifier = createNotifier(diseaseNotification);
-    Patient patient =
-        this.notifiedPersonCreationService.createPatient(
-            diseaseNotification.getNotifiedPerson(), notifier);
+
+    Patient patient;
+
+    if (featureFlagFollowUpActive) {
+      Object patientDataFromFE =
+          diseaseNotification.getNotifiedPerson() != null
+              ? diseaseNotification.getNotifiedPerson()
+              : diseaseNotification.getNotifiedPersonAnonymous();
+      patient = this.notifiedPersonCreationService.createPatient(patientDataFromFE, notifier);
+    } else {
+      patient =
+          this.notifiedPersonCreationService.createPatientLegacy(
+              diseaseNotification.getNotifiedPerson(), notifier);
+    }
 
     DiseaseNotificationContext context =
         createContext(diseaseNotification, notifier, patient, notificationType);
@@ -184,7 +211,7 @@ public class DiseaseNotificationBundleCreationService {
     composition.setStatus(compositionStatus);
     String initialNotificationId = status.getInitialNotificationId();
     if (StringUtils.isNotBlank(initialNotificationId)) {
-      composition.setIdentifierAsNotificationId(initialNotificationId);
+      composition.setRelatesTo(RelatesToBuilder.forInitialNotificationId(initialNotificationId));
     }
     bundle.setNotificationDisease(composition.build());
   }

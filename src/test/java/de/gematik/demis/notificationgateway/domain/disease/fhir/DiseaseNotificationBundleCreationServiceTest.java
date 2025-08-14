@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Compositions;
+import de.gematik.demis.notification.builder.demis.fhir.notification.utils.DemisConstants;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
@@ -47,7 +49,10 @@ import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Optional;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Composition;
+import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -137,7 +142,7 @@ class DiseaseNotificationBundleCreationServiceTest {
   }
 
   @Test
-  void createDiseaseWithQuantites() throws BadRequestException {
+  void createDiseaseWithQuantities() throws BadRequestException {
     input =
         FileUtils.createDiseaseNotification("portal/disease/73.notifications/input/disease_1.json");
     try (final var utils = Mockito.mockStatic(Utils.class)) {
@@ -153,6 +158,33 @@ class DiseaseNotificationBundleCreationServiceTest {
       String actualJson = iParser.encodeResourceToString(bundle);
 
       assertThat(actualJson).isEqualToIgnoringWhitespace(expectedJson);
+    }
+  }
+
+  /** Regression of DEMIS-3971 */
+  @Test
+  void thatInitialNotificationIdIsNotSetAsNotificationId() throws BadRequestException {
+    // simply referenced in the input file under status
+    final String initialNotificationId = "05240c75-29e4-4a9f-8965-7c79d7f015ed";
+    input =
+        FileUtils.createDiseaseNotification(
+            "portal/disease/73.notifications/input/disease_with_initialNotificationId.json");
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      final Bundle bundle = service.createBundle(input, NotificationType.NOMINAL);
+
+      assertThat(bundle).isNotNull();
+      final Optional<Composition> from = Compositions.from(bundle);
+      assertThat(from).isPresent();
+      assertThat(from.get().getIdentifier().getValue()).isNotEqualTo(initialNotificationId);
+      assertThat(from.get().getRelatesToFirstRep().getTarget())
+          .isInstanceOfSatisfying(
+              Reference.class,
+              ref -> {
+                assertThat(ref.getIdentifier().getValue()).isEqualTo(initialNotificationId);
+                assertThat(ref.getIdentifier().getSystem())
+                    .isEqualTo(DemisConstants.NOTIFICATION_ID_SYSTEM);
+              });
     }
   }
 }

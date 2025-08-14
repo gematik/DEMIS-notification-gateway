@@ -27,27 +27,23 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  */
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.PractitionerRoleBuilder;
-import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.igs.InvalidInputDataException;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.ContactPoint;
-import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.HumanName.NameUse;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
@@ -55,12 +51,11 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/** TODO delete with feature.flag.follow.up.notification.active */
 @ExtendWith(MockitoExtension.class)
-class NotifiedPersonCreationServiceTest {
+class NotifiedPersonCreationServiceLegacyTest {
 
   private final FhirObjectCreationService fhirObjectCreationService =
       new FhirObjectCreationService(false);
@@ -77,7 +72,7 @@ class NotifiedPersonCreationServiceTest {
     final PractitionerRole submitter = new PractitionerRoleBuilder().setDefaults().build();
 
     final Patient notifiedPerson =
-        notifiedPersonCreationService.createPatient(quickTest.getNotifiedPerson(), submitter);
+        notifiedPersonCreationService.createPatientLegacy(quickTest.getNotifiedPerson(), submitter);
     Assertions.assertNotNull(notifiedPerson);
 
     assertTrue(notifiedPerson.hasId());
@@ -89,6 +84,7 @@ class NotifiedPersonCreationServiceTest {
     final List<HumanName> names = notifiedPerson.getName();
     assertEquals(1, names.size());
     final HumanName name = names.getFirst();
+    assertEquals(NameUse.OFFICIAL, name.getUse());
     assertEquals("Betroffen", name.getFamily());
     assertEquals("Bertha", name.getGiven().getFirst().asStringValue());
 
@@ -130,6 +126,7 @@ class NotifiedPersonCreationServiceTest {
     final List<HumanName> names = notifiedPerson.getName();
     assertEquals(1, names.size());
     final HumanName name = names.getFirst();
+    assertEquals(NameUse.OFFICIAL, name.getUse());
     assertEquals("Betroffen", name.getFamily());
     final List<StringType> givens = name.getGiven();
     assertEquals(3, givens.size());
@@ -158,45 +155,5 @@ class NotifiedPersonCreationServiceTest {
 
     final Address residenceAddress = addresses.getLast();
     assertEquals("Andere Straße 3", residenceAddress.getLine().getFirst().asStringValue());
-  }
-
-  @ParameterizedTest
-  @CsvSource({"portal/FollowUpPathogen.json", "portal/FollowUpPathogen2.json"})
-  void shouldCreateAnonymousPatient(String path) throws IOException {
-    final QuickTest quickTest = FileUtils.createQuickTest(path);
-
-    final PractitionerRole submitter = new PractitionerRoleBuilder().setDefaults().build();
-    final Patient notifiedPerson =
-        notifiedPersonCreationService.createPatient(
-            quickTest.getNotifiedPersonAnonymous(), submitter);
-
-    assertThat(notifiedPerson).isNotNull();
-    assertThat(notifiedPerson.getMeta().getProfile().getFirst().asStringValue())
-        .isEqualTo(FhirConstants.PROFILE_NOTIFIED_PERSON_ANONYMOUS);
-    assertThat(notifiedPerson.getName())
-        .as("No name should be added to anonym patient resource")
-        .isEmpty();
-    assertThat(notifiedPerson.getAddress()).as("Only one address is allowed").hasSize(1);
-    assertThat(notifiedPerson.getAddress().getFirst().getPostalCode()).isEqualTo("123");
-    assertThat(notifiedPerson.getAddress().getFirst().getCountry()).isEqualTo("DE");
-    assertThat(notifiedPerson.getAddress().getFirst().getLine())
-        .as("No Line is allowed in address")
-        .isEmpty();
-    assertThat(notifiedPerson.getAddress().getFirst().getCity())
-        .as("No City is allowed in address")
-        .isNull();
-    assertThat(notifiedPerson.getTelecom()).as("No telecom is allowed").isEmpty();
-    assertThat(notifiedPerson.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
-    assertThat(notifiedPerson.getBirthDate()).isEqualTo(new Date(120, 5, 1));
-  }
-
-  @Test
-  void shouldThrowException() {
-    Object notifiedPerson = new String();
-    PractitionerRole practitionerRole = new PractitionerRole();
-    assertThatThrownBy(
-            () -> notifiedPersonCreationService.createPatient(notifiedPerson, practitionerRole))
-        .isInstanceOf(InvalidInputDataException.class)
-        .hasMessage("NotifiedPersonContent type not supported: " + notifiedPerson.getClass());
   }
 }

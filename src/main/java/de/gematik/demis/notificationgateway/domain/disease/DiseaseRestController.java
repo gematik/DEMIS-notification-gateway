@@ -26,7 +26,6 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #L%
  */
 
-import de.gematik.demis.notificationgateway.common.constants.WebConstants;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
@@ -50,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping(path = WebConstants.API_NG_NOTIFICATION)
+@RequestMapping("${api.ng.notification.context-path}")
 class DiseaseRestController {
 
   private final Validator validator;
@@ -67,7 +66,7 @@ class DiseaseRestController {
   }
 
   @PostMapping(
-      path = {"/disease", "/disease/6.1"},
+      path = {"disease", "disease/6.1"},
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = "application/json")
   public ResponseEntity<OkResponse> addDiseaseNotification(

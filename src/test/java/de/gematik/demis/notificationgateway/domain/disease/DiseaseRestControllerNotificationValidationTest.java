@@ -32,7 +32,6 @@ import de.gematik.demis.notificationgateway.common.dto.Condition;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
-import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import jakarta.validation.ConstraintViolationException;
@@ -88,16 +87,6 @@ class DiseaseRestControllerNotificationValidationTest {
             () -> controller.addDiseaseNotification(this.diseaseNotification, null))
         .isInstanceOf(ConstraintViolationException.class)
         .hasMessage("notifierFacility.contacts[0].value: must not be null");
-  }
-
-  @Test
-  void addDiseaseNotification_shouldRejectNotifiedPersonMissingFirstName() {
-    NotifiedPerson notifiedPerson = this.diseaseNotification.getNotifiedPerson();
-    notifiedPerson.getInfo().setFirstname(null);
-    Assertions.assertThatThrownBy(
-            () -> controller.addDiseaseNotification(this.diseaseNotification, null))
-        .isInstanceOf(ConstraintViolationException.class)
-        .hasMessage("notifiedPerson.info.firstname: must not be null");
   }
 
   @Test

@@ -26,15 +26,24 @@ package de.gematik.demis.notificationgateway.common.constants;
  * #L%
  */
 
-import lombok.experimental.UtilityClass;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
-@UtilityClass
+@Configuration
 public class WebConstants {
 
-  public static final String API_NG_NOTIFICATION = "/api/ng/notification";
-  public static final String API_NG_REPORTS = "/api/ng/reports";
-  public static final String PATHOGEN_PATH = API_NG_NOTIFICATION + "/pathogen";
-  public static final String BED_OCCUPANCY_PATH = API_NG_REPORTS + "/bedOccupancy";
+  @Value("${api.ng.notification.context-path}")
+  public void setApiNgNotificationContextPath(String contextPath) {
+    PATHOGEN_PATH = contextPath + "/pathogen";
+  }
+
+  @Value("${api.ng.bedoccupancy.context-path}")
+  public void setApiNgReportsContextPath(String contextPath) {
+    BED_OCCUPANCY_PATH = contextPath + "/bedOccupancy";
+  }
+
+  public static String PATHOGEN_PATH;
+  public static String BED_OCCUPANCY_PATH;
 
   public static final String HEADER_X_REAL_IP = "x-real-ip";
   public static final String NOT_AVAILABLE = "N/A";

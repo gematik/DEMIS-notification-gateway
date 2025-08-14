@@ -43,9 +43,6 @@ public class RPSProperties {
   @Value("${rps.baseUrl}")
   private String baseUrl;
 
-  @Value("${rps.reports.path}")
-  private String reportsPath;
-
   public String bedOccupancyUrl() {
     return baseUrl + bedOccupancyPath;
   }

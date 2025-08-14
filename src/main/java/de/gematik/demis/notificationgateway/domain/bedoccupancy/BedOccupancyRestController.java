@@ -26,8 +26,6 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy;
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.constants.WebConstants.API_NG_REPORTS;
-
 import de.gematik.demis.notificationgateway.common.dto.BedOccupancy;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.utils.Token;
@@ -50,13 +48,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Validated
-@RequestMapping(path = API_NG_REPORTS)
+@RequestMapping("${api.ng.bedoccupancy.context-path}")
 public class BedOccupancyRestController {
 
   private final BedOccupancyService bedOccupancyService;
 
   @PostMapping(
-      path = "/bedOccupancy",
+      path = "bedOccupancy",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = "application/json")
   public ResponseEntity<OkResponse> addBedOccupancyReport(

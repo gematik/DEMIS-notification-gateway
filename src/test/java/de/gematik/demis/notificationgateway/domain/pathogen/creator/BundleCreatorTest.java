@@ -47,8 +47,10 @@ import org.hl7.fhir.r4.model.Specimen;
 import org.hl7.fhir.r4.model.Type;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class BundleCreatorTest {
 
   @Test
@@ -76,6 +78,7 @@ class BundleCreatorTest {
     addressInfo2.setAddressType(AddressType.CURRENT);
     notifiedPerson.setInfo(basicInfo);
     basicInfo.setLastname("ExpectedFamilyName");
+    basicInfo.setFirstname("ExpectedFirstName");
     pathogenTest.setPathogenDTO(pathogenDTO);
     pathogenTest.setNotificationCategory(notificationCategory);
     pathogenTest.setNotifierFacility(notifierFacility);
@@ -115,7 +118,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false, false);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);
@@ -241,7 +244,7 @@ class BundleCreatorTest {
 
     assertThrows(
             IllegalArgumentException.class,
-            () -> createBundle(pathogenTest, NotificationType.NOMINAL, false))
+            () -> createBundle(pathogenTest, NotificationType.NOMINAL, false, false))
         .getMessage()
         .contains("Submitting facility must not be null");
     ;
@@ -272,6 +275,7 @@ class BundleCreatorTest {
     addressInfo2.setAddressType(AddressType.SUBMITTING_FACILITY);
     notifiedPerson.setInfo(basicInfo);
     basicInfo.setLastname("ExpectedFamilyName");
+    basicInfo.setFirstname("ExpectedFirstName");
     pathogenTest.setPathogenDTO(pathogenDTO);
     pathogenTest.setNotificationCategory(notificationCategory);
     pathogenTest.setNotifierFacility(notifierFacility);
@@ -314,7 +318,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false, false);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);

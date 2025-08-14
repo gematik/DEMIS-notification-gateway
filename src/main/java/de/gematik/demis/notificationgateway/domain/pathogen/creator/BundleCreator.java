@@ -81,20 +81,35 @@ public class BundleCreator {
   public static Bundle createBundle(
       PathogenTest pathogenTest,
       NotificationType notificationType,
-      boolean featureFlagSnapshot5_3_0Active) {
+      boolean featureFlagSnapshot5_3_0Active,
+      boolean featureFlagFollowUpActive) {
 
     // DTOs
-    final NotifiedPerson notifiedPerson =
-        Objects.requireNonNull(pathogenTest.getNotifiedPerson(), "NotifiedPerson must not be null");
+
+    boolean isNotifiedPersonFacility = false;
+
+    // nominal case: current address does not exist on NotifiedPersonAnonymous
+    NotifiedPersonAddressInfo currentAddress;
+    NotifiedPerson notifiedPerson = pathogenTest.getNotifiedPerson();
+    if (notifiedPerson != null && pathogenTest.getNotifiedPersonAnonymous() == null) {
+      currentAddress =
+          Objects.requireNonNull(
+              notifiedPerson.getCurrentAddress(), "CurrentAddress must not be null");
+      isNotifiedPersonFacility =
+          AddressType.SUBMITTING_FACILITY.equals(currentAddress.getAddressType());
+    }
+
+    // when nominal and anonymous are both null, sth is really wrong
+    if ((notifiedPerson == null && pathogenTest.getNotifiedPersonAnonymous() == null)
+        || (notifiedPerson != null && pathogenTest.getNotifiedPersonAnonymous() != null)) {
+      throw new NullPointerException(
+          "Either NotifiedPerson or NotifiedPersonAnonymous must not be null");
+    }
+
     final PathogenDTO pathogenDTO = pathogenTest.getPathogenDTO();
     final NotificationLaboratoryCategory notificationLaboratoryCategory =
         pathogenTest.getNotificationCategory();
     final NotifierFacility notifierFacility = pathogenTest.getNotifierFacility();
-    final NotifiedPersonAddressInfo currentAddress =
-        Objects.requireNonNull(
-            notifiedPerson.getCurrentAddress(), "CurrentAddress must not be null");
-    boolean isNotifiedPersonFacility =
-        AddressType.SUBMITTING_FACILITY.equals(currentAddress.getAddressType());
 
     // hl7 pojos
     if (pathogenTest.getSubmittingFacility() == null) {
@@ -112,7 +127,8 @@ public class BundleCreator {
           case ANONYMOUS -> new NotificationBundleLaboratoryAnonymousDataBuilder().setDefaults();
           case NOMINAL -> new NotificationBundleLaboratoryDataBuilder().setDefaults();
         };
-    final Patient patient = createPatient(bundleBuilder, pathogenTest, submittingRole);
+    final Patient patient =
+        createPatient(bundleBuilder, pathogenTest, submittingRole, featureFlagFollowUpActive);
 
     List<Observation> observation = new ArrayList<>();
     List<Specimen> specimenList = new ArrayList<>();

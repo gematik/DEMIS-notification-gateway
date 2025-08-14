@@ -1,0 +1,388 @@
+{
+  "resourceType": "Bundle",
+  "id": "555-42-23-5",
+  "meta": {
+    "profile": [
+      "https://demis.rki.de/fhir/StructureDefinition/NotificationBundleLaboratory"
+    ]
+  },
+  "identifier": {
+    "system": "https://demis.rki.de/fhir/NamingSystem/NotificationBundleId",
+    "value": "555-42-23-6"
+  },
+  "type": "document",
+  "timestamp": "2024-03-14T14:45:00.000+01:00",
+  "entry": [
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Composition/555-42-23-12",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "555-42-23-12",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotificationLaboratory"
+          ]
+        },
+        "identifier": {
+          "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+          "value": "555-42-23-11"
+        },
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "34782-3",
+              "display": "Infectious disease Note"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "date": "2024-03-14T14:45:00+01:00",
+        "author": [
+          {
+            "reference": "PractitionerRole/555-42-23-2"
+          }
+        ],
+        "title": "Meldung gemäß §7 Absatz 1 IfSG",
+        "section": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "11502-2",
+                  "display": "Laboratory report"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "DiagnosticReport/555-42-23-10"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-7",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "555-42-23-7",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonAnonymous"
+          ]
+        },
+        "gender": "male",
+        "birthDate": "2020-06",
+        "address": [
+          {
+            "postalCode": "123",
+            "country": "DE"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/555-42-23-2",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "555-42-23-2",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierRole"
+          ]
+        },
+        "organization": {
+          "reference": "Organization/555-42-23-1"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-1",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-1",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/NotifierFacility"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR",
+            "value": "248123512"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                "code": "othPrivatLab",
+                "display": "Sonstige private Untersuchungsstelle"
+              }
+            ]
+          }
+        ],
+        "name": "TEST Organisation",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "0182736912388889",
+            "use": "work"
+          },
+          {
+            "system": "email",
+            "value": "testerino@test.de"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Im Himmelreich 1"
+            ],
+            "city": "Frühling",
+            "postalCode": "21481",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Herr Dr Melderina Melderson",
+              "family": "Melderson",
+              "given": [
+                "Melderina"
+              ],
+              "prefix": [
+                "Dr"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/PractitionerRole/555-42-23-4",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "555-42-23-4",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SubmittingRole"
+          ]
+        },
+        "organization": {
+          "reference": "Organization/555-42-23-3"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-3",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "555-42-23-3",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SubmittingFacility"
+          ]
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
+                "code": "othPrivatLab",
+                "display": "Sonstige private Untersuchungsstelle"
+              }
+            ]
+          }
+        ],
+        "name": "TEST Organisation",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "0182736912388889",
+            "use": "work"
+          },
+          {
+            "system": "email",
+            "value": "testerino@test.de"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Im Himmelreich 1"
+            ],
+            "city": "Frühling",
+            "postalCode": "21481",
+            "country": "DE"
+          }
+        ],
+        "contact": [
+          {
+            "name": {
+              "text": "Herr Dr Melderina Melderson",
+              "family": "Melderson",
+              "given": [
+                "Melderina"
+              ],
+              "prefix": [
+                "Dr"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Specimen/555-42-23-8",
+      "resource": {
+        "resourceType": "Specimen",
+        "id": "555-42-23-8",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/SpecimenACBP"
+          ]
+        },
+        "type": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
+              "code": "410580001",
+              "display": "Atemwegssekretprobe"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "receivedTime": "2025-08-06T00:00:00+02:00",
+        "collection": {
+          "collector": {
+            "reference": "PractitionerRole/555-42-23-4"
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/Observation/555-42-23-9",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "555-42-23-9",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/PathogenDetectionACBP"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "version": "2.79",
+              "code": "41852-5",
+              "display": "Microorganism or agent identified in Specimen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
+              "code": "1085501000112104",
+              "display": "Carbapenemase-produzierende Acinetobacter"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS"
+              }
+            ]
+          }
+        ],
+        "method": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20241115",
+              "code": "83581000052107",
+              "display": "Matrix assisted laser desorption ionization time of flight mass spectrometry technique (qualifier value)"
+            }
+          ]
+        },
+        "specimen": {
+          "reference": "Specimen/555-42-23-8"
+        }
+      }
+    },
+    {
+      "fullUrl": "https://demis.rki.de/fhir/DiagnosticReport/555-42-23-10",
+      "resource": {
+        "resourceType": "DiagnosticReport",
+        "id": "555-42-23-10",
+        "meta": {
+          "profile": [
+            "https://demis.rki.de/fhir/StructureDefinition/LaboratoryReportACBP"
+          ]
+        },
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://demis.rki.de/fhir/CodeSystem/notificationCategory",
+              "version": "1.0.0",
+              "code": "acbp",
+              "display": "Acinetobacter spp. bei Nachweis einer Carbapenemase-Determinante oder mit verminderter Empfindlichkeit gegenüber Carbapenemen außer bei natürlicher Resistenz; Meldepflicht nur bei Infektion oder Kolonisation"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/555-42-23-7"
+        },
+        "issued": "2024-03-14T14:45:00.000+01:00",
+        "result": [
+          {
+            "reference": "Observation/555-42-23-9"
+          }
+        ],
+        "conclusionCode": [
+          {
+            "coding": [
+              {
+                "system": "https://demis.rki.de/fhir/CodeSystem/conclusionCode",
+                "code": "pathogenDetected"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -67,7 +67,8 @@ customEnvVars:
   FEATURE_FLAG_SNAPSHOT_5_3_0_ACTIVE: "false"
   RPS_BASE_URL: http://report-processing-service.demis.svc.cluster.local/
   NES_BASE_URL: http://notification-processing-service.demis.svc.cluster.local/
-  FHIR_DATA_TRANSLATION_SERVICE_URL: http://futs.demis.svc.cluster.local/fhir-ui-data-model-translation
+  FEATURE_FLAG_NEW_API_ENDPOINTS: "false"
+  FEATURE_FLAG_FOLLOW_UP_NOTIFICATION: "false"
 
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)

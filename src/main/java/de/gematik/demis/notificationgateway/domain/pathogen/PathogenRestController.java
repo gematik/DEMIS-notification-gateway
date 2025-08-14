@@ -26,7 +26,6 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.constants.WebConstants.API_NG_NOTIFICATION;
 import static de.gematik.demis.notificationgateway.common.enums.NotificationType.ANONYMOUS;
 import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NOMINAL;
 import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NON_NOMINAL;
@@ -50,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-@RequestMapping(path = API_NG_NOTIFICATION)
+@RequestMapping("${api.ng.notification.context-path}")
 public class PathogenRestController {
 
   private final PathogenSendService sendService;

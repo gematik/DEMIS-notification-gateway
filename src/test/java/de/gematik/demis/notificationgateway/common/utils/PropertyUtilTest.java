@@ -32,8 +32,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(properties = "test.key=integration-value")
+@ActiveProfiles("test")
 class PropertyUtilIntegrationTest {
 
   @Autowired Environment environment;

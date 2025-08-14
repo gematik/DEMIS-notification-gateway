@@ -48,7 +48,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PathogenBundleCreationServiceRegressionTest {
 
   private final PathogenBundleCreationService pathogenBundleCreationService =
-      new PathogenBundleCreationService(false);
+      new PathogenBundleCreationService(false, false);
 
   private int counter;
 
@@ -163,7 +163,8 @@ class PathogenBundleCreationServiceRegressionTest {
                 () ->
                     pathogenBundleCreationService.toBundle(pathogenTest, NotificationType.NOMINAL))
             .isInstanceOf(NullPointerException.class)
-            .hasMessageContaining("NotifiedPerson must not be null");
+            .hasMessageContaining(
+                "Either NotifiedPerson or NotifiedPersonAnonymous must not be null");
       } else {
         testBundleCreation(pathogenBundleCreationService, input, expectedOutput);
       }

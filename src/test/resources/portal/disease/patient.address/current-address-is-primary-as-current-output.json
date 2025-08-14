@@ -25,7 +25,7 @@
         },
         "identifier": {
           "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
-          "value": "init-notification-42"
+          "value": "555-42-23-19"
         },
         "status": "amended",
         "type": {
@@ -58,6 +58,18 @@
           }
         ],
         "title": "Meldung gemäß §6 Absatz 1, 2 IfSG",
+        "relatesTo": [
+          {
+            "code": "appends",
+            "targetReference": {
+              "type": "Composition",
+              "identifier": {
+                "system": "https://demis.rki.de/fhir/NamingSystem/NotificationId",
+                "value": "init-notification-42"
+              }
+            }
+          }
+        ],
         "section": [
           {
             "title": "disease",
@@ -1070,3 +1082,4 @@
     }
   ]
 }
+

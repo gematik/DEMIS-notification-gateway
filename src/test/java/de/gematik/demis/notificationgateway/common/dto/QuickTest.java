@@ -39,6 +39,8 @@ public class QuickTest {
 
   private NotifiedPerson notifiedPerson;
 
+  private NotifiedPersonAnonymous notifiedPersonAnonymous;
+
   private NotifierFacility notifierFacility;
 
   private String pathogen;
@@ -61,6 +63,10 @@ public class QuickTest {
   @JsonProperty("notifiedPerson")
   public NotifiedPerson getNotifiedPerson() {
     return notifiedPerson;
+  }
+
+  public NotifiedPersonAnonymous getNotifiedPersonAnonymous() {
+    return notifiedPersonAnonymous;
   }
 
   public QuickTest notifierFacility(NotifierFacility notifierFacility) {

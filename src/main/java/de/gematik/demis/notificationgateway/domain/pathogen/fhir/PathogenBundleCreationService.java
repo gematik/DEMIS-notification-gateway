@@ -50,10 +50,13 @@ import org.springframework.stereotype.Component;
 public class PathogenBundleCreationService implements BundleMapper {
 
   private final boolean featureFlagSnapshot5_3_0Active;
+  private final boolean featureFlagFollowUpActive;
 
   public PathogenBundleCreationService(
-      @Value("${feature.flag.snapshot.5.3.0.active}") boolean featureFlagSnapshot530Active) {
+      @Value("${feature.flag.snapshot.5.3.0.active}") boolean featureFlagSnapshot530Active,
+      @Value("${feature.flag.follow.up.notification.active}") boolean featureFlagFollowUpActive) {
     featureFlagSnapshot5_3_0Active = featureFlagSnapshot530Active;
+    this.featureFlagFollowUpActive = featureFlagFollowUpActive;
   }
 
   /**
@@ -112,7 +115,8 @@ public class PathogenBundleCreationService implements BundleMapper {
    * @return A {@link Bundle} object representing the complete notification.
    */
   public Bundle toBundle(PathogenTest pathogenTest, NotificationType notificationType) {
-    return createBundle(pathogenTest, notificationType, featureFlagSnapshot5_3_0Active);
+    return createBundle(
+        pathogenTest, notificationType, featureFlagSnapshot5_3_0Active, featureFlagFollowUpActive);
   }
 
   /**
@@ -123,6 +127,7 @@ public class PathogenBundleCreationService implements BundleMapper {
   @Deprecated(forRemoval = true)
   public Bundle toBundle(PathogenTest pathogenTest) {
     final NotifiedPerson notifiedPerson = pathogenTest.getNotifiedPerson();
+    // ggf. NICHT übernehmen!
     final PathogenDTO pathogenDTO = pathogenTest.getPathogenDTO();
     final NotificationLaboratoryCategory notificationLaboratoryCategory =
         pathogenTest.getNotificationCategory();

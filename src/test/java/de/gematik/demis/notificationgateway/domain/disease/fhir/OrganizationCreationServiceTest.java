@@ -28,8 +28,11 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
 
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.CODE_SYSTEM_ORGANIZATION_TYPE;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.FacilityInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
@@ -39,7 +42,6 @@ import java.util.List;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Organization;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -49,15 +51,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrganizationCreationServiceTest {
 
   @Mock private FhirObjectCreationService fhirObjectCreationServiceMock;
-  private OrganizationCreationService creationService;
-  private OrganizationCreationService creationServiceActiveFlag;
-
-  @BeforeEach()
-  void setUp() {
-    creationService = new OrganizationCreationService(fhirObjectCreationServiceMock, false);
-    creationServiceActiveFlag =
-        new OrganizationCreationService(fhirObjectCreationServiceMock, true);
-  }
 
   @Test
   void createNotifierFacilitySuccessfullyRegression() throws JsonProcessingException {
@@ -68,6 +61,12 @@ class OrganizationCreationServiceTest {
     final FacilityInfo facilityInfo = notifierFacility.getFacilityInfo();
     final String orgaTypeCode = "mySpecialCodeValue";
     facilityInfo.setOrganizationType(orgaTypeCode);
+
+    final FeatureFlags featureFlags = mock(FeatureFlags.class);
+    when(featureFlags.isNotifications73()).thenReturn(false);
+
+    final OrganizationCreationService creationService =
+        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
 
     final Organization result = creationService.createNotifierFacility(notifierFacility);
 
@@ -80,6 +79,13 @@ class OrganizationCreationServiceTest {
         FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
 
     final NotifierFacility notifierFacilityContent = quickTest.getNotifierFacility();
+
+    final FeatureFlags featureFlags = mock(FeatureFlags.class);
+    when(featureFlags.isNotifications73()).thenReturn(false);
+
+    final OrganizationCreationService creationService =
+        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
+
     final Organization notifierFacility =
         creationService.createHospitalNotifierFacility(notifierFacilityContent);
 
@@ -96,6 +102,12 @@ class OrganizationCreationServiceTest {
     final String orgaTypeCode = "mySpecialCodeValue";
     facilityInfo.setOrganizationType(orgaTypeCode);
 
+    final FeatureFlags featureFlags = mock(FeatureFlags.class);
+    when(featureFlags.isNotifications73()).thenReturn(true);
+
+    final OrganizationCreationService creationServiceActiveFlag =
+        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
+
     final Organization result = creationServiceActiveFlag.createNotifierFacility(notifierFacility);
 
     assertOrgaType(orgaTypeCode, null, result);
@@ -107,6 +119,13 @@ class OrganizationCreationServiceTest {
         FileUtils.createQuickTest("portal/laboratory/notification_content_min.json");
 
     final NotifierFacility notifierFacilityContent = quickTest.getNotifierFacility();
+
+    final FeatureFlags featureFlags = mock(FeatureFlags.class);
+    when(featureFlags.isNotifications73()).thenReturn(true);
+
+    final OrganizationCreationService creationServiceActiveFlag =
+        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
+
     final Organization notifierFacility =
         creationServiceActiveFlag.createHospitalNotifierFacility(notifierFacilityContent);
 

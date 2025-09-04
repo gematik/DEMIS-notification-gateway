@@ -61,7 +61,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "feature.flag.notifications.7_3=true")
+    properties = "feature.flag.notifications-73=true")
 @EnabledIf(expression = "${testing.enable-e2e}", loadContext = true)
 class PathogenRestControllerE2eIT implements BaseTestUtils {
 

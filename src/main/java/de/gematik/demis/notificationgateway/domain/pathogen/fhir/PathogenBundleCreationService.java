@@ -34,30 +34,24 @@ import static de.gematik.demis.notificationgateway.domain.pathogen.creator.Bundl
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.SpecimenDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.*;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.mappers.BundleMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class PathogenBundleCreationService implements BundleMapper {
 
-  private final boolean featureFlagSnapshot5_3_0Active;
-  private final boolean featureFlagFollowUpActive;
-
-  public PathogenBundleCreationService(
-      @Value("${feature.flag.snapshot.5.3.0.active}") boolean featureFlagSnapshot530Active,
-      @Value("${feature.flag.follow.up.notification.active}") boolean featureFlagFollowUpActive) {
-    featureFlagSnapshot5_3_0Active = featureFlagSnapshot530Active;
-    this.featureFlagFollowUpActive = featureFlagFollowUpActive;
-  }
+  private final FeatureFlags featureFlags;
 
   /**
    * Create a patient and additional resources if necessary
@@ -116,7 +110,10 @@ public class PathogenBundleCreationService implements BundleMapper {
    */
   public Bundle toBundle(PathogenTest pathogenTest, NotificationType notificationType) {
     return createBundle(
-        pathogenTest, notificationType, featureFlagSnapshot5_3_0Active, featureFlagFollowUpActive);
+        pathogenTest,
+        notificationType,
+        featureFlags.isSnapshot530Active(),
+        featureFlags.isFollowUpNotificationActive());
   }
 
   /**
@@ -218,7 +215,7 @@ public class PathogenBundleCreationService implements BundleMapper {
           specimen,
           observation,
           pathogenShortCode,
-          featureFlagSnapshot5_3_0Active);
+          featureFlags.isSnapshot530Active());
       createObservationsForResistances(
           specimenDTO.getResistanceList(), patient, specimen, observation, pathogenShortCode);
     }

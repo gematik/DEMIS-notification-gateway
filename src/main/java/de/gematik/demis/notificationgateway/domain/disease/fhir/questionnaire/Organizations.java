@@ -30,6 +30,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.tec
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.HumanNameDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.TelecomDataBuilder;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.CodeDisplay;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseAnswer;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseItem;
@@ -37,6 +38,7 @@ import de.gematik.demis.notificationgateway.domain.disease.fhir.DiseaseNotificat
 import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
@@ -48,11 +50,11 @@ import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Type;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class Organizations implements ResourceFactory {
 
   private static final String CHECKBOX_LINK_ID_COPY_CONTACT = "copyNotifierContact";
@@ -66,11 +68,7 @@ public class Organizations implements ResourceFactory {
       "https://demis.rki.de/fhir/CodeSystem/addressUse";
   private static final String ADDRESS_USE_CODE_CURRENT = "current";
 
-  private final boolean featureFlagCopyCheckboxes;
-
-  Organizations(@Value("${feature.flag.hosp_copy_checkboxes}") boolean featureFlagCopyCheckboxes) {
-    this.featureFlagCopyCheckboxes = featureFlagCopyCheckboxes;
-  }
+  private final FeatureFlags featureFlags;
 
   @Override
   public boolean test(QuestionnaireResponseItem item) {
@@ -138,10 +136,9 @@ public class Organizations implements ResourceFactory {
   }
 
   private boolean shouldCopyNotifiedPersonCurrentAddress(QuestionnaireResponseItem organization) {
-    return featureFlagCopyCheckboxes
-        && findSubItemAnswer(organization, CHECKBOX_LINK_ID_COPY_CURRENT_ADDRESS)
-            .map(QuestionnaireResponseAnswer::getValueBoolean)
-            .orElse(false);
+    return findSubItemAnswer(organization, CHECKBOX_LINK_ID_COPY_CURRENT_ADDRESS)
+        .map(QuestionnaireResponseAnswer::getValueBoolean)
+        .orElse(false);
   }
 
   @Nullable
@@ -321,13 +318,11 @@ public class Organizations implements ResourceFactory {
   }
 
   private boolean shouldCopyNotifierContacts(QuestionnaireResponseItem organizationItem) {
-    if (this.featureFlagCopyCheckboxes) {
-      final Optional<QuestionnaireResponseItem> contact = findSubItem(organizationItem, "contact");
-      if (contact.isPresent()) {
-        return findSubItemAnswer(contact.get(), CHECKBOX_LINK_ID_COPY_CONTACT)
-            .map(QuestionnaireResponseAnswer::getValueBoolean)
-            .orElse(false);
-      }
+    final Optional<QuestionnaireResponseItem> contact = findSubItem(organizationItem, "contact");
+    if (contact.isPresent()) {
+      return findSubItemAnswer(contact.get(), CHECKBOX_LINK_ID_COPY_CONTACT)
+          .map(QuestionnaireResponseAnswer::getValueBoolean)
+          .orElse(false);
     }
     return false;
   }

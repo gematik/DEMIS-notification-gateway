@@ -62,9 +62,9 @@ customEnvVars:
   TEST_AUTH_CERT_KEYSTORE: "/app/config/notification-gateway/certs/test_keystore.p12"
   GATEWAY_SERVER_PORT: "8080"
   # new checkboxes at hospitalization to copy the address and contact data
-  FEATURE_FLAG_HOSP_COPY_CHECKBOXES: "false"
   FEATURE_FLAG_NOTIFICATIONS_7_3: "false"
   FEATURE_FLAG_SNAPSHOT_5_3_0_ACTIVE: "false"
+  FEATURE_FLAG_PORTAL_ERROR_DIALOG_FILTERING: "false"
   RPS_BASE_URL: http://report-processing-service.demis.svc.cluster.local/
   NES_BASE_URL: http://notification-processing-service.demis.svc.cluster.local/
   FEATURE_FLAG_NEW_API_ENDPOINTS: "false"

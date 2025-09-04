@@ -27,7 +27,10 @@ package de.gematik.demis.notificationgateway.domain.disease;
  */
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.Condition;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
@@ -60,8 +63,11 @@ class DiseaseRestControllerNotificationValidationTest {
   }
 
   private static void createController() {
+    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
+    when(featureFlagsMock.isNotifications73()).thenReturn(false);
+
     final var validator = Validation.buildDefaultValidatorFactory().getValidator();
-    controller = new DiseaseRestController(validator, null, false);
+    controller = new DiseaseRestController(validator, null, featureFlagsMock);
   }
 
   @AfterAll

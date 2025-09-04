@@ -31,10 +31,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.PractitionerRoleBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.igs.InvalidInputDataException;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
@@ -53,21 +55,31 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NotifiedPersonCreationServiceTest {
+  @Mock private FeatureFlags featureFlags;
 
-  private final FhirObjectCreationService fhirObjectCreationService =
-      new FhirObjectCreationService(false);
-  private final OrganizationCreationService organizationCreationService =
-      new OrganizationCreationService(fhirObjectCreationService, false);
-  private final NotifiedPersonCreationService notifiedPersonCreationService =
-      new NotifiedPersonCreationService(fhirObjectCreationService, organizationCreationService);
+  private FhirObjectCreationService fhirObjectCreationService;
+  private OrganizationCreationService organizationCreationService;
+  private NotifiedPersonCreationService notifiedPersonCreationService;
+
+  @BeforeEach
+  void setUp() {
+    lenient().when(featureFlags.isNotifications73()).thenReturn(false);
+    fhirObjectCreationService = new FhirObjectCreationService(featureFlags);
+    organizationCreationService =
+        new OrganizationCreationService(fhirObjectCreationService, featureFlags);
+    notifiedPersonCreationService =
+        new NotifiedPersonCreationService(fhirObjectCreationService, organizationCreationService);
+  }
 
   @Test
   void testCreateNotifiedPersonWithMinimumInput() throws JsonProcessingException {

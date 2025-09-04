@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
@@ -51,10 +52,12 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 @ExtendWith(MockitoExtension.class)
+@EnableConfigurationProperties(FeatureFlags.class)
 @SpringBootTest(
     classes = {
       DiseaseNotificationBundleCreationService.class,
@@ -71,12 +74,7 @@ import org.springframework.test.context.TestPropertySource;
       Answers.class
     })
 @TestPropertySource(
-    properties = {
-      "feature.flag.disease_address_patient=true",
-      "feature.flag.hosp_copy_checkboxes=true",
-      "logging.level.de.gematik=DEBUG",
-      "feature.flag.notifications.7_3=true"
-    })
+    properties = {"feature.flag.notifications-73=true", "logging.level.de.gematik=DEBUG"})
 class HospitalizationCopyCheckboxesTest {
 
   @Autowired private DiseaseNotificationBundleCreationService service;

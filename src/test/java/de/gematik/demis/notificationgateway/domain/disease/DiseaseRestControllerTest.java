@@ -28,10 +28,12 @@ package de.gematik.demis.notificationgateway.domain.disease;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
@@ -53,7 +55,10 @@ class DiseaseRestControllerTest {
 
   @Test
   void addDiseaseNotification_shouldSucceedRegression() throws Exception {
-    controller = new DiseaseRestController(validator, notificationService, false);
+    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
+    when(featureFlagsMock.isNotifications73()).thenReturn(false);
+
+    controller = new DiseaseRestController(validator, notificationService, featureFlagsMock);
 
     DiseaseNotification diseaseNotification =
         FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");
@@ -69,7 +74,10 @@ class DiseaseRestControllerTest {
 
   @Test
   void addDiseaseNotification_shouldSucceed() throws Exception {
-    controller = new DiseaseRestController(validator, notificationService, true);
+    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
+    when(featureFlagsMock.isNotifications73()).thenReturn(true);
+
+    controller = new DiseaseRestController(validator, notificationService, featureFlagsMock);
 
     DiseaseNotification diseaseNotification =
         FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");

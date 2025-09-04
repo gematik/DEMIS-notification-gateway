@@ -29,12 +29,14 @@ package de.gematik.demis.notificationgateway.common.services.fhir;
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.*;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo.UsageEnum;
 import de.gematik.demis.notificationgateway.common.dto.FacilityAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.utils.ConfiguredCodeSystems;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -45,18 +47,13 @@ import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class FhirObjectCreationService {
 
-  private final boolean isNotification73active;
-
-  public FhirObjectCreationService(
-      @Value("${feature.flag.notifications.7_3}") boolean isNotification73active) {
-    this.isNotification73active = isNotification73active;
-  }
+  private final FeatureFlags featureFlags;
 
   public Parameters createParameters(Bundle bundle) {
     Parameters parameters = new Parameters();
@@ -67,7 +64,7 @@ public class FhirObjectCreationService {
 
   public Address createAddress(NotifiedPersonAddressInfo address, boolean withAddressUse) {
     final Address fhirAddress;
-    if (isNotification73active) {
+    if (featureFlags.isNotifications73()) {
       fhirAddress =
           new AddressDataBuilder()
               .setStreet(address.getStreet())

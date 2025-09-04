@@ -30,6 +30,7 @@ import static de.gematik.demis.notificationgateway.common.enums.NotificationType
 import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NOMINAL;
 import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NON_NOMINAL;
 
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
@@ -37,7 +38,7 @@ import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.domain.pathogen.services.PathogenSendService;
 import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -50,24 +51,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Validated
 @RequestMapping("${api.ng.notification.context-path}")
+@AllArgsConstructor
 public class PathogenRestController {
 
   private final PathogenSendService sendService;
-  private final Boolean notification7_3Active;
-
-  public PathogenRestController(
-      PathogenSendService sendService,
-      @Value("${feature.flag.notifications.7_3}") Boolean notification7_3Active) {
-    this.sendService = sendService;
-    this.notification7_3Active = notification7_3Active;
-  }
+  private final FeatureFlags featureFlags;
 
   @PostMapping({"/pathogen", "/pathogen/7.1"})
   ResponseEntity<OkResponse> send(
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
       throws AuthException {
 
-    if (notification7_3Active) {
+    if (featureFlags.isNotifications73()) {
       return ResponseEntity.ok(
           sendService.processPortalNotificationData(pathogenTest, Token.of(headers), NOMINAL));
     } else {

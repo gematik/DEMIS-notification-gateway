@@ -4,6 +4,10 @@
 
 ### 
 
+## 6.5.1
+- add severity level in case of validation errors
+- remove feature flag FEATURE_FLAG_HOSP_COPY_CHECKBOXES
+
 ## 6.5.0
 - add Support for new API Endpoint for Backend-Services (NES, RPS)
 - set headers x-fhir-profile and x-fhir-api-version for rps and nps requests

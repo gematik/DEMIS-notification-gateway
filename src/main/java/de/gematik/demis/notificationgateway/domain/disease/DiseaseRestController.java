@@ -26,6 +26,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #L%
  */
 
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
@@ -37,7 +38,6 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,10 +59,10 @@ class DiseaseRestController {
   public DiseaseRestController(
       Validator validator,
       DiseaseNotificationService notificationService,
-      @Value("${feature.flag.notifications.7_3}") Boolean notification7_3Active) {
+      FeatureFlags featureFlags) {
     this.validator = validator;
     this.notificationService = notificationService;
-    this.notification7_3Active = notification7_3Active;
+    this.notification7_3Active = featureFlags.isNotifications73();
   }
 
   @PostMapping(

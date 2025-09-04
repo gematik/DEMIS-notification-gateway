@@ -75,7 +75,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ActiveProfiles("test")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "feature.flag.notifications.7_3=true")
+    properties = "feature.flag.notifications-73=true")
 class PathogenRestControllerIT implements BaseTestUtils {
 
   @Autowired private ObjectMapper objectMapper;

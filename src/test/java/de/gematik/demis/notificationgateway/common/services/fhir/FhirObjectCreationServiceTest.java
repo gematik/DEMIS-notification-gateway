@@ -30,11 +30,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
+import de.gematik.demis.notificationgateway.domain.pathogen.fhir.PathogenBundleCreationService;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.util.List;
 import java.util.UUID;
@@ -47,11 +51,24 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.r4.model.StringType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 class FhirObjectCreationServiceTest {
+  @Mock private FeatureFlags featureFlags;
 
-  private final FhirObjectCreationService creationService = new FhirObjectCreationService(false);
+  private PathogenBundleCreationService pathogenBundleCreationService;
+  private FhirObjectCreationService creationService;
+
+  @BeforeEach
+  void setUp() {
+    featureFlags = mock(FeatureFlags.class);
+    when(featureFlags.isNotifications73()).thenReturn(false);
+
+    pathogenBundleCreationService = new PathogenBundleCreationService(this.featureFlags);
+    creationService = new FhirObjectCreationService(featureFlags);
+  }
 
   @Test
   void testCreateParameters() {

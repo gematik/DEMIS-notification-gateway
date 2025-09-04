@@ -30,10 +30,12 @@ import static de.gematik.demis.notificationgateway.common.constants.MessageConst
 import static de.gematik.demis.notificationgateway.utils.FileUtils.loadJsonFromFile;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.demis.notificationgateway.BaseTestUtils;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.exceptions.HoneypotException;
@@ -57,20 +59,27 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PathogenSendServiceTest implements BaseTestUtils {
 
   private final OkResponseService okResponseService = new OkResponseService();
-  private final PathogenBundleCreationService mapper =
-      new PathogenBundleCreationService(false, false);
+  private PathogenBundleCreationService mapper;
+
   private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
   @Mock private BundlePublisher bundlePublisher;
   @Mock private NESProperties nesProperties;
   @Mock private HeaderProperties headerPropertiesMock;
   @Mock private Token token;
+  @Mock private FeatureFlags featureFlags;
+
   private PathogenSendService service;
   private String jsonContent;
   private static RandomStringUtils random = RandomStringUtils.secure();
 
   @BeforeEach
   void createService() {
+    lenient().when(featureFlags.isSnapshot530Active()).thenReturn(false);
+    lenient().when(featureFlags.isNotifications73()).thenReturn(false);
+
+    mapper = new PathogenBundleCreationService(featureFlags);
+
     service =
         new PathogenSendService(
             bundlePublisher, okResponseService, mapper, nesProperties, headerPropertiesMock);

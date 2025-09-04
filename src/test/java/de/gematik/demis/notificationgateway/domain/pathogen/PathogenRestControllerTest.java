@@ -29,7 +29,9 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.utils.Token;
@@ -37,17 +39,20 @@ import de.gematik.demis.notificationgateway.domain.pathogen.services.PathogenSen
 import jakarta.security.auth.message.AuthException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PathogenRestControllerTest {
   @Mock private PathogenSendService pathogenSendService;
+  @Mock private FeatureFlags featureFlags;
+
+  @InjectMocks private PathogenRestController pathogenRestController;
 
   @Test
   void shouldUseProcessPortalNotificationDataMethod() throws AuthException {
-    PathogenRestController pathogenRestController =
-        new PathogenRestController(pathogenSendService, true);
+    when(featureFlags.isNotifications73()).thenReturn(true);
 
     PathogenTest pathogenTest = new PathogenTest();
     org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();

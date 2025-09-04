@@ -41,7 +41,9 @@ import static org.springframework.http.HttpStatus.*;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.demis.exceptions.TokenException;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
+import de.gematik.demis.notificationgateway.common.dto.ValidationError;
 import de.gematik.demis.notificationgateway.common.enums.InternalCoreError;
 import de.gematik.demis.service.base.error.ServiceCallException;
 import jakarta.security.auth.message.AuthException;
@@ -58,6 +60,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -71,8 +74,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorResponseControllerTest {
+  private final FeatureFlags featureFlags = mock(FeatureFlags.class);
   private final ErrorResponseController responseController =
-      new ErrorResponseController(new ObjectMapper());
+      new ErrorResponseController(new ObjectMapper(), featureFlags);
   private static RandomStringUtils random = RandomStringUtils.secure();
   private static final String REQUEST_URI = random.nextAlphabetic(5);
 
@@ -356,5 +360,57 @@ class ErrorResponseControllerTest {
         Arguments.of(NG_200_VALIDATION, 400),
         Arguments.of(NG_200_VALIDATION, 422),
         Arguments.of(NG_300_REQUEST, 500));
+  }
+
+  @ParameterizedTest
+  @CsvSource(
+      value = {
+        // featureFlag true, with severity
+        "true,FATAL,FATAL",
+        "true,ERROR,ERROR",
+        "true,WARNING,WARNING",
+        "true,INFORMATION,INFORMATION",
+
+        // featureFlag true, without severity
+        "true,,",
+        // featureFlag false, with severity
+        "false,ERROR,",
+        // featureFlag false, without severity
+        "false,,"
+      })
+  void shouldMapSeverityCorrectlyInValidationError(
+      boolean featureFlag,
+      OperationOutcome.IssueSeverity issueSeverity,
+      ValidationError.SeverityEnum expectedSeverity) {
+
+    when(featureFlags.isPortalErrorDialogFiltering()).thenReturn(featureFlag);
+
+    OperationOutcome.OperationOutcomeIssueComponent issue =
+        new OperationOutcome.OperationOutcomeIssueComponent();
+    String diagnostics = "Test Diagnostics";
+    issue.setDiagnostics(diagnostics);
+    if (issueSeverity != null) {
+      issue.setSeverity(issueSeverity);
+    }
+    OperationOutcome outcome = new OperationOutcome().addIssue(issue);
+
+    BaseServerResponseException exception = mock(BaseServerResponseException.class);
+    when(exception.getOperationOutcome()).thenReturn(outcome);
+    when(exception.getMessage()).thenReturn(NG_300_REQUEST.reason());
+
+    MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
+
+    ResponseEntity<ErrorResponse> responseEntity =
+        responseController.handleCoreException(exception, request);
+
+    assertThat(responseEntity.getBody()).isNotNull();
+    ErrorResponse errorResponse = responseEntity.getBody();
+
+    assertThat(errorResponse.getValidationErrors())
+        .isNotEmpty()
+        .first()
+        .hasFieldOrPropertyWithValue("field", NOT_AVAILABLE)
+        .hasFieldOrPropertyWithValue("message", diagnostics)
+        .hasFieldOrPropertyWithValue("severity", expectedSeverity);
   }
 }

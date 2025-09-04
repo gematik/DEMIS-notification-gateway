@@ -31,6 +31,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationDiseaseDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.RelatesToBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.DemisConstants;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
@@ -40,6 +41,7 @@ import de.gematik.demis.notificationgateway.common.exceptions.BadRequestExceptio
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.QuestionnaireResponses;
 import jakarta.annotation.Nullable;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -49,10 +51,10 @@ import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Reference;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class DiseaseNotificationBundleCreationService {
 
   private final NotifiedPersonCreationService notifiedPersonCreationService;
@@ -60,22 +62,7 @@ public class DiseaseNotificationBundleCreationService {
   private final PractitionerRoleCreationService practitionerRoleCreationService;
   private final Diseases diseases;
   private final QuestionnaireResponses questionnaireResponses;
-  private final boolean featureFlagFollowUpActive;
-
-  public DiseaseNotificationBundleCreationService(
-      NotifiedPersonCreationService notifiedPersonCreationService,
-      OrganizationCreationService organizationCreationService,
-      PractitionerRoleCreationService practitionerRoleCreationService,
-      Diseases diseases,
-      QuestionnaireResponses questionnaireResponses,
-      @Value("${feature.flag.follow.up.notification.active}") boolean featureFlagFollowUpActive) {
-    this.notifiedPersonCreationService = notifiedPersonCreationService;
-    this.organizationCreationService = organizationCreationService;
-    this.practitionerRoleCreationService = practitionerRoleCreationService;
-    this.diseases = diseases;
-    this.questionnaireResponses = questionnaireResponses;
-    this.featureFlagFollowUpActive = featureFlagFollowUpActive;
-  }
+  private final FeatureFlags featureFlags;
 
   /**
    * @deprecated should be removed with feature.flag.notifications.7_3
@@ -101,7 +88,7 @@ public class DiseaseNotificationBundleCreationService {
 
     Patient patient;
 
-    if (featureFlagFollowUpActive) {
+    if (featureFlags.isFollowUpNotificationActive()) {
       Object patientDataFromFE =
           diseaseNotification.getNotifiedPerson() != null
               ? diseaseNotification.getNotifiedPerson()

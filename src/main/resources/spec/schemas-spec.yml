@@ -660,6 +660,14 @@ components:
           description: the error message
           type: string
           example: must not be null
+        severity:
+          description: severity according FHIR OperationOutcome. Optional, only when available.
+          type: string
+          enum:
+            - fatal
+            - error
+            - warning
+            - information
     OneTimeCode:
       description: 'Feld wird nur als Honeypot verwendet'
       type: string

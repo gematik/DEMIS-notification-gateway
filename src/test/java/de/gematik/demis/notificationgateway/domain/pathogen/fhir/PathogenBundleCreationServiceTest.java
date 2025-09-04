@@ -27,9 +27,12 @@ package de.gematik.demis.notificationgateway.domain.pathogen.fhir;
  */
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.utils.PropertyUtil;
@@ -38,20 +41,29 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import org.hl7.fhir.r4.model.Bundle;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PathogenBundleCreationServiceTest {
+  @Mock private FeatureFlags featureFlags;
 
-  private final PathogenBundleCreationService pathogenBundleCreationService =
-      new PathogenBundleCreationService(true, false);
+  @InjectMocks private PathogenBundleCreationService pathogenBundleCreationService;
 
   private int counter;
+
+  @BeforeEach
+  void setUp() {
+    lenient().when(featureFlags.isSnapshot530Active()).thenReturn(true);
+    lenient().when(featureFlags.isNotifications73()).thenReturn(false);
+  }
 
   @ParameterizedTest
   @CsvSource({
@@ -181,8 +193,9 @@ class PathogenBundleCreationServiceTest {
   void toBundle_shouldCreateBundleForDifferentNotificationTypes(
       String input, String notificationType, String expectedOutput, Boolean followUpActive)
       throws Exception {
-    PathogenBundleCreationService pathogenBundleCreationService =
-        new PathogenBundleCreationService(true, followUpActive);
+
+    when(featureFlags.isSnapshot530Active()).thenReturn(true);
+    when(featureFlags.isFollowUpNotificationActive()).thenReturn(followUpActive);
 
     try (final var utils = Mockito.mockStatic(Utils.class);
         final var propertyUtils = Mockito.mockStatic(PropertyUtil.class)) {

@@ -720,11 +720,9 @@ components:
       properties:
         recordedDate:
           description: Datum der Diagnosestellung
-          format: date
           type: string
         onset:
           description: Erkrankungsbeginn
-          format: date
           type: string
         note:
           description: Diagnosehinweise
@@ -829,11 +827,3 @@ components:
           type: string
         code:
           type: string
-        comparator:
-          description: Wie der Wert zu verstehen und darzustellen ist - ob der tatsächliche Wert aufgrund von Messproblemen größer oder kleiner als der angegebene Wert ist; z. B. wenn der Komparator "le" ist, dann ist der tatsächliche Wert <= angegebener Wert.
-          type: string
-          enum:
-            - lt
-            - le
-            - gt
-            - ge

@@ -26,13 +26,11 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #L%
  */
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.DiseaseDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.CodeDisplay;
 import de.gematik.demis.notificationgateway.common.dto.Condition;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
-import de.gematik.demis.notificationgateway.common.utils.DateUtils;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +42,28 @@ import org.springframework.stereotype.Service;
 /** Factory of the disease block, which is the diagnosis or FHIR condition resource. */
 @Service
 class Diseases {
+
+  /**
+   * FHIR specifies data type FHIR dateTime as data type for onset and recorded date. We only use
+   * the date part.
+   *
+   * @param iso8601DateTime ISO 8601 date string with optional time part
+   * @return FHIR dateTime or <code>null</code> if input is blank
+   */
+  private static DateTimeType parseDate(String iso8601DateTime) {
+    if (StringUtils.isNotBlank(iso8601DateTime)) {
+      return new DateTimeType(removeTimestamp(iso8601DateTime));
+    }
+    return null;
+  }
+
+  private static String removeTimestamp(String date) {
+    final int tIndex = date.indexOf('T');
+    if (tIndex > 0) {
+      return date.substring(0, tIndex);
+    }
+    return date;
+  }
 
   /**
    * Create and add disease block to the bundleBuilder
@@ -119,15 +139,13 @@ class Diseases {
   private void setOnset(
       DiseaseDataBuilder condition,
       de.gematik.demis.notificationgateway.common.dto.Condition info) {
-    condition.setOnset(
-        new DateTimeType(DateUtils.createDate(info.getOnset()), TemporalPrecisionEnum.DAY));
+    condition.setOnset(parseDate(info.getOnset()));
   }
 
   private void setRecordedDate(
       DiseaseDataBuilder condition,
       de.gematik.demis.notificationgateway.common.dto.Condition info) {
-    condition.setRecordedDate(
-        new DateTimeType(DateUtils.createDate(info.getRecordedDate()), TemporalPrecisionEnum.DAY));
+    condition.setRecordedDate(parseDate(info.getRecordedDate()));
   }
 
   private void setEvidences(

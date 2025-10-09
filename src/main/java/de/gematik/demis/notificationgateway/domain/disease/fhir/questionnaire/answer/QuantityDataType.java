@@ -48,21 +48,6 @@ public class QuantityDataType implements DataType<Quantity> {
     quantity.setUnit(dto.getUnit());
     quantity.setSystem(dto.getSystem());
     quantity.setCode(dto.getCode());
-    if (dto.getComparator() != null) {
-      quantity.setComparator(mapComparator(dto.getComparator()));
-    }
     return quantity;
-  }
-
-  private org.hl7.fhir.r4.model.Quantity.QuantityComparator mapComparator(
-      de.gematik.demis.notificationgateway.common.dto.Quantity.ComparatorEnum comparator) {
-    if (comparator == null) return null;
-    return switch (comparator) {
-      case LT -> Quantity.QuantityComparator.LESS_THAN;
-      case LE -> Quantity.QuantityComparator.LESS_OR_EQUAL;
-      case GE -> Quantity.QuantityComparator.GREATER_OR_EQUAL;
-      case GT -> Quantity.QuantityComparator.GREATER_THAN;
-      default -> throw new IllegalArgumentException("Unknown comparator: " + comparator);
-    };
   }
 }

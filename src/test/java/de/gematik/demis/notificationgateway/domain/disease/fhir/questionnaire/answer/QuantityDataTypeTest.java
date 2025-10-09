@@ -31,75 +31,11 @@ import static org.assertj.core.api.Assertions.*;
 import de.gematik.demis.notificationgateway.common.dto.Quantity;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseAnswer;
 import java.math.BigDecimal;
-import org.hl7.fhir.r4.model.Quantity.QuantityComparator;
 import org.junit.jupiter.api.Test;
 
 class QuantityDataTypeTest {
 
   private final QuantityDataType quantityDataType = new QuantityDataType();
-
-  @Test
-  void toFhir_shouldMapAllFieldsGE() {
-    Quantity dto =
-        new Quantity()
-            .value(BigDecimal.valueOf(42.5))
-            .unit("mg")
-            .system("http://unitsofmeasure.org")
-            .code("mg")
-            .comparator(Quantity.ComparatorEnum.GE);
-
-    QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer().valueQuantity(dto);
-
-    org.hl7.fhir.r4.model.Quantity fhirQuantity = quantityDataType.toFhir(answer);
-
-    assertThat(fhirQuantity.getValue().doubleValue()).isEqualTo(42.5);
-    assertThat(fhirQuantity.getUnit()).isEqualTo("mg");
-    assertThat(fhirQuantity.getSystem()).isEqualTo("http://unitsofmeasure.org");
-    assertThat(fhirQuantity.getCode()).isEqualTo("mg");
-    assertThat(fhirQuantity.getComparator()).isEqualTo(QuantityComparator.GREATER_OR_EQUAL);
-  }
-
-  @Test
-  void toFhir_shouldMapAllFieldsLT() {
-    Quantity dto =
-        new Quantity()
-            .value(BigDecimal.valueOf(42.5))
-            .unit("mg")
-            .system("http://unitsofmeasure.org")
-            .code("mg")
-            .comparator(Quantity.ComparatorEnum.LT);
-
-    QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer().valueQuantity(dto);
-
-    org.hl7.fhir.r4.model.Quantity fhirQuantity = quantityDataType.toFhir(answer);
-
-    assertThat(fhirQuantity.getValue().doubleValue()).isEqualTo(42.5);
-    assertThat(fhirQuantity.getUnit()).isEqualTo("mg");
-    assertThat(fhirQuantity.getSystem()).isEqualTo("http://unitsofmeasure.org");
-    assertThat(fhirQuantity.getCode()).isEqualTo("mg");
-    assertThat(fhirQuantity.getComparator()).isEqualTo(QuantityComparator.LESS_THAN);
-  }
-
-  @Test
-  void toFhir_shouldMapAllFieldsLE() {
-    Quantity dto =
-        new Quantity()
-            .value(BigDecimal.valueOf(42.5))
-            .unit("mg")
-            .system("http://unitsofmeasure.org")
-            .code("mg")
-            .comparator(Quantity.ComparatorEnum.LE);
-
-    QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer().valueQuantity(dto);
-
-    org.hl7.fhir.r4.model.Quantity fhirQuantity = quantityDataType.toFhir(answer);
-
-    assertThat(fhirQuantity.getValue().doubleValue()).isEqualTo(42.5);
-    assertThat(fhirQuantity.getUnit()).isEqualTo("mg");
-    assertThat(fhirQuantity.getSystem()).isEqualTo("http://unitsofmeasure.org");
-    assertThat(fhirQuantity.getCode()).isEqualTo("mg");
-    assertThat(fhirQuantity.getComparator()).isEqualTo(QuantityComparator.LESS_OR_EQUAL);
-  }
 
   @Test
   void toFhir_shouldMapAllFields() {
@@ -108,8 +44,7 @@ class QuantityDataTypeTest {
             .value(BigDecimal.valueOf(42.5))
             .unit("mg")
             .system("http://unitsofmeasure.org")
-            .code("mg")
-            .comparator(Quantity.ComparatorEnum.GT);
+            .code("mg");
 
     QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer().valueQuantity(dto);
 
@@ -119,18 +54,12 @@ class QuantityDataTypeTest {
     assertThat(fhirQuantity.getUnit()).isEqualTo("mg");
     assertThat(fhirQuantity.getSystem()).isEqualTo("http://unitsofmeasure.org");
     assertThat(fhirQuantity.getCode()).isEqualTo("mg");
-    assertThat(fhirQuantity.getComparator()).isEqualTo(QuantityComparator.GREATER_THAN);
   }
 
   @Test
   void toFhir_shouldMapNullComparator() {
     Quantity dto =
-        new Quantity()
-            .value(BigDecimal.valueOf(1.23))
-            .unit("g")
-            .system("test-system")
-            .code("g")
-            .comparator(null);
+        new Quantity().value(BigDecimal.valueOf(1.23)).unit("g").system("test-system").code("g");
 
     QuestionnaireResponseAnswer answer = new QuestionnaireResponseAnswer().valueQuantity(dto);
 

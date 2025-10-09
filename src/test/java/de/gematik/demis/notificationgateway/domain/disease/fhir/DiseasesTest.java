@@ -28,6 +28,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationBundleDiseaseDataBuilder;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
@@ -36,14 +37,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class DiseasesTest {
 
+  public static final String MAY_14 = "2023-05-14";
+  public static final String MAY = "2023-05";
   private final Diseases diseases = new Diseases();
 
   private DiseaseStatus status;
@@ -116,5 +121,110 @@ class DiseasesTest {
     assertThat(verificationStatus.getCode())
         .as("verification status code")
         .isEqualTo(verificationStatusCode);
+  }
+
+  @Test
+  void givenConditionOfMonthPrecisionWhenAddDiseaseThenConditionHasMonthPrecision() {
+
+    // given
+    this.status.setStatus(DiseaseStatus.StatusEnum.FINAL);
+    final var condition = new de.gematik.demis.notificationgateway.common.dto.Condition();
+    condition.setOnset(MAY);
+    condition.setRecordedDate(MAY);
+    this.notification.setCondition(condition);
+    this.diseases.addDisease(this.context);
+
+    // when
+    Bundle bundle = this.context.bundleBuilder().build();
+
+    // then
+    Condition fhirCondition =
+        bundle.getEntry().stream()
+            .map(Bundle.BundleEntryComponent::getResource)
+            .filter(Condition.class::isInstance)
+            .map(Condition.class::cast)
+            .findFirst()
+            .orElseThrow();
+
+    assertThat(fhirCondition.hasOnset()).isTrue();
+    DateTimeType onset = fhirCondition.getOnsetDateTimeType();
+    assertThat(onset.getValueAsString()).isEqualTo(MAY);
+    assertThat(onset.getMonth()).as("zero-based months").isEqualTo(4);
+    assertThat(onset.getPrecision()).isSameAs(TemporalPrecisionEnum.MONTH);
+
+    assertThat(fhirCondition.hasRecordedDate()).isTrue();
+    DateTimeType recordedDate = fhirCondition.getRecordedDateElement();
+    assertThat(recordedDate.getValueAsString()).isEqualTo(MAY);
+    assertThat(recordedDate.getMonth()).as("zero-based months").isEqualTo(4);
+    assertThat(recordedDate.getPrecision()).isSameAs(TemporalPrecisionEnum.MONTH);
+  }
+
+  @Test
+  void givenConditionOfDayPrecisionWhenAddDiseaseThenConditionHasDayPrecision() {
+
+    // given
+    this.status.setStatus(DiseaseStatus.StatusEnum.FINAL);
+    final var condition = new de.gematik.demis.notificationgateway.common.dto.Condition();
+    condition.setOnset(MAY_14);
+    condition.setRecordedDate(MAY_14);
+    this.notification.setCondition(condition);
+    this.diseases.addDisease(this.context);
+
+    // when
+    Bundle bundle = this.context.bundleBuilder().build();
+
+    // then
+    Condition fhirCondition =
+        bundle.getEntry().stream()
+            .map(Bundle.BundleEntryComponent::getResource)
+            .filter(Condition.class::isInstance)
+            .map(Condition.class::cast)
+            .findFirst()
+            .orElseThrow();
+
+    assertThat(fhirCondition.hasOnset()).isTrue();
+    DateTimeType onset = fhirCondition.getOnsetDateTimeType();
+    assertThat(onset.getValueAsString()).isEqualTo(MAY_14);
+    assertThat(onset.getPrecision()).isSameAs(TemporalPrecisionEnum.DAY);
+
+    assertThat(fhirCondition.hasRecordedDate()).isTrue();
+    DateTimeType recordedDate = fhirCondition.getRecordedDateElement();
+    assertThat(recordedDate.getValueAsString()).isEqualTo(MAY_14);
+    assertThat(recordedDate.getPrecision()).isSameAs(TemporalPrecisionEnum.DAY);
+  }
+
+  @Test
+  void givenConditionOfTimePrecisionWhenAddDiseaseThenConditionHasConditionOfDayPrecision() {
+
+    // given
+    this.status.setStatus(DiseaseStatus.StatusEnum.FINAL);
+    final var condition = new de.gematik.demis.notificationgateway.common.dto.Condition();
+    final String dateTime = "2023-05-14T12:32:55+02:00";
+    condition.setOnset(dateTime);
+    condition.setRecordedDate(dateTime);
+    this.notification.setCondition(condition);
+    this.diseases.addDisease(this.context);
+
+    // when
+    Bundle bundle = this.context.bundleBuilder().build();
+
+    // then
+    Condition fhirCondition =
+        bundle.getEntry().stream()
+            .map(Bundle.BundleEntryComponent::getResource)
+            .filter(Condition.class::isInstance)
+            .map(Condition.class::cast)
+            .findFirst()
+            .orElseThrow();
+
+    assertThat(fhirCondition.hasOnset()).isTrue();
+    DateTimeType onset = fhirCondition.getOnsetDateTimeType();
+    assertThat(onset.getValueAsString()).isEqualTo(MAY_14);
+    assertThat(onset.getPrecision()).isSameAs(TemporalPrecisionEnum.DAY);
+
+    assertThat(fhirCondition.hasRecordedDate()).isTrue();
+    DateTimeType recordedDate = fhirCondition.getRecordedDateElement();
+    assertThat(recordedDate.getValueAsString()).isEqualTo(MAY_14);
+    assertThat(recordedDate.getPrecision()).isSameAs(TemporalPrecisionEnum.DAY);
   }
 }

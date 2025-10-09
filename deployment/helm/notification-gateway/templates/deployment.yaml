@@ -2,9 +2,6 @@
 {{- $dockerRepository := .Values.required.image.repository | required ".Values.required.image.repository is required." -}}
 {{- $dockerImage := .Values.required.image.name | required ".Values.required.image.name is required." -}}
 {{- $dockerTag := .Values.required.image.tag | default .Chart.AppVersion -}}
-{{- $secretPasswordsName := .Values.config.secret.passwords.name | required ".Values.config.secret.passwords.name is required." -}}
-{{- $secretPasswordsEntries := .Values.config.secret.passwords.entries -}}
-{{- $secretKeystoresName := .Values.config.secret.keystores.name | required ".Values.config.secret.keystores.name is required." -}}
 {{- $customEnvVars := .Values.customEnvVars -}}
 {{- $npsApiVersion := ternary "v6" "v5" (eq (.Values.customEnvVars.FEATURE_FLAG_NOTIFICATIONS_7_3 | toString) "true") }}
 apiVersion: apps/v1
@@ -50,21 +47,6 @@ spec:
         - name: jfr-volume
           emptyDir: {}
         {{- end }}
-        - name: gw-keystores-volume
-          secret:
-            secretName: {{ $secretKeystoresName | quote }}
-        - name: gw-passwords-volume
-          secret:
-            secretName: {{ $secretPasswordsName }}
-            items:
-            - key: {{ .Values.config.secret.passwords.entries.AUTH_CERT_PASSWORD }}
-              path: auth/cert/password
-            - key: {{ .Values.config.secret.passwords.entries.TEST_AUTH_CERT_PASSWORD }}
-              path: testuser/auth/cert/password
-            - key: {{ .Values.config.secret.passwords.entries.TRUSTSTORE_PASSWORD }}
-              path: truststore/password
-            - key: {{ .Values.config.secret.passwords.entries.TOKEN_CLIENT_LAB }}
-              path: token/client/secret/lab
       containers:
         - name: {{ .Values.fullnameOverride }}
           securityContext:
@@ -118,23 +100,14 @@ spec:
               value: {{ get $customEnvVars $key | quote }}
             {{- end }}
             {{- end }}
-            # Set Spring Configuration Import from Folder Structure
-            - name: "SPRING_CONFIG_IMPORT"
-              value: "optional:configtree:{{ include "notification-gateway.secretMountPath" . }}/gateway/"
           # Mount Volumes in container
           volumeMounts:
-            - name: gw-keystores-volume
-              mountPath: /app/config/notification-gateway/certs/
-              readOnly: true
             - name: tmp-volume
               mountPath: /tmp
             {{- if .Values.debug.enable }}
             - name: jfr-volume
               mountPath: /jfrdump
             {{- end }}
-            - name: gw-passwords-volume
-              readOnly: true
-              mountPath: "{{ include "notification-gateway.secretMountPath" . }}/gateway"
           # Ports to be exposed from the container
           ports:
             - name: gw-port

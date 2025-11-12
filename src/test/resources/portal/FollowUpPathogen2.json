@@ -36,8 +36,7 @@
     "birthDate": "2020-06",
     "residenceAddress": {
       "country": "DE",
-      "zip": "123",
-      "addressType": "primary"
+      "zip": "123"
     }
   },
   "submittingFacility": {

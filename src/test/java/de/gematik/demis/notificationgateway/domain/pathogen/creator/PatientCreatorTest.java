@@ -35,6 +35,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
@@ -376,6 +377,37 @@ class PatientCreatorTest {
     assertThat(result.getNameFirstRep().getFamily()).isNull();
     assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
     assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
+    assertThat(result.getAddress().get(0).getExtension().get(0).getValue())
+        .extracting("code")
+        .isEqualTo(AddressDataBuilder.PRIMARY);
+    verifyNoInteractions(bundleBuilder);
+  }
+
+  @Test
+  void shouldCreateNotifiedPersonAnonymous_MissingAddressType() {
+    NotificationBundleLaboratoryDataBuilder bundleBuilder =
+        mock(NotificationBundleLaboratoryDataBuilder.class);
+    PathogenTest rawData = new PathogenTest();
+    PractitionerRole submittingRole = new PractitionerRole();
+    NotifiedPersonAnonymous notifiedPersonAnonymous = new NotifiedPersonAnonymous();
+    rawData.setNotifiedPersonAnonymous(notifiedPersonAnonymous);
+    NotifiedPersonAddressInfo addressInfo = new NotifiedPersonAddressInfo();
+    notifiedPersonAnonymous.setResidenceAddress(addressInfo);
+    notifiedPersonAnonymous.setBirthDate("1990-01");
+    notifiedPersonAnonymous.setGender(NotifiedPersonAnonymous.GenderEnum.MALE);
+
+    Organization organization = mock(Organization.class);
+    submittingRole.setOrganization(new Reference(organization));
+
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
+
+    assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEmpty();
+    assertThat(result.getNameFirstRep().getFamily()).isNull();
+    assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
+    assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
+    assertThat(result.getAddress().get(0).getExtension().get(0).getValue())
+        .extracting("code")
+        .isEqualTo(AddressDataBuilder.PRIMARY);
     verifyNoInteractions(bundleBuilder);
   }
 }

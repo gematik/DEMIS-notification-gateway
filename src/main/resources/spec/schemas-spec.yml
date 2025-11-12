@@ -580,6 +580,20 @@ components:
           type: string
         component:
           type: string
+    TerminologyVersion:
+      type: object
+      required:
+        - system
+        - version
+      properties:
+        system:
+          type: string
+        version:
+          type: string
+    TerminologyVersions:
+      type: array
+      items:
+        $ref: '#/components/schemas/TerminologyVersion'
     LocationDTO:
       description: location representation
       type: object
@@ -693,6 +707,8 @@ components:
           $ref: '#/components/schemas/QuestionnaireResponse'
         disease:
           $ref: '#/components/schemas/QuestionnaireResponse'
+        terminologyVersions:
+          $ref: '#/components/schemas/TerminologyVersions'
     DiseaseStatus:
       description: Kombinierte Statusinformationen
       type: object

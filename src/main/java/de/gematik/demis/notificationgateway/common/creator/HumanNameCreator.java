@@ -119,13 +119,10 @@ public class HumanNameCreator {
    * @return A list of individual given names.
    */
   private static List<String> extractGivenName(NotifiedPersonBasicInfo personInfo) {
-    if (personInfo == null) {
+    if (personInfo == null || personInfo.getFirstname() == null) {
       return emptyList();
     }
     String firstname = personInfo.getFirstname();
-    if (firstname == null) {
-      return emptyList();
-    }
     return Arrays.stream(firstname.split("\\s+")).map(String::new).toList();
   }
 }

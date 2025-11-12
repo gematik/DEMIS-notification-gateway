@@ -278,8 +278,7 @@ public interface BundleMapper {
       Patient patient,
       Specimen specimen,
       List<Observation> observationList,
-      String pathogenCode,
-      boolean featureFlagSnapshot5_3_0Active) {
+      String pathogenCode) {
     if (resistanceGenes == null || resistanceGenes.isEmpty()) {
       return;
     }
@@ -308,15 +307,8 @@ public interface BundleMapper {
         }
       }
 
-      String methodCode;
-      String methodDisplay;
-      if (featureFlagSnapshot5_3_0Active) {
-        methodCode = "708068002";
-        methodDisplay = "Molecular genetics technique (qualifier value)";
-      } else {
-        methodCode = "116148004";
-        methodDisplay = "Molecular genetic procedure (procedure)";
-      }
+      String methodCode = "708068002";
+      String methodDisplay = "Molecular genetics technique (qualifier value)";
 
       observationList.add(
           new PathogenDetectionDataBuilder()

@@ -27,15 +27,17 @@ package de.gematik.demis.notificationgateway;
  */
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Value
+@Getter
+@Setter
 @Builder
 @ConfigurationProperties(prefix = "feature.flag")
 public class FeatureFlags {
   boolean notifications73;
-  boolean snapshot530Active;
   boolean followUpNotificationActive;
   boolean portalErrorDialogFiltering;
+  boolean diseaseStrictProfile;
 }

@@ -75,8 +75,7 @@ class SpecimenCreatorTest {
     specimenDTO.setResistanceList(List.of(resistanceDTO));
 
     List<Specimen> specimen =
-        createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, false);
+        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
 
     assertThat(specimen).hasSize(1);
     assertThat(specimen.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
@@ -125,8 +124,7 @@ class SpecimenCreatorTest {
     specimenDTO.setResistanceList(List.of(resistanceDTO));
 
     List<Specimen> specimen =
-        createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, false);
+        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
 
     assertThat(specimen).hasSize(1);
     assertThat(specimen.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
@@ -161,8 +159,7 @@ class SpecimenCreatorTest {
     when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("PathogenCode"));
 
     List<Specimen> specimen =
-        createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, false);
+        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
 
     assertThat(specimen).isEmpty();
     assertThat(observationList).isEmpty();
@@ -182,8 +179,7 @@ class SpecimenCreatorTest {
     when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("PathogenCode"));
 
     List<Specimen> specimen =
-        createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, false);
+        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
 
     assertThat(specimen).isEmpty();
     assertThat(observationList).isEmpty();
@@ -204,7 +200,7 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, false);
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory);
 
     assertThat(specimens).isEmpty();
     assertThat(observationList).isEmpty();
@@ -225,7 +221,7 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, false);
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory);
 
     assertThat(specimens).isEmpty();
     assertThat(observationList).isEmpty();
@@ -281,7 +277,7 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, false);
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory);
 
     assertThat(specimens).hasSize(2);
     assertThat(specimens.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode1");

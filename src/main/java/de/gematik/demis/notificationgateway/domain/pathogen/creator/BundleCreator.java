@@ -74,14 +74,12 @@ public class BundleCreator {
    * Retrieves the {@link Coding} object representing the address use based on the provided {@link
    * AddressType}.
    *
-   * @param featureFlagSnapshot5_3_0Active A boolean flag indicating if the feature is active.
    * @return A {@link Coding} object representing the address use.
    * @throws IllegalArgumentException if the address type is null.
    */
   public static Bundle createBundle(
       PathogenTest pathogenTest,
       NotificationType notificationType,
-      boolean featureFlagSnapshot5_3_0Active,
       boolean featureFlagFollowUpActive) {
 
     // DTOs
@@ -135,12 +133,7 @@ public class BundleCreator {
 
     specimenList.addAll(
         createSpecimen(
-            pathogenDTO,
-            patient,
-            submittingRole,
-            observation,
-            notificationLaboratoryCategory,
-            featureFlagSnapshot5_3_0Active));
+            pathogenDTO, patient, submittingRole, observation, notificationLaboratoryCategory));
 
     final DiagnosticReport diagnosticReport =
         createDiagnosticReport(

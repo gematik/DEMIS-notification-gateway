@@ -61,7 +61,6 @@ class PathogenBundleCreationServiceTest {
 
   @BeforeEach
   void setUp() {
-    lenient().when(featureFlags.isSnapshot530Active()).thenReturn(true);
     lenient().when(featureFlags.isNotifications73()).thenReturn(false);
   }
 
@@ -194,7 +193,6 @@ class PathogenBundleCreationServiceTest {
       String input, String notificationType, String expectedOutput, Boolean followUpActive)
       throws Exception {
 
-    when(featureFlags.isSnapshot530Active()).thenReturn(true);
     when(featureFlags.isFollowUpNotificationActive()).thenReturn(followUpActive);
 
     try (final var utils = Mockito.mockStatic(Utils.class);

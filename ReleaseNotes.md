@@ -2,7 +2,14 @@
 
 # Release notes notification-gateway
 
-### 
+## 6.7.0
+- added full terminology system versions support to disease notifications
+- fix declined notByName follow up notification by adding addressUse extension to patient profile
+- remove automatic header version switch from deployment resource
+- remove FEATURE_FLAG_SNAPSHOT_5_3_0_ACTIVE
+- bump spring parent to 2.14.2
+- improved handling of contained CodeSystem resources
+- upgraded dependencies
 
 ## 6.6.0
 - remove Comparator from Quantity as it will not be used in profiles

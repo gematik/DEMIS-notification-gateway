@@ -141,16 +141,13 @@ public class ObservationCreator {
    * @param patient The {@link Patient} object representing the notified person.
    * @param specimen The {@link Specimen} object representing the specimen used for testing.
    * @param pathogenCode The code of the pathogen being tested.
-   * @param featureFlagSnapshot5_3_0Active A boolean indicating if the feature flag for snapshot
-   *     5.3.0 is active.
    * @return A list of {@link Observation} objects populated with resistance gene data.
    */
   public static List<Observation> createObservationsForResistanceGenes(
       List<ResistanceGeneDTO> resistanceGenes,
       Patient patient,
       Specimen specimen,
-      String pathogenCode,
-      boolean featureFlagSnapshot5_3_0Active) {
+      String pathogenCode) {
     if (resistanceGenes == null || resistanceGenes.isEmpty()) {
       return Collections.emptyList();
     }
@@ -179,15 +176,8 @@ public class ObservationCreator {
       final String valueCode = interpretationValueCodeForResistanceGene.valueCode();
       final String valueDisplay = "";
 
-      String methodCode;
-      String methodDisplay;
-      if (featureFlagSnapshot5_3_0Active) {
-        methodCode = "708068002";
-        methodDisplay = "Molecular genetics technique (qualifier value)";
-      } else {
-        methodCode = "116148004";
-        methodDisplay = "Molecular genetic procedure (procedure)";
-      }
+      String methodCode = "708068002";
+      String methodDisplay = "Molecular genetics technique (qualifier value)";
       Observation observation =
           new PathogenDetectionDataBuilder()
               .setDefaultData()

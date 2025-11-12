@@ -75,7 +75,6 @@ class PathogenSendServiceTest implements BaseTestUtils {
 
   @BeforeEach
   void createService() {
-    lenient().when(featureFlags.isSnapshot530Active()).thenReturn(false);
     lenient().when(featureFlags.isNotifications73()).thenReturn(false);
 
     mapper = new PathogenBundleCreationService(featureFlags);

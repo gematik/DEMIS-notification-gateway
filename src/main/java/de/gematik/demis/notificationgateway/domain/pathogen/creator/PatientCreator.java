@@ -31,8 +31,10 @@ import static de.gematik.demis.notificationgateway.common.creator.HumanNameCreat
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonAnonymousDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonNominalDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
+import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notificationgateway.common.creator.ContactPointCreator;
+import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAnonymous;
@@ -139,9 +141,17 @@ public class PatientCreator {
         notifiedPersonAnonymous.getResidenceAddress() != null
             ? notifiedPersonAnonymous.getResidenceAddress().getCountry()
             : null;
+    Address addressFinal =
+        new AddressDataBuilder()
+            .withAddressUseExtension(
+                getAddressTypeOrDefault(notifiedPersonAnonymous.getResidenceAddress()))
+            .setPostalCode(zip)
+            .setCountry(country)
+            .build();
+
     return new NotifiedPersonAnonymousDataBuilder()
         .setDefault()
-        .addAddress(new Address().setPostalCode(zip).setCountry(country))
+        .addAddress(addressFinal)
         .setGender(
             Enumerations.AdministrativeGender.valueOf(
                 notifiedPersonAnonymous.getGender().getValue()))
@@ -217,5 +227,15 @@ public class PatientCreator {
       default:
         return AddressCreator.createAddress(whereaboutsInfo);
     }
+  }
+
+  private static String getAddressTypeOrDefault(NotifiedPersonAddressInfo addressInfo) {
+    if (addressInfo != null) {
+      AddressType addressType = addressInfo.getAddressType();
+      if (addressType != null) {
+        return addressType.getValue();
+      }
+    }
+    return AddressDataBuilder.PRIMARY;
   }
 }

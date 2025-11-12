@@ -38,10 +38,12 @@ import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponse;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
+import de.gematik.demis.notificationgateway.common.terminology.TerminologyCurator;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.QuestionnaireResponses;
 import jakarta.annotation.Nullable;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -55,6 +57,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class DiseaseNotificationBundleCreationService {
 
   private final NotifiedPersonCreationService notifiedPersonCreationService;
@@ -99,14 +102,22 @@ public class DiseaseNotificationBundleCreationService {
           this.notifiedPersonCreationService.createPatientLegacy(
               diseaseNotification.getNotifiedPerson(), notifier);
     }
-
-    DiseaseNotificationContext context =
+    final DiseaseNotificationContext context =
         createContext(diseaseNotification, notifier, patient, notificationType);
     createDisease(context);
     createCommonQuestionnaireResponse(diseaseNotification, context);
     createDiseaseQuestionnaireResponse(diseaseNotification, context);
     createComposition(context);
-    return context.bundleBuilder().build();
+    final Bundle bundle = context.bundleBuilder().build();
+    setTerminologyVersions(diseaseNotification, bundle);
+    return bundle;
+  }
+
+  private void setTerminologyVersions(DiseaseNotification diseaseNotification, Bundle bundle) {
+    if (featureFlags.isDiseaseStrictProfile()) {
+      new TerminologyCurator(diseaseNotification.getTerminologyVersions())
+          .setCodeSystemVersions(bundle);
+    }
   }
 
   private PractitionerRole createNotifier(DiseaseNotification diseaseNotification)

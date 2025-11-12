@@ -3,7 +3,6 @@
 {{- $dockerImage := .Values.required.image.name | required ".Values.required.image.name is required." -}}
 {{- $dockerTag := .Values.required.image.tag | default .Chart.AppVersion -}}
 {{- $customEnvVars := .Values.customEnvVars -}}
-{{- $npsApiVersion := ternary "v6" "v5" (eq (.Values.customEnvVars.FEATURE_FLAG_NOTIFICATIONS_7_3 | toString) "true") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -83,12 +82,6 @@ spec:
             - name: "API_NG_BEDOCCUPANCY_BASE_PATH"
               value: "/reports/"
             {{- end }}
-            - name: "HEADER_BED_OCCUPANCY_VERSION"
-              value: {{ $npsApiVersion | quote }}
-            - name: "HEADER_LABORATORY_NOTIFICATION_VERSION"
-              value: {{ $npsApiVersion | quote }}
-            - name: "HEADER_DISEASE_NOTIFICATION_VERSION"
-              value: {{ $npsApiVersion | quote }}
             {{- if .Values.debug.enable }}
             - name: "JAVA_TOOL_OPTIONS"
               value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9000"

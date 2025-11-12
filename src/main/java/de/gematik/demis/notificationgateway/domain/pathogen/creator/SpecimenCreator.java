@@ -68,7 +68,6 @@ public class SpecimenCreator {
    *     added.
    * @param notificationLaboratoryCategory The {@link NotificationLaboratoryCategory} object
    *     containing details about the notification category.
-   * @param featureFlagSnapshot5_3_0Active
    * @return A {@link Specimen} object populated with the provided data, or null if no specimen data
    *     is available.
    */
@@ -77,8 +76,7 @@ public class SpecimenCreator {
       Patient patient,
       PractitionerRole submittingRole,
       List<Observation> observation,
-      NotificationLaboratoryCategory notificationLaboratoryCategory,
-      boolean featureFlagSnapshot5_3_0Active) {
+      NotificationLaboratoryCategory notificationLaboratoryCategory) {
     List<Specimen> returnList = new ArrayList<>();
 
     // Retrieve the pathogen short code and the list of specimen data transfer objects (DTOs).
@@ -132,11 +130,7 @@ public class SpecimenCreator {
       // Add observations for resistance genes.
       observation.addAll(
           createObservationsForResistanceGenes(
-              specimenDTO.getResistanceGeneList(),
-              patient,
-              specimen,
-              pathogenShortCode,
-              featureFlagSnapshot5_3_0Active));
+              specimenDTO.getResistanceGeneList(), patient, specimen, pathogenShortCode));
 
       // Add observations for resistances.
       observation.addAll(

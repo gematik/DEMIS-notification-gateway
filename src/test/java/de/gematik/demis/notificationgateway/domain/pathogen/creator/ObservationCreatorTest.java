@@ -391,12 +391,10 @@ class ObservationCreatorTest {
     @Test
     void shouldReturnEmptyCollectionForResistanceNull() {
 
-      assertThat(
-              ObservationCreator.createObservationsForResistanceGenes(null, null, null, null, true))
+      assertThat(ObservationCreator.createObservationsForResistanceGenes(null, null, null, null))
           .isEmpty();
       assertThat(
-              ObservationCreator.createObservationsForResistanceGenes(
-                  List.of(), null, null, null, true))
+              ObservationCreator.createObservationsForResistanceGenes(List.of(), null, null, null))
           .isEmpty();
     }
 
@@ -417,7 +415,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistanceGenes(
-              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode", true);
+              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode");
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -448,7 +446,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistanceGenes(
-              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode", true);
+              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode");
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -478,7 +476,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistanceGenes(
-              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode", true);
+              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode");
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();

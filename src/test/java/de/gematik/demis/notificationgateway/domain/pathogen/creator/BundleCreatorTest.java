@@ -118,7 +118,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);
@@ -244,7 +244,7 @@ class BundleCreatorTest {
 
     assertThrows(
             IllegalArgumentException.class,
-            () -> createBundle(pathogenTest, NotificationType.NOMINAL, false, false))
+            () -> createBundle(pathogenTest, NotificationType.NOMINAL, false))
         .getMessage()
         .contains("Submitting facility must not be null");
     ;
@@ -318,7 +318,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);

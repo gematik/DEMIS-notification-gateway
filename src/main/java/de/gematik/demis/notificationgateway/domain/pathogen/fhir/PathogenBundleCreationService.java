@@ -110,10 +110,7 @@ public class PathogenBundleCreationService implements BundleMapper {
    */
   public Bundle toBundle(PathogenTest pathogenTest, NotificationType notificationType) {
     return createBundle(
-        pathogenTest,
-        notificationType,
-        featureFlags.isSnapshot530Active(),
-        featureFlags.isFollowUpNotificationActive());
+        pathogenTest, notificationType, featureFlags.isFollowUpNotificationActive());
   }
 
   /**
@@ -210,12 +207,7 @@ public class PathogenBundleCreationService implements BundleMapper {
               notificationLaboratoryCategory));
 
       createObservationsForResistanceGenes(
-          specimenDTO.getResistanceGeneList(),
-          patient,
-          specimen,
-          observation,
-          pathogenShortCode,
-          featureFlags.isSnapshot530Active());
+          specimenDTO.getResistanceGeneList(), patient, specimen, observation, pathogenShortCode);
       createObservationsForResistances(
           specimenDTO.getResistanceList(), patient, specimen, observation, pathogenShortCode);
     }

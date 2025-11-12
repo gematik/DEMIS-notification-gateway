@@ -81,6 +81,15 @@
         "birthDate": "2020-06",
         "address": [
           {
+            "extension": [
+              {
+                "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
+                "valueCoding": {
+                  "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
+                  "code": "primary"
+                }
+              }
+            ],
             "postalCode": "123",
             "country": "DE"
           }

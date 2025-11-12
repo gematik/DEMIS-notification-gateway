@@ -26,8 +26,6 @@ package de.gematik.demis.notificationgateway.common.utils;
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.CODE_SYSTEM_NULL_FLAVOR;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import java.io.InputStream;
@@ -35,158 +33,53 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.r4.model.Coding;
 
+@RequiredArgsConstructor
 @Slf4j
-public class ConfiguredCodeSystems {
+public final class ConfiguredCodeSystems {
+
   private static ConfiguredCodeSystems instance;
-  // DEMIS code systems
-  private final Map<String, Coding> addressUseCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> organizationTypeCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> notificationCategoryCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> conclusionCodeCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> notificationDiseaseCategoryCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> hospitalizationServiceTypeCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> vaccineCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> yesOrNoCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> militaryAffiliationCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> geographicRegionCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> organizationAssociationCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> infectionEnvironmentSettingCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> notificationTypeCodeSystemMap = new HashMap<>();
-  private final Map<String, Coding> sectionCodeCodeSystemMap = new HashMap<>();
 
-  private final Map<String, Coding> nullFlavors = new HashMap<>();
-
-  // general code systems
-  private final Map<String, Coding> observationCategoryCodeSystemMap = new HashMap<>();
-
-  private final IParser parser;
+  private final Map<String, Coding> addressUseCodeSystemMap;
+  private final Map<String, Coding> organizationTypeCodeSystemMap;
 
   public static ConfiguredCodeSystems getInstance() {
     if (instance == null) {
-      instance = new ConfiguredCodeSystems();
+      final IParser parser = FhirContext.forR4Cached().newJsonParser();
+      final Map<String, Coding> addressUse = loadCodeSystem(parser, "/codesystem/addressUse.json");
+      final Map<String, Coding> organizationType =
+          loadCodeSystem(parser, "/codesystem/organizationType.json");
+      instance = new ConfiguredCodeSystems(addressUse, organizationType);
     }
     return instance;
   }
 
-  private ConfiguredCodeSystems() {
-    FhirContext ctx = FhirContext.forR4();
-    parser = ctx.newJsonParser();
-
-    loadCodeSystem("/codesystem/addressUse.json", addressUseCodeSystemMap);
-    loadCodeSystem("/codesystem/organizationType.json", organizationTypeCodeSystemMap);
-    loadCodeSystem("/codesystem/notificationCategory.json", notificationCategoryCodeSystemMap);
-    loadCodeSystem("/codesystem/conclusionCode.json", conclusionCodeCodeSystemMap);
-    loadCodeSystem(
-        "/codesystem/CodeSystem-observation-category.json", observationCategoryCodeSystemMap);
-    loadCodeSystem(
-        "/codesystem/notificationDiseaseCategory.json", notificationDiseaseCategoryCodeSystemMap);
-    loadCodeSystem(
-        "/codesystem/hospitalizationServiceType.json", hospitalizationServiceTypeCodeSystemMap);
-    loadCodeSystem("/codesystem/vaccine.json", vaccineCodeSystemMap);
-    loadCodeSystem("/codesystem/yesOrNoAnswer.json", yesOrNoCodeSystemMap);
-    loadCodeSystem("/codesystem/militaryAffiliation.json", militaryAffiliationCodeSystemMap);
-    loadCodeSystem("/codesystem/geographicRegion.json", geographicRegionCodeSystemMap);
-    loadCodeSystem(
-        "/codesystem/organizationAssociation.json", organizationAssociationCodeSystemMap);
-    loadCodeSystem(
-        "/codesystem/infectionEnvironmentSetting.json", infectionEnvironmentSettingCodeSystemMap);
-    loadCodeSystem("/codesystem/notificationType.json", notificationTypeCodeSystemMap);
-    loadCodeSystem("/codesystem/sectionCode.json", sectionCodeCodeSystemMap);
-
-    initNullFlavors();
-  }
-
-  private void initNullFlavors() {
-    nullFlavors.put("NASK", new Coding(CODE_SYSTEM_NULL_FLAVOR, "NASK", "not asked"));
-    nullFlavors.put("ASKU", new Coding(CODE_SYSTEM_NULL_FLAVOR, "ASKU", "asked but unknown"));
-  }
-
-  public Coding getAddressUseCoding(final String code) {
-    return addressUseCodeSystemMap.get(code);
-  }
-
-  public Coding getOrganizationTypeCoding(final String code) {
-    return organizationTypeCodeSystemMap.get(code);
-  }
-
-  public Coding getObservationCategoryCoding(final String code) {
-    return observationCategoryCodeSystemMap.get(code);
-  }
-
-  public Coding getNotificationCategoryCoding(final String code) {
-    return notificationCategoryCodeSystemMap.get(code);
-  }
-
-  public Coding getConclusionCodeCoding(final String code) {
-    return conclusionCodeCodeSystemMap.get(code);
-  }
-
-  public Coding getNotificationDiseaseCategoryCoding(final String code) {
-    return notificationDiseaseCategoryCodeSystemMap.get(code);
-  }
-
-  public Coding getHospitalizationServiceTypeCoding(final String code) {
-    return hospitalizationServiceTypeCodeSystemMap.get(code);
-  }
-
-  public Coding getVaccineCoding(final String code) {
-    return vaccineCodeSystemMap.get(code);
-  }
-
-  public Coding getNullFlavor(final String code) {
-    return nullFlavors.get(code);
-  }
-
-  public Coding getYesOrNoCoding(final String code) {
-    return yesOrNoCodeSystemMap.get(code);
-  }
-
-  public Coding getMilitaryAffiliationCoding(final String code) {
-    return militaryAffiliationCodeSystemMap.get(code);
-  }
-
-  public Coding getGeographicRegionCoding(final String code) {
-    return geographicRegionCodeSystemMap.get(code);
-  }
-
-  public Coding getOrganizationAssociationCoding(final String code) {
-    return organizationAssociationCodeSystemMap.get(code);
-  }
-
-  public Coding getInfectionEnvironmentSettingCoding(final String code) {
-    return infectionEnvironmentSettingCodeSystemMap.get(code);
-  }
-
-  public Coding getNotificationTypeCoding(final String code) {
-    return notificationTypeCodeSystemMap.get(code);
-  }
-
-  public Coding getSectionCodeCoding(final String code) {
-    return sectionCodeCodeSystemMap.get(code);
-  }
-
-  private void loadCodeSystem(final String resourceName, final Map<String, Coding> codeSystemMap) {
+  private static Map<String, Coding> loadCodeSystem(
+      final IParser parser, final String resourceName) {
     log.debug("loading CodeSystem from resource {}", resourceName);
-
     final InputStream contentStream = FileUtils.loadFileFromClasspath(resourceName);
     if (contentStream == null) {
       log.error("failed to load content, resource not found: {}", resourceName);
-      return;
+      throw new IllegalArgumentException(
+          "failed to load content, resource not found: " + resourceName);
     }
-
-    final boolean result = fillCodeSystemMap(contentStream, codeSystemMap);
+    final Map<String, Coding> codeSystemMap = new HashMap<>();
+    final boolean result = fillCodeSystemMap(parser, contentStream, codeSystemMap);
     if (!result) {
       log.error("failed to load codeSystem from resource {}", resourceName);
     }
+    return codeSystemMap;
   }
 
-  private boolean fillCodeSystemMap(
-      final InputStream codeSystemContentStream, final Map<String, Coding> codeSystemMap) {
+  private static boolean fillCodeSystemMap(
+      final IParser parser,
+      final InputStream codeSystemContentStream,
+      final Map<String, Coding> codeSystemMap) {
     final CodeSystem parsedCodeSystem =
         parser.parseResource(CodeSystem.class, codeSystemContentStream);
     if (!parsedCodeSystem.hasConcept()) {
@@ -219,7 +112,7 @@ public class ConfiguredCodeSystems {
     return true;
   }
 
-  private void addSubCodings(
+  private static void addSubCodings(
       Map<String, Coding> codeSystemMap,
       String systemUrl,
       ConceptDefinitionComponent conceptDefinitionComponent) {
@@ -235,7 +128,7 @@ public class ConfiguredCodeSystems {
     }
   }
 
-  private void addCoding(
+  private static void addCoding(
       final Map<String, Coding> codeSystemMap,
       final ConceptDefinitionComponent conceptDefinitionComponent,
       final String system) {
@@ -248,5 +141,20 @@ public class ConfiguredCodeSystems {
     }
 
     codeSystemMap.put(conceptDefinitionComponent.getCode(), coding);
+  }
+
+  private static Coding copy(Coding coding) {
+    if (coding == null) {
+      return null;
+    }
+    return coding.copy();
+  }
+
+  public Coding getAddressUseCoding(final String code) {
+    return copy(addressUseCodeSystemMap.get(code));
+  }
+
+  public Coding getOrganizationTypeCoding(final String code) {
+    return copy(organizationTypeCodeSystemMap.get(code));
   }
 }

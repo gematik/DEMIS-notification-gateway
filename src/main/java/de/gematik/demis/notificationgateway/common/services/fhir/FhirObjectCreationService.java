@@ -64,7 +64,7 @@ public class FhirObjectCreationService {
 
   public Address createAddress(NotifiedPersonAddressInfo address, boolean withAddressUse) {
     final Address fhirAddress;
-    if (featureFlags.isNotifications73()) {
+    if (featureFlags.isNotifications73() || featureFlags.isPathogenStrictSnapshotActive()) {
       fhirAddress =
           new AddressDataBuilder()
               .setStreet(address.getStreet())

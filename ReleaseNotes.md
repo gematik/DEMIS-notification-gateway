@@ -2,6 +2,9 @@
 
 # Release notes notification-gateway
 
+## 6.7.4
+- add feature flag feature.flag.snapshot.6.active for address creating in notified person and organizations
+
 ## 6.7.3
 - add validation for notifiedPersonAnonymous in disease notifications
 - upgrade notification-builder-library to 8.0.0

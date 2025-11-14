@@ -1,0 +1,252 @@
+{
+  "notifierFacility": {
+    "address": {
+      "zip": "21481",
+      "country": "DE",
+      "street": "Im Himmelreich",
+      "city": "Frühling",
+      "houseNumber": "1"
+    },
+    "contact": {
+      "firstname": "Test",
+      "lastname": "Person"
+    },
+    "contacts": [
+      {
+        "contactType": "email",
+        "value": "t.person@gmail.com"
+      },
+      {
+        "contactType": "email",
+        "value": "test.person@kh-rie.de"
+      },
+      {
+        "contactType": "phone",
+        "usage": "work",
+        "value": "01234567"
+      }
+    ],
+    "facilityInfo": {
+      "existsBsnr": true,
+      "bsnr": "123456789",
+      "institutionName": "Kreiskrankenhaus Riedlingen",
+      "organizationType": "hospital"
+    }
+  },
+  "notifiedPersonAnonymous": {
+    "gender": "MALE",
+    "residenceAddress": {
+      "country": "DE",
+      "addressType": "primary"
+    }
+  },
+  "status": {
+    "category": "cjkd",
+    "status": "final",
+    "note": "",
+    "initialNotificationId": "c8fc0aa5-803a-4341-82d6-f6fb19731570"
+  },
+  "condition": {
+    "note": ""
+  },
+  "common": {
+    "questionnaire": "common",
+    "item": [
+      {
+        "linkId": "isDead",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "militaryAffiliation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "labSpecimenTaken",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "hospitalized",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "infectProtectFacility",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "placeExposure",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "organDonation",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "additionalInformation",
+        "answer": [
+          {
+            "valueString": ""
+          }
+        ]
+      }
+    ]
+  },
+  "disease": {
+    "questionnaire": "cjkd",
+    "item": [
+      {
+        "linkId": "form",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "biopsy",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "autopsy",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "diagnosis",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "infectionPathKind",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "neuropath",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      },
+      {
+        "linkId": "outbreak",
+        "answer": [
+          {
+            "valueCoding": {
+              "code": "1631000175102",
+              "display": "Patient/Patientin nicht gefragt",
+              "designations": null,
+              "system": "http://snomed.info/sct"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

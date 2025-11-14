@@ -89,4 +89,23 @@ class DiseaseRestControllerTest {
     verify(this.notificationService).sendNotification(eq(diseaseNotification), any(), any());
     verify(this.notificationService, never()).sendNotification(eq(diseaseNotification), any());
   }
+
+  @Test
+  void addDiseaseNotificationFollowUp_shouldSucceed() throws Exception {
+    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
+    when(featureFlagsMock.isPathogenStrictSnapshotActive()).thenReturn(true);
+
+    controller = new DiseaseRestController(validator, notificationService, featureFlagsMock);
+
+    DiseaseNotification diseaseNotification =
+        FileUtils.createDiseaseNotification(
+            "portal/disease/notification-formly-input-followup.json");
+    when(this.notificationService.sendNotification(eq(diseaseNotification), any(), any()))
+        .thenReturn(new OkResponse());
+    when(headers.get("Authorization")).thenReturn(List.of("Bearer " + "token"));
+
+    this.controller.addDiseaseNotification(diseaseNotification, headers);
+    verify(this.notificationService).sendNotification(eq(diseaseNotification), any(), any());
+    verify(this.notificationService, never()).sendNotification(eq(diseaseNotification), any());
+  }
 }

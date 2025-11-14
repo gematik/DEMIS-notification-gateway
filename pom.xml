@@ -9,7 +9,7 @@
   </parent>
   <artifactId>notification-gateway</artifactId>
   <name>DEMIS Notification-Gateway</name>
-  <version>6.7.2-SNAPSHOT</version>
+  <version>6.7.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>Gateway Service for Notifications over Portal</description>
   <licenses>
@@ -38,7 +38,7 @@
     <pdfbox.version>3.0.6</pdfbox.version><!-- CVE Override -->
     <bouncycastle.version>1.82</bouncycastle.version>
     <openapi-generator.inputSpec>${project.basedir}/src/main/resources/spec/api-spec.yml</openapi-generator.inputSpec>
-    <notification.builder.version>7.4.0</notification.builder.version>
+    <notification.builder.version>8.0.0</notification.builder.version>
   </properties>
   <dependencyManagement>
     <dependencies>

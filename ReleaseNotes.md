@@ -2,7 +2,11 @@
 
 # Release notes notification-gateway
 
-# 6.7.2
+## 6.7.3
+- add validation for notifiedPersonAnonymous in disease notifications
+- upgrade notification-builder-library to 8.0.0
+
+## 6.7.2
 - rename feature flag feature.flag.snapshot.6.active to feature.flag.pathogenStrictSnapshotActive
 
 ## 6.7.1

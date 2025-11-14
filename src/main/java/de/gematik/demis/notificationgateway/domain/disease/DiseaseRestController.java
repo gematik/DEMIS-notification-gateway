@@ -55,6 +55,7 @@ class DiseaseRestController {
   private final Validator validator;
   private final DiseaseNotificationService notificationService;
   private final Boolean notification7_3Active;
+  private final Boolean snapshots6Active;
 
   public DiseaseRestController(
       Validator validator,
@@ -63,6 +64,7 @@ class DiseaseRestController {
     this.validator = validator;
     this.notificationService = notificationService;
     this.notification7_3Active = featureFlags.isNotifications73();
+    this.snapshots6Active = featureFlags.isPathogenStrictSnapshotActive();
   }
 
   @PostMapping(
@@ -101,8 +103,12 @@ class DiseaseRestController {
   }
 
   private void validate(DiseaseNotification notification) {
-    Set<ConstraintViolation<ValidationDiseaseNotification>> violations =
-        this.validator.validate(ValidationDiseaseNotification.of(notification));
+    Set<? extends ConstraintViolation<?>> violations;
+    if (notification.getNotifiedPerson() != null) {
+      violations = validator.validate(ValidationDiseaseNotification.of(notification));
+    } else {
+      violations = validator.validate(ValidationDiseaseAnonymousNotification.of(notification));
+    }
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
     }
@@ -110,7 +116,7 @@ class DiseaseRestController {
 
   private OkResponse send(DiseaseNotification content, HttpHeaders headers)
       throws BadRequestException, AuthException {
-    if (this.notification7_3Active) {
+    if (this.notification7_3Active || this.snapshots6Active) {
       return send(content, headers, NotificationType.NOMINAL);
     } else {
       return this.notificationService.sendNotification(content, Token.of(headers));

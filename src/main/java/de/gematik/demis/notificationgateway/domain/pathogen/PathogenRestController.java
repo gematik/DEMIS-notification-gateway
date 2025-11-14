@@ -62,7 +62,7 @@ public class PathogenRestController {
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
       throws AuthException {
 
-    if (featureFlags.isNotifications73()) {
+    if (featureFlags.isNotifications73() || featureFlags.isSnapshot6Active()) {
       return ResponseEntity.ok(
           sendService.processPortalNotificationData(pathogenTest, Token.of(headers), NOMINAL));
     } else {

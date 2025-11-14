@@ -40,4 +40,5 @@ public class FeatureFlags {
   boolean followUpNotificationActive;
   boolean portalErrorDialogFiltering;
   boolean diseaseStrictProfile;
+  boolean snapshot6Active;
 }

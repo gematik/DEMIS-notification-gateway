@@ -2,6 +2,9 @@
 
 # Release notes notification-gateway
 
+# 6.7.2
+- rename feature flag feature.flag.snapshot.6.active to feature.flag.pathogenStrictSnapshotActive
+
 ## 6.7.1
 - add feature flag feature.flag.snapshot.6.active
 

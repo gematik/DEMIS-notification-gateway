@@ -2,6 +2,9 @@
 
 # Release notes notification-gateway
 
+## 6.7.1
+- add feature flag feature.flag.snapshot.6.active
+
 ## 6.7.0
 - added full terminology system versions support to disease notifications
 - fix declined notByName follow up notification by adding addressUse extension to patient profile

@@ -41,6 +41,7 @@ customEnvVars:
   FEATURE_FLAG_NEW_API_ENDPOINTS: "false"
   FEATURE_FLAG_FOLLOW_UP_NOTIFICATION: "false"
   FEATURE_FLAG_DISEASE_STRICT: "false"
+  FEATURE_FLAG_SNAPSHOT_6_ACTIVE: "false"
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)
 # If not given, the Entrypoint defined in Dockerfile will be used

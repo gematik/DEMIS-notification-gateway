@@ -2,5 +2,5 @@ apiVersion: v2
 name: notification-gateway
 description: DEMIS Notification Gateway Helm Chart
 type: application
-version: 6.6.0
-appVersion: "6.6.0"
+version: 6.7.0
+appVersion: "6.7.0"

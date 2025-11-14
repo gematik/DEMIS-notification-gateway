@@ -182,7 +182,7 @@ class OrganizationCreationService {
   private void addAddress(Organization notifierFacility, NotifierFacility notifierFacilityContent) {
     var address = notifierFacilityContent.getAddress();
     final Address fhirAddress;
-    if (featureFlags.isNotifications73())
+    if (featureFlags.isNotifications73() || featureFlags.isPathogenStrictSnapshotActive()) {
       fhirAddress =
           new AddressDataBuilder()
               .setStreet(address.getStreet())
@@ -191,7 +191,7 @@ class OrganizationCreationService {
               .setPostalCode(address.getZip())
               .setCountry(address.getCountry())
               .build();
-    else {
+    } else {
       fhirAddress = fhirObjectCreationService.createAddress(notifierFacilityContent.getAddress());
     }
     notifierFacility.addAddress(fhirAddress);

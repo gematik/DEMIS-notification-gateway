@@ -2,6 +2,9 @@
 
 # Release notes notification-gateway
 
+## 6.7.5
+- add feature flag feature.flag.snapshot.6.active for address creating in notified person for disease notifications
+
 ## 6.7.4
 - add feature flag feature.flag.snapshot.6.active for address creating in notified person and organizations
 

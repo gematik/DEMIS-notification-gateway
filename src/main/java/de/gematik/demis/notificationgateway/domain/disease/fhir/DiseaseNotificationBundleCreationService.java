@@ -91,7 +91,8 @@ public class DiseaseNotificationBundleCreationService {
 
     Patient patient;
 
-    if (featureFlags.isFollowUpNotificationActive()) {
+    if (featureFlags.isFollowUpNotificationActive()
+        || featureFlags.isPathogenStrictSnapshotActive()) {
       Object patientDataFromFE =
           diseaseNotification.getNotifiedPerson() != null
               ? diseaseNotification.getNotifiedPerson()

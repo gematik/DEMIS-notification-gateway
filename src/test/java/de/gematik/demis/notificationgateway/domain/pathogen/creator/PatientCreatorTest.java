@@ -251,11 +251,12 @@ class PatientCreatorTest {
 
     when(rawData.getNotifiedPerson()).thenReturn(notifiedPerson);
     when(notifiedPerson.getCurrentAddress()).thenReturn(null);
+    when(notifiedPerson.getResidenceAddress()).thenReturn(null);
 
     assertThatThrownBy(
             () -> PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("Current address of patient cannot be null");
+        .hasMessageContaining("Residence address of patient cannot be null");
   }
 
   @Test

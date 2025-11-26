@@ -2,6 +2,9 @@
 
 # Release notes notification-gateway
 
+## 6.7.6
+add handling for notifiedPerson namentlich zu NVG for 7.3 nonnominal notifications
+
 ## 6.7.5
 - add feature flag feature.flag.snapshot.6.active for address creating in notified person for disease notifications
 

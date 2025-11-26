@@ -40,6 +40,7 @@ import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAnonymous;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.utils.DateUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.hl7.fhir.r4.model.*;
@@ -76,8 +77,7 @@ public class PatientCreator {
       boolean featureFlagFollowUpActive) {
 
     if (featureFlagFollowUpActive) {
-
-      return createPatientWithFollowUpOptions(bundleBuilder, rawData, submittingRole);
+      return createPatientWithFollowUpAndNonnominalOptions(bundleBuilder, rawData, submittingRole);
     } else {
       return legacyPatientCreation(bundleBuilder, rawData, submittingRole);
     }
@@ -117,7 +117,7 @@ public class PatientCreator {
     return patientBuilder.build();
   }
 
-  private static Patient createPatientWithFollowUpOptions(
+  private static Patient createPatientWithFollowUpAndNonnominalOptions(
       NotificationBundleLaboratoryDataBuilder bundleBuilder,
       PathogenTest rawData,
       PractitionerRole submittingRole) {
@@ -133,18 +133,14 @@ public class PatientCreator {
     if (notifiedPersonAnonymous == null) {
       throw new IllegalArgumentException("NotifiedPersonAnonymous cannot be null");
     }
-    String zip =
-        notifiedPersonAnonymous.getResidenceAddress() != null
-            ? notifiedPersonAnonymous.getResidenceAddress().getZip()
-            : null;
-    String country =
-        notifiedPersonAnonymous.getResidenceAddress() != null
-            ? notifiedPersonAnonymous.getResidenceAddress().getCountry()
-            : null;
+
+    NotifiedPersonAddressInfo residenceAddress = notifiedPersonAnonymous.getResidenceAddress();
+    String zip = residenceAddress != null ? residenceAddress.getZip() : null;
+    String country = residenceAddress != null ? residenceAddress.getCountry() : null;
+
     Address addressFinal =
         new AddressDataBuilder()
-            .withAddressUseExtension(
-                getAddressTypeOrDefault(notifiedPersonAnonymous.getResidenceAddress()))
+            .withAddressUseExtension(getAddressTypeOrDefault(residenceAddress))
             .setPostalCode(zip)
             .setCountry(country)
             .build();
@@ -164,16 +160,22 @@ public class PatientCreator {
       PathogenTest rawData,
       PractitionerRole submittingRole) {
     NotifiedPerson rawPatientData = rawData.getNotifiedPerson();
-    NotifiedPersonAddressInfo whereaboutsInfo = rawPatientData.getCurrentAddress();
-
-    if (whereaboutsInfo == null) {
-      throw new IllegalArgumentException("Current address of patient cannot be null");
+    if (rawPatientData == null) {
+      throw new IllegalArgumentException("NotifiedPerson cannot be null");
     }
 
-    Address whereabouts = createWhereaboutsAddress(bundleBuilder, whereaboutsInfo, submittingRole);
+    NotifiedPersonAddressInfo whereaboutsInfo = rawPatientData.getCurrentAddress();
 
-    List<Address> addresses =
-        List.of(whereabouts, AddressCreator.createAddress(rawPatientData.getResidenceAddress()));
+    List<Address> addresses = new ArrayList<>();
+    if (whereaboutsInfo != null) {
+      addresses.add(createWhereaboutsAddress(bundleBuilder, whereaboutsInfo, submittingRole));
+    }
+    if (rawPatientData.getResidenceAddress() != null) {
+      addresses.add(AddressCreator.createAddress(rawPatientData.getResidenceAddress()));
+    }
+    if (addresses.isEmpty()) {
+      throw new IllegalArgumentException("Residence address of patient cannot be null");
+    }
 
     NotifiedPersonNominalDataBuilder patientBuilder =
         new NotifiedPersonNominalDataBuilder()
@@ -184,6 +186,7 @@ public class PatientCreator {
             .setGender(
                 Enumerations.AdministrativeGender.valueOf(
                     rawPatientData.getInfo().getGender().getValue()));
+
     addresses.stream().filter(Objects::nonNull).forEach(patientBuilder::addAddress);
     rawPatientData.getContacts().stream()
         .map(ContactPointCreator::createContactPoint)
@@ -206,7 +209,12 @@ public class PatientCreator {
       NotifiedPersonAddressInfo whereaboutsInfo,
       PractitionerRole submittingRole) {
 
-    switch (whereaboutsInfo.getAddressType()) {
+    AddressType addressType = whereaboutsInfo.getAddressType();
+    if (addressType == null) {
+      throw new IllegalArgumentException("Address type cannot be null");
+    }
+
+    switch (addressType) {
       case OTHER_FACILITY:
         Address address = AddressCreator.createAddressWithoutAddressUse(whereaboutsInfo);
         Organization otherFacility =

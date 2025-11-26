@@ -39,14 +39,12 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.NotificationLaboratoryCategory;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
-import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DiagnosticReport;
@@ -86,15 +84,15 @@ public class BundleCreator {
 
     boolean isNotifiedPersonFacility = false;
 
-    // nominal case: current address does not exist on NotifiedPersonAnonymous
-    NotifiedPersonAddressInfo currentAddress;
+    // nominal case: current address does not exist on NotifiedPersonAnonymous and
+    // NotifiedPerson_7_3
     NotifiedPerson notifiedPerson = pathogenTest.getNotifiedPerson();
-    if (notifiedPerson != null && pathogenTest.getNotifiedPersonAnonymous() == null) {
-      currentAddress =
-          Objects.requireNonNull(
-              notifiedPerson.getCurrentAddress(), "CurrentAddress must not be null");
+    if (notifiedPerson != null
+        && notifiedPerson.getCurrentAddress() != null
+        && pathogenTest.getNotifiedPersonAnonymous() == null) {
       isNotifiedPersonFacility =
-          AddressType.SUBMITTING_FACILITY.equals(currentAddress.getAddressType());
+          AddressType.SUBMITTING_FACILITY.equals(
+              notifiedPerson.getCurrentAddress().getAddressType());
     }
 
     // when nominal and anonymous are both null, sth is really wrong

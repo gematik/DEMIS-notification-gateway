@@ -28,7 +28,6 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
 
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.PROFILE_NOTIFIED_PERSON;
 import static de.gematik.demis.notificationgateway.common.creator.HumanNameCreator.createHumanName;
-import static java.util.Arrays.asList;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonAnonymousDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonNominalDataBuilder;
@@ -87,51 +86,51 @@ class NotifiedPersonCreationService {
    * @throws InvalidInputDataException If the type of `notifiedPersonContent` is not supported.
    */
   public Patient createPatient(Object notifiedPersonContent, PractitionerRole practitionerRole) {
-    return switch (notifiedPersonContent) {
-      case NotifiedPerson notifiedPerson -> {
-        // nominal
-        List<Address> addresses =
-            asList(
-                createCurrentAddress(notifiedPerson, practitionerRole),
-                createResidenceAddress(notifiedPerson));
-        yield new NotifiedPersonNominalDataBuilder()
-            .setDefault()
-            .setBirthdate(
-                new DateType(DateUtils.createDate(notifiedPerson.getInfo().getBirthDate())))
-            .setGender(
-                Enumerations.AdministrativeGender.valueOf(
-                    notifiedPerson.getInfo().getGender().getValue()))
-            .setHumanName(createHumanName(notifiedPerson.getInfo()))
-            .setTelecom(createContacts(notifiedPerson))
-            .setAddress(addresses)
-            .build();
+    if (notifiedPersonContent instanceof NotifiedPerson notifiedPerson) {
+      List<Address> addresses = new ArrayList<>();
+      if (notifiedPerson.getCurrentAddress() != null) {
+        addresses.add(createCurrentAddress(notifiedPerson, practitionerRole));
       }
-      case NotifiedPersonAnonymous notifiedPersonAnonymous -> {
-        // anonymous
-        var residenceAddress = notifiedPersonAnonymous.getResidenceAddress();
-        var addressBuilder = new AddressDataBuilder();
-        if (residenceAddress != null) {
-          addressBuilder
-              .setCountry(residenceAddress.getCountry())
-              .setPostalCode(residenceAddress.getZip());
-          AddressType addressType = residenceAddress.getAddressType();
-          if (addressType != null) {
-            addressBuilder.withAddressUseExtension(addressType.getValue());
-          }
+      if (notifiedPerson.getResidenceAddress() != null) {
+        addresses.add(createResidenceAddress(notifiedPerson));
+      }
+      if (addresses.isEmpty()) {
+        throw new InvalidInputDataException("Residence address of patient cannot be null");
+      }
+      return new NotifiedPersonNominalDataBuilder()
+          .setDefault()
+          .setBirthdate(new DateType(DateUtils.createDate(notifiedPerson.getInfo().getBirthDate())))
+          .setGender(
+              Enumerations.AdministrativeGender.valueOf(
+                  notifiedPerson.getInfo().getGender().getValue()))
+          .setHumanName(createHumanName(notifiedPerson.getInfo()))
+          .setTelecom(createContacts(notifiedPerson))
+          .setAddress(addresses)
+          .build();
+    }
+    if (notifiedPersonContent instanceof NotifiedPersonAnonymous notifiedPersonAnonymous) {
+      var residenceAddress = notifiedPersonAnonymous.getResidenceAddress();
+      var addressBuilder = new AddressDataBuilder();
+      if (residenceAddress != null) {
+        addressBuilder
+            .setCountry(residenceAddress.getCountry())
+            .setPostalCode(residenceAddress.getZip());
+        AddressType addressType = residenceAddress.getAddressType();
+        if (addressType != null) {
+          addressBuilder.withAddressUseExtension(addressType.getValue());
         }
-        yield new NotifiedPersonAnonymousDataBuilder()
-            .setDefault()
-            .setGender(
-                Enumerations.AdministrativeGender.valueOf(
-                    notifiedPersonAnonymous.getGender().getValue()))
-            .setBirthdate(new DateType(notifiedPersonAnonymous.getBirthDate()))
-            .addAddress(addressBuilder.build())
-            .build();
       }
-      default ->
-          throw new InvalidInputDataException(
-              "NotifiedPersonContent type not supported: " + notifiedPersonContent.getClass());
-    };
+      return new NotifiedPersonAnonymousDataBuilder()
+          .setDefault()
+          .setGender(
+              Enumerations.AdministrativeGender.valueOf(
+                  notifiedPersonAnonymous.getGender().getValue()))
+          .setBirthdate(new DateType(notifiedPersonAnonymous.getBirthDate()))
+          .addAddress(addressBuilder.build())
+          .build();
+    }
+    throw new InvalidInputDataException(
+        "NotifiedPersonContent type not supported: " + notifiedPersonContent.getClass());
   }
 
   /**

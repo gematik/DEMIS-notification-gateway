@@ -12,7 +12,6 @@ components:
     NotifiedPerson:
       required:
         - info
-        - residenceAddress
       type: object
       properties:
         residenceAddress:

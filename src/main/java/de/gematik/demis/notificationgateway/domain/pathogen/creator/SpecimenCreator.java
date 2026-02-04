@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,11 +22,12 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.utils.DateUtils.createDate;
+import static de.gematik.demis.notificationgateway.common.utils.DateUtils.createDateTimeDate;
 import static de.gematik.demis.notificationgateway.domain.pathogen.creator.ObservationCreator.createObservation;
 import static de.gematik.demis.notificationgateway.domain.pathogen.creator.ObservationCreator.createObservationsForResistanceGenes;
 import static de.gematik.demis.notificationgateway.domain.pathogen.creator.ObservationCreator.createObservationsForResistances;
@@ -37,6 +38,7 @@ import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
 import de.gematik.demis.notificationgateway.common.dto.SpecimenDTO;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
@@ -76,7 +78,8 @@ public class SpecimenCreator {
       Patient patient,
       PractitionerRole submittingRole,
       List<Observation> observation,
-      NotificationLaboratoryCategory notificationLaboratoryCategory) {
+      NotificationLaboratoryCategory notificationLaboratoryCategory,
+      Map<String, String> versionMap) {
     List<Specimen> returnList = new ArrayList<>();
 
     // Retrieve the pathogen short code and the list of specimen data transfer objects (DTOs).
@@ -104,7 +107,7 @@ public class SpecimenCreator {
           new SpecimenDataBuilder()
               .setDefaultData()
               .setProfileUrlHelper(pathogenShortCode)
-              .setReceivedTime(createDate(specimenDTO.getReceivedDate()))
+              .setReceivedDateTime(createDateTimeDate(specimenDTO.getReceivedDate()))
               .setTypeCode(specimenDTO.getMaterial().getCode())
               .setTypeDisplay(specimenDTO.getMaterial().getDisplay())
               .setTypeCodingVersion(version)
@@ -114,7 +117,8 @@ public class SpecimenCreator {
 
       // Set the collected date if available.
       if (specimenDTO.getExtractionDate() != null) {
-        specimenDataBuilder.setCollectedDate(createDate(specimenDTO.getExtractionDate()));
+        specimenDataBuilder.setCollectedDateTime(
+            createDateTimeDate(specimenDTO.getExtractionDate()));
       }
       specimen = specimenDataBuilder.build();
 
@@ -125,17 +129,22 @@ public class SpecimenCreator {
               specimenDTO.getMethodPathogenList(),
               patient,
               specimen,
-              notificationLaboratoryCategory));
+              notificationLaboratoryCategory,
+              versionMap));
 
       // Add observations for resistance genes.
       observation.addAll(
           createObservationsForResistanceGenes(
-              specimenDTO.getResistanceGeneList(), patient, specimen, pathogenShortCode));
+              specimenDTO.getResistanceGeneList(),
+              patient,
+              specimen,
+              pathogenShortCode,
+              versionMap));
 
       // Add observations for resistances.
       observation.addAll(
           createObservationsForResistances(
-              specimenDTO.getResistanceList(), patient, specimen, pathogenShortCode));
+              specimenDTO.getResistanceList(), patient, specimen, pathogenShortCode, versionMap));
       returnList.add(specimen);
     }
     return returnList;

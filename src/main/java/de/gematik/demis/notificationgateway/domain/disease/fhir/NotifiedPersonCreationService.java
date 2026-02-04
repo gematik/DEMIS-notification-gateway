@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,38 +22,33 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
-import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.PROFILE_NOTIFIED_PERSON;
 import static de.gematik.demis.notificationgateway.common.creator.HumanNameCreator.createHumanName;
+import static de.gematik.demis.notificationgateway.common.mappers.GenderMapper.createGenderExtension;
+import static de.gematik.demis.notificationgateway.common.mappers.GenderMapper.mapGender;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonAnonymousDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonNominalDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.igs.InvalidInputDataException;
-import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
-import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
+import de.gematik.demis.notificationgateway.common.dto.Gender;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAnonymous;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.common.utils.DateUtils;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.DateType;
-import org.hl7.fhir.r4.model.Enumerations;
-import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
-import org.hl7.fhir.r4.model.HumanName.NameUse;
-import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
-import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -67,11 +62,6 @@ class NotifiedPersonCreationService {
       OrganizationCreationService organizationCreationService) {
     this.fhirObjectCreationService = fhirObjectCreationService;
     this.organizationCreationService = organizationCreationService;
-  }
-
-  private static void setGender(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
-    notifiedPerson.setGender(
-        AdministrativeGender.valueOf(notifiedPersonContent.getInfo().getGender().getValue()));
   }
 
   /**
@@ -97,16 +87,20 @@ class NotifiedPersonCreationService {
       if (addresses.isEmpty()) {
         throw new InvalidInputDataException("Residence address of patient cannot be null");
       }
-      return new NotifiedPersonNominalDataBuilder()
-          .setDefault()
-          .setBirthdate(new DateType(DateUtils.createDate(notifiedPerson.getInfo().getBirthDate())))
-          .setGender(
-              Enumerations.AdministrativeGender.valueOf(
-                  notifiedPerson.getInfo().getGender().getValue()))
-          .setHumanName(createHumanName(notifiedPerson.getInfo()))
-          .setTelecom(createContacts(notifiedPerson))
-          .setAddress(addresses)
-          .build();
+      Gender gender = notifiedPerson.getInfo().getGender();
+      Patient patient =
+          new NotifiedPersonNominalDataBuilder()
+              .setDefault()
+              .setBirthdate(
+                  new DateType(DateUtils.createDate(notifiedPerson.getInfo().getBirthDate())))
+              .setGender(mapGender(gender))
+              .setHumanName(createHumanName(notifiedPerson.getInfo()))
+              .setTelecom(createContacts(notifiedPerson))
+              .setAddress(addresses)
+              .build();
+      createGenderExtension(gender)
+          .ifPresent(extension -> patient.getGenderElement().addExtension(extension));
+      return patient;
     }
     if (notifiedPersonContent instanceof NotifiedPersonAnonymous notifiedPersonAnonymous) {
       var residenceAddress = notifiedPersonAnonymous.getResidenceAddress();
@@ -120,75 +114,21 @@ class NotifiedPersonCreationService {
           addressBuilder.withAddressUseExtension(addressType.getValue());
         }
       }
-      return new NotifiedPersonAnonymousDataBuilder()
-          .setDefault()
-          .setGender(
-              Enumerations.AdministrativeGender.valueOf(
-                  notifiedPersonAnonymous.getGender().getValue()))
-          .setBirthdate(new DateType(notifiedPersonAnonymous.getBirthDate()))
-          .addAddress(addressBuilder.build())
-          .build();
+      Gender gender = notifiedPersonAnonymous.getGender();
+
+      Patient patient =
+          new NotifiedPersonAnonymousDataBuilder()
+              .setDefault()
+              .setGender(mapGender(gender))
+              .setBirthdate(new DateType(notifiedPersonAnonymous.getBirthDate()))
+              .addAddress(addressBuilder.build())
+              .build();
+      createGenderExtension(gender)
+          .ifPresent(extension -> patient.getGenderElement().addExtension(extension));
+      return patient;
     }
     throw new InvalidInputDataException(
         "NotifiedPersonContent type not supported: " + notifiedPersonContent.getClass());
-  }
-
-  /**
-   * Creates a FHIR Patient resource based on the provided notified person content.
-   *
-   * <p>This method is marked as deprecated and will be removed in future versions. It creates a
-   * `Patient` resource using detailed information from a `NotifiedPerson` object. The resource
-   * includes attributes such as ID, metadata, gender, name, birthdate, contact points, current
-   * address, and residence address.
-   *
-   * @param notifiedPersonContent The `NotifiedPerson` object containing the details of the notified
-   *     person.
-   * @param practitionerRole The `PractitionerRole` associated with the notified person, used for
-   *     creating specific address types.
-   * @return A `Patient` resource representing the notified person.
-   * @deprecated This method is deprecated and scheduled for removal. Use the updated method for
-   *     creating `Patient` resources.
-   */
-  @Deprecated(forRemoval = true)
-  public Patient createPatientLegacy(
-      NotifiedPerson notifiedPersonContent, PractitionerRole practitionerRole) {
-    final Patient notifiedPerson = new Patient();
-    notifiedPerson.setId(Utils.generateUuidString());
-    notifiedPerson.setMeta(new Meta().addProfile(PROFILE_NOTIFIED_PERSON));
-    setGender(notifiedPerson, notifiedPersonContent);
-    addName(notifiedPerson, notifiedPersonContent);
-    addBirthDate(notifiedPerson, notifiedPersonContent);
-    addContacts(notifiedPerson, notifiedPersonContent);
-    addCurrentAddress(notifiedPerson, notifiedPersonContent, practitionerRole);
-    addResidenceAddress(notifiedPerson, notifiedPersonContent);
-    return notifiedPerson;
-  }
-
-  private void addName(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
-    final String firstnameInfo = notifiedPersonContent.getInfo().getFirstname();
-    List<StringType> firstNameList = new ArrayList<>();
-    for (String firstName : firstnameInfo.split("\\s+")) {
-      firstNameList.add(new StringType(firstName));
-    }
-    notifiedPerson
-        .addName()
-        .setUse(NameUse.OFFICIAL)
-        .setFamily(notifiedPersonContent.getInfo().getLastname())
-        .setGiven(firstNameList);
-  }
-
-  private void addBirthDate(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
-    final LocalDate dateOfBirth = notifiedPersonContent.getInfo().getBirthDate();
-    if (dateOfBirth != null) {
-      notifiedPerson.setBirthDate(DateUtils.createDate(dateOfBirth));
-    }
-  }
-
-  private void addContacts(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
-    for (ContactPointInfo contact : notifiedPersonContent.getContacts()) {
-      ContactPoint contactPoint = fhirObjectCreationService.createContactPoint(contact);
-      notifiedPerson.addTelecom(contactPoint);
-    }
   }
 
   private List<ContactPoint> createContacts(NotifiedPerson notifiedPersonContent) {
@@ -197,35 +137,9 @@ class NotifiedPersonCreationService {
         .toList();
   }
 
-  private void addResidenceAddress(Patient notifiedPerson, NotifiedPerson notifiedPersonContent) {
-    final NotifiedPersonAddressInfo info = notifiedPersonContent.getResidenceAddress();
-    if (info != null) {
-      notifiedPerson.addAddress(fhirObjectCreationService.createAddress(info, true));
-    }
-  }
-
   private Address createResidenceAddress(NotifiedPerson notifiedPersonContent) {
     final NotifiedPersonAddressInfo info = notifiedPersonContent.getResidenceAddress();
     return fhirObjectCreationService.createAddress(info, true);
-  }
-
-  private void addCurrentAddress(
-      Patient notifiedPerson,
-      NotifiedPerson notifiedPersonContent,
-      PractitionerRole practitionerRole) {
-    final NotifiedPersonAddressInfo currentAddress = notifiedPersonContent.getCurrentAddress();
-    if (currentAddress != null) {
-      final Address address;
-      final AddressType addressType = currentAddress.getAddressType();
-      if (addressType == AddressType.OTHER_FACILITY) {
-        address = createOtherFacilityAddress(currentAddress);
-      } else if (addressType == AddressType.SUBMITTING_FACILITY) {
-        address = createNotifierFacilityAddress(practitionerRole, currentAddress);
-      } else {
-        address = fhirObjectCreationService.createAddress(currentAddress);
-      }
-      notifiedPerson.addAddress(address);
-    }
   }
 
   private Address createCurrentAddress(

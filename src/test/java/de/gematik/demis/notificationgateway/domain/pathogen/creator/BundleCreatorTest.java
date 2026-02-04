@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -118,7 +119,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false, true);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);
@@ -244,10 +245,9 @@ class BundleCreatorTest {
 
     assertThrows(
             IllegalArgumentException.class,
-            () -> createBundle(pathogenTest, NotificationType.NOMINAL, false))
+            () -> createBundle(pathogenTest, NotificationType.NOMINAL, false, true))
         .getMessage()
         .contains("Submitting facility must not be null");
-    ;
   }
 
   @Test
@@ -318,7 +318,7 @@ class BundleCreatorTest {
     contactPointInfo2.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
     submitterFacility.setContacts(List.of(contactPointInfo2));
 
-    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false);
+    Bundle bundle = createBundle(pathogenTest, NotificationType.NOMINAL, false, true);
 
     assertThat(bundle).isNotNull();
     assertThat(bundle.getType()).isEqualTo(Bundle.BundleType.DOCUMENT);

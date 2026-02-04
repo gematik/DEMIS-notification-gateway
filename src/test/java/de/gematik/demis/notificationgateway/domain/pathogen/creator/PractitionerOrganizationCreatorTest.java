@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,13 +22,13 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 import de.gematik.demis.notificationgateway.common.dto.*;
 import java.util.List;
@@ -87,7 +87,7 @@ class PractitionerOrganizationCreatorTest {
   }
 
   @Test
-  void createSubmitterPractitionerRoleShouldReturnValidPractitionerRole() {
+  void createSubmitterPractitionerRoleShouldReturnValidPractitionerRole_WithoutOthPrivatLab() {
     SubmitterFacility submitterFacility = new SubmitterFacility();
     SubmittingFacilityInfo facilityInfo = new SubmittingFacilityInfo();
     facilityInfo.setInstitutionName("Submitter Institution");
@@ -102,13 +102,48 @@ class PractitionerOrganizationCreatorTest {
     submitterFacility.setContacts(List.of(contactPointInfo));
 
     PractitionerRole practitionerRole =
-        PractitionerOrganizationCreator.createSubmitterPractitionerRole(submitterFacility, false);
+        PractitionerOrganizationCreator.createSubmitterPractitionerRole(
+            submitterFacility, false, true);
 
     assertThat(practitionerRole.getOrganization().getResource()).isInstanceOf(Organization.class);
     Organization organization = (Organization) practitionerRole.getOrganization().getResource();
     assertThat(organization.getName()).isEqualTo("Submitter Institution");
-    assertThat(organization.getContactFirstRep().getAddress().getLine().get(0).getValue())
+    assertThat(organization.getContactFirstRep().getAddress().getLine().getFirst().getValue())
         .isEqualTo("Department A");
+
+    assertThat(organization.getType()).isEmpty();
+  }
+
+  @Test
+  void
+      createSubmitterPractitionerRoleShouldReturnValidPractitionerRole_RegressionWithOthPrivatLab() {
+    SubmitterFacility submitterFacility = new SubmitterFacility();
+    SubmittingFacilityInfo facilityInfo = new SubmittingFacilityInfo();
+    facilityInfo.setInstitutionName("Submitter Institution");
+    facilityInfo.setDepartmentName("Department A");
+    submitterFacility.setFacilityInfo(facilityInfo);
+    FacilityAddressInfo addressInfo = new FacilityAddressInfo();
+    submitterFacility.setAddress(addressInfo);
+    PractitionerInfo practitionerInfo = new PractitionerInfo();
+    submitterFacility.setContact(practitionerInfo);
+    ContactPointInfo contactPointInfo = new ContactPointInfo();
+    contactPointInfo.setContactType(ContactPointInfo.ContactTypeEnum.PHONE);
+    submitterFacility.setContacts(List.of(contactPointInfo));
+
+    PractitionerRole practitionerRole =
+        PractitionerOrganizationCreator.createSubmitterPractitionerRole(
+            submitterFacility, false, false);
+
+    assertThat(practitionerRole.getOrganization().getResource()).isInstanceOf(Organization.class);
+    Organization organization = (Organization) practitionerRole.getOrganization().getResource();
+    assertThat(organization.getName()).isEqualTo("Submitter Institution");
+    assertThat(organization.getContactFirstRep().getAddress().getLine().getFirst().getValue())
+        .isEqualTo("Department A");
+    assertThat(organization.getType()).hasSize(1);
+    assertThat(organization.getType().getFirst().getCoding().getFirst().getCode())
+        .isEqualTo("othPrivatLab");
+    assertThat(organization.getType().getFirst().getCoding().getFirst().getDisplay())
+        .isEqualTo("Sonstige private Untersuchungsstelle");
   }
 
   @Test
@@ -126,7 +161,8 @@ class PractitionerOrganizationCreatorTest {
     submitterFacility.setContacts(List.of(contactPointInfo));
 
     PractitionerRole practitionerRole =
-        PractitionerOrganizationCreator.createSubmitterPractitionerRole(submitterFacility, true);
+        PractitionerOrganizationCreator.createSubmitterPractitionerRole(
+            submitterFacility, true, true);
 
     assertThat(practitionerRole.getOrganization().getResource()).isInstanceOf(Organization.class);
     Organization organization = (Organization) practitionerRole.getOrganization().getResource();
@@ -148,6 +184,6 @@ class PractitionerOrganizationCreatorTest {
   void createSubmitterPractitionerRoleShouldThrowExceptionForNullSubmitterFacility() {
     assertThrows(
         NullPointerException.class,
-        () -> PractitionerOrganizationCreator.createSubmitterPractitionerRole(null, false));
+        () -> PractitionerOrganizationCreator.createSubmitterPractitionerRole(null, false, true));
   }
 }

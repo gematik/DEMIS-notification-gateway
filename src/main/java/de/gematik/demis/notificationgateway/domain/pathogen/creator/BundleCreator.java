@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -44,7 +45,10 @@ import de.gematik.demis.notificationgateway.common.dto.PathogenDTO;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DiagnosticReport;
@@ -52,6 +56,7 @@ import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Specimen;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Utility class for creating FHIR {@link Bundle} objects.
@@ -78,7 +83,8 @@ public class BundleCreator {
   public static Bundle createBundle(
       PathogenTest pathogenTest,
       NotificationType notificationType,
-      boolean featureFlagFollowUpActive) {
+      boolean featureFlagFollowUpActive,
+      boolean isOthPrivatLabSubmitterAssignmentDisabled) {
 
     // DTOs
 
@@ -114,7 +120,9 @@ public class BundleCreator {
     final PractitionerRole notifierRole = createNotifierPractitionerRole(notifierFacility);
     final PractitionerRole submittingRole =
         createSubmitterPractitionerRole(
-            pathogenTest.getSubmittingFacility(), isNotifiedPersonFacility);
+            pathogenTest.getSubmittingFacility(),
+            isNotifiedPersonFacility,
+            isOthPrivatLabSubmitterAssignmentDisabled);
 
     // check for notification type and use the appropriate bundleBuilder builder
     final NotificationBundleLaboratoryDataBuilder bundleBuilder =
@@ -127,11 +135,16 @@ public class BundleCreator {
         createPatient(bundleBuilder, pathogenTest, submittingRole, featureFlagFollowUpActive);
 
     List<Observation> observation = new ArrayList<>();
-    List<Specimen> specimenList = new ArrayList<>();
 
-    specimenList.addAll(
-        createSpecimen(
-            pathogenDTO, patient, submittingRole, observation, notificationLaboratoryCategory));
+    List<Specimen> specimenList =
+        new ArrayList<>(
+            createSpecimen(
+                pathogenDTO,
+                patient,
+                submittingRole,
+                observation,
+                notificationLaboratoryCategory,
+                extractVersionMap(pathogenTest)));
 
     final DiagnosticReport diagnosticReport =
         createDiagnosticReport(
@@ -152,5 +165,16 @@ public class BundleCreator {
                 notificationType))
         .setLaboratoryReport(diagnosticReport)
         .build();
+  }
+
+  private static @NonNull Map<String, String> extractVersionMap(PathogenTest pathogenTest) {
+    Map<String, String> versionMap = new HashMap<>();
+    if (pathogenTest.getStaticSystemVersions() == null) {
+      return Collections.emptyMap();
+    }
+    for (var codeSystemVersion : pathogenTest.getStaticSystemVersions()) {
+      versionMap.put(codeSystemVersion.getSystem(), codeSystemVersion.getVersion());
+    }
+    return versionMap;
   }
 }

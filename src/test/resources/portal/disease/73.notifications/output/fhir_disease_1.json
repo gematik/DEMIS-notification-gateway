@@ -46,7 +46,7 @@
       } ],
       "title": "Meldung gemäß §7 Absatz 3 IfSG",
       "section": [ {
-        "title": "disease",
+        "title": "Diagnose",
         "code": {
           "coding": [ {
             "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
@@ -80,7 +80,7 @@
         "profile": [ "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson" ]
       },
       "name": [ {
-        "use": "official",
+        "text": "Max Melderson",
         "family": "Melderson",
         "given": [ "Max" ]
       } ],
@@ -96,15 +96,6 @@
           }
         } ],
         "line": [ "Wohnsitzstraße 1" ],
-        "_line": [ {
-          "extension": [ {
-            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-            "valueString": "Wohnsitzstraße"
-          }, {
-            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-            "valueString": "1"
-          } ]
-        } ],
         "city": "Berlin",
         "postalCode": "21481",
         "country": "DE"
@@ -118,15 +109,6 @@
           }
         } ],
         "line": [ "Wohnsitzstraße 1" ],
-        "_line": [ {
-          "extension": [ {
-            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-            "valueString": "Wohnsitzstraße"
-          }, {
-            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-            "valueString": "1"
-          } ]
-        } ],
         "city": "Berlin",
         "postalCode": "21481",
         "country": "DE"
@@ -210,15 +192,6 @@
       } ],
       "address": [ {
         "line": [ "Im Himmelreich 1" ],
-        "_line": [ {
-          "extension": [ {
-            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-            "valueString": "Im Himmelreich"
-          }, {
-            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-            "valueString": "1"
-          } ]
-        } ],
         "city": "Frühling",
         "postalCode": "21481",
         "country": "DE"

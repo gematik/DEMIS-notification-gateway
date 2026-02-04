@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.disease;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -35,8 +36,8 @@ import de.gematik.demis.notificationgateway.common.properties.NESProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
-import de.gematik.demis.notificationgateway.domain.HeaderProperties;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.DiseaseNotificationBundleCreationService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,8 @@ class DiseaseNotificationService {
   private final BundlePublisher bundlePublisher;
   private final OkResponseService okResponseService;
   private final NESProperties nesProperties;
-  private final HeaderProperties headerProperties;
+
+  private final HttpServletRequest request;
 
   private static void validateHoneypot(DiseaseNotification notification) {
     if (isSpammer(notification)) {
@@ -91,42 +93,7 @@ class DiseaseNotificationService {
     final String url = this.nesProperties.hospitalizationUrl();
     final String operation = NESProperties.OPERATION_NAME;
     log.info(LOG_SEND);
-    Parameters result =
-        this.bundlePublisher.postRequest(
-            bundle,
-            url,
-            operation,
-            this.headerProperties.getDiseaseNotificationProfile(),
-            this.headerProperties.getDiseaseNotificationVersion(),
-            token);
-    return this.okResponseService.buildOkResponse(result);
-  }
-
-  /**
-   * Convert disease notification to FHIR document. Send the FHIR document to DEMIS core API.
-   *
-   * @deprecated remove with feature.flag.notifications.7_3
-   * @param notification disease notification
-   * @param token inbound JWT
-   * @return response of DEMIS core
-   * @throws BadRequestException illegal disease notification structure or data
-   */
-  @Deprecated(forRemoval = true)
-  OkResponse sendNotification(DiseaseNotification notification, Token token)
-      throws BadRequestException {
-    validateHoneypot(notification);
-    final Bundle bundle = this.bundleCreationService.createBundle(notification);
-    final String url = this.nesProperties.hospitalizationUrl();
-    final String operation = NESProperties.OPERATION_NAME;
-    log.info(LOG_SEND);
-    Parameters result =
-        this.bundlePublisher.postRequest(
-            bundle,
-            url,
-            operation,
-            this.headerProperties.getDiseaseNotificationProfile(),
-            this.headerProperties.getDiseaseNotificationVersion(),
-            token);
+    Parameters result = this.bundlePublisher.postRequest(bundle, url, operation, token, request);
     return this.okResponseService.buildOkResponse(result);
   }
 }

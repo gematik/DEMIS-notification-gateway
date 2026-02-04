@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.common.proxies;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.common.proxies;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -35,7 +36,7 @@ import de.gematik.demis.notificationgateway.common.properties.ApplicationPropert
 import de.gematik.demis.notificationgateway.common.properties.LoggingProperties;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
-import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Parameters;
@@ -48,7 +49,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class BundlePublisherTest {
-  private static RandomStringUtils random = RandomStringUtils.secure();
+  private static final RandomStringUtils random = RandomStringUtils.secure();
 
   @Mock
   private FhirObjectCreationService fhirObjectCreationService =
@@ -57,6 +58,7 @@ class BundlePublisherTest {
   @Mock private LoggingProperties loggingProperties;
   @Mock private ApplicationProperties applicationProperties;
   @Mock private Token token;
+  @Mock private HttpServletRequest httpServletRequest;
   @InjectMocks private BundlePublisher bundlePublisher;
 
   @BeforeEach
@@ -65,7 +67,7 @@ class BundlePublisherTest {
   }
 
   @Test
-  void testWrongServerURL() throws AuthException {
+  void testWrongServerURL() {
     when(token.asText()).thenReturn(random.nextAlphanumeric(15));
     when(loggingProperties.isUseLoggingInterceptor()).thenReturn(true);
     assertThatThrownBy(
@@ -74,9 +76,8 @@ class BundlePublisherTest {
                     new Bundle(),
                     random.nextAlphabetic(5),
                     random.nextAlphabetic(5),
-                    "rki.demis.r4.core",
-                    "1.24.0",
-                    token))
+                    token,
+                    httpServletRequest))
         .isInstanceOf(FhirClientConnectionException.class)
         .hasMessageContaining("Failed to parse response from server when performing POST");
   }

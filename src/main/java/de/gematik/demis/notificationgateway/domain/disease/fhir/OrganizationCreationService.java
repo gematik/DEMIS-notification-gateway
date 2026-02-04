@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -31,7 +32,6 @@ import static de.gematik.demis.notificationgateway.common.constants.FhirConstant
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
@@ -58,7 +58,6 @@ import org.springframework.stereotype.Service;
 class OrganizationCreationService {
 
   private final FhirObjectCreationService fhirObjectCreationService;
-  private final FeatureFlags featureFlags;
 
   public Organization createNotifierFacility(final NotifierFacility notifierFacilityContent) {
     final String organizationType = notifierFacilityContent.getFacilityInfo().getOrganizationType();
@@ -182,18 +181,15 @@ class OrganizationCreationService {
   private void addAddress(Organization notifierFacility, NotifierFacility notifierFacilityContent) {
     var address = notifierFacilityContent.getAddress();
     final Address fhirAddress;
-    if (featureFlags.isNotifications73() || featureFlags.isPathogenStrictSnapshotActive()) {
-      fhirAddress =
-          new AddressDataBuilder()
-              .setStreet(address.getStreet())
-              .setHouseNumber(address.getHouseNumber())
-              .setCity(address.getCity())
-              .setPostalCode(address.getZip())
-              .setCountry(address.getCountry())
-              .build();
-    } else {
-      fhirAddress = fhirObjectCreationService.createAddress(notifierFacilityContent.getAddress());
-    }
+    fhirAddress =
+        new AddressDataBuilder()
+            .setStreet(address.getStreet())
+            .setHouseNumber(address.getHouseNumber())
+            .setCity(address.getCity())
+            .setPostalCode(address.getZip())
+            .setCountry(address.getCountry())
+            .build();
+
     notifierFacility.addAddress(fhirAddress);
   }
 

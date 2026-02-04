@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -31,7 +32,6 @@ import static de.gematik.demis.notificationgateway.common.constants.WebConstants
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -87,8 +87,7 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
     HttpHeaders clientHeaders = new HttpHeaders();
     clientHeaders.setContentType(MediaType.APPLICATION_JSON);
     clientHeaders.setBearerAuth(EXPIRED_DEMIS_PORTAL_TOKEN_HOSPITAL);
-    when(bundlePublisher.postRequest(
-            any(), any(), any(), eq("rki.demis.r4.core"), eq("1.24.0"), any()))
+    when(bundlePublisher.postRequest(any(), any(), any(), any(), any()))
         .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
 
     final MockHttpServletResponse response =
@@ -103,12 +102,7 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
 
     Mockito.verify(bundlePublisher, times(1))
         .postRequest(
-            any(Bundle.class),
-            any(String.class),
-            any(String.class),
-            eq("fhir-profile-snapshots"),
-            eq("v6"),
-            any(Token.class));
+            any(Bundle.class), any(String.class), any(String.class), any(Token.class), any());
   }
 
   @ParameterizedTest
@@ -148,12 +142,7 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
 
     Mockito.verify(bundlePublisher, Mockito.never())
         .postRequest(
-            any(Bundle.class),
-            any(String.class),
-            any(String.class),
-            eq("rki.demis.r4.core"),
-            eq("1.24.0"),
-            any(Token.class));
+            any(Bundle.class), any(String.class), any(String.class), any(Token.class), any());
   }
 
   @Test
@@ -185,11 +174,6 @@ class BedOccupancyRestControllerWithoutExpireValidationIT implements BaseTestUti
 
     Mockito.verify(bundlePublisher, Mockito.never())
         .postRequest(
-            any(Bundle.class),
-            any(String.class),
-            any(String.class),
-            eq("rki.demis.r4.core"),
-            eq("1.24.0"),
-            any(Token.class));
+            any(Bundle.class), any(String.class), any(String.class), any(Token.class), any());
   }
 }

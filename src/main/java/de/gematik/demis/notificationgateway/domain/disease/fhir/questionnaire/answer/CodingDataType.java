@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.a
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,16 +22,22 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.a
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.CodeDisplay;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseAnswer;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Coding;
 
+@RequiredArgsConstructor
 final class CodingDataType implements DataType<Coding> {
+
+  private final FeatureFlags featureFlags;
 
   @Override
   public Coding toFhir(QuestionnaireResponseAnswer answer) {
@@ -44,7 +50,11 @@ final class CodingDataType implements DataType<Coding> {
   }
 
   private Coding createCoding(CodeDisplay value) {
-    return new Coding(value.getSystem(), value.getCode(), value.getDisplay());
+    final Coding coding = new Coding(value.getSystem(), value.getCode(), value.getDisplay());
+    if (this.featureFlags.isDiseaseStrictProfile()) {
+      coding.setVersion(value.getVersion());
+    }
+    return coding;
   }
 
   private CodeDisplay getValue(QuestionnaireResponseAnswer answer) {

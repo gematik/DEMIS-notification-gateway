@@ -72,7 +72,7 @@
         ],
         "section": [
           {
-            "title": "disease",
+            "title": "Diagnose",
             "code": {
               "coding": [
                 {
@@ -137,7 +137,7 @@
         },
         "name": [
           {
-            "use": "official",
+            "text": "Max Masen",
             "family": "Masen",
             "given": [
               "Max"
@@ -161,20 +161,6 @@
             "line": [
               "Herbertstraße 14"
             ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Herbertstraße"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "14"
-                  }
-                ]
-              }
-            ],
             "city": "Oederingen",
             "postalCode": "21481",
             "country": "20422"
@@ -192,20 +178,6 @@
             ],
             "line": [
               "Herbertstraße 14"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Herbertstraße"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "14"
-                  }
-                ]
-              }
             ],
             "city": "Oederingen",
             "postalCode": "21481",
@@ -345,20 +317,6 @@
           {
             "line": [
               "Donaustrasse 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Donaustrasse"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Riedlingen",
             "postalCode": "21481",

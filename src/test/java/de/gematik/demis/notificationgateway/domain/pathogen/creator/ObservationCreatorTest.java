@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -30,7 +31,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import de.gematik.demis.notificationgateway.common.dto.*;
+import java.util.HashMap;
 import java.util.List;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Specimen;
@@ -58,7 +61,7 @@ class ObservationCreatorTest {
 
     List<Observation> observations =
         ObservationCreator.createObservation(
-            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory);
+            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory, null);
 
     assertThat(observations).hasSize(1);
     Observation observation = observations.getFirst();
@@ -97,7 +100,7 @@ class ObservationCreatorTest {
 
     List<Observation> observations =
         ObservationCreator.createObservation(
-            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory);
+            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory, null);
 
     assertThat(observations).hasSize(2);
     Observation observation = observations.getFirst();
@@ -147,7 +150,8 @@ class ObservationCreatorTest {
             List.of(methodPathogenDTO, methodPathogenDTO2, methodPathogenDTO3),
             patient,
             specimen,
-            notificationCategory);
+            notificationCategory,
+            null);
 
     assertThat(observations).hasSize(3);
     Observation observation = observations.getFirst();
@@ -201,7 +205,8 @@ class ObservationCreatorTest {
             List.of(methodPathogenDTO, methodPathogenDTO2, methodPathogenDTO3),
             patient,
             specimen,
-            notificationCategory);
+            notificationCategory,
+            null);
 
     assertThat(observations).hasSize(4);
     Observation observation = observations.getFirst();
@@ -228,9 +233,11 @@ class ObservationCreatorTest {
     @Test
     void shouldReturnEmptyCollectionForResistanceNull() {
 
-      assertThat(ObservationCreator.createObservationsForResistances(null, null, null, null))
+      assertThat(ObservationCreator.createObservationsForResistances(null, null, null, null, null))
           .isEmpty();
-      assertThat(ObservationCreator.createObservationsForResistances(List.of(), null, null, null))
+      assertThat(
+              ObservationCreator.createObservationsForResistances(
+                  List.of(), null, null, null, null))
           .isEmpty();
     }
 
@@ -251,7 +258,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistances(
-              List.of(resistanceDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceDTO), patient, specimen, "PathogenCode", null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -262,6 +269,42 @@ class ObservationCreatorTest {
           .isEqualTo("R");
       assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
           .isEqualTo("30714006");
+    }
+
+    @Test
+    void shouldCreateObservationsForResistancesResistantWithVersionMap() {
+
+      ResistanceDTO resistanceDTO = mock(ResistanceDTO.class);
+      Patient patient = new Patient();
+      patient.setId("Patient/123");
+      Specimen specimen = new Specimen();
+      specimen.setId("Specimen/456");
+
+      CodeDisplay system = new CodeDisplay("R123");
+      system.setDisplay("Resistance Display");
+      when(resistanceDTO.getResistance()).thenReturn(system);
+      when(resistanceDTO.getResistanceResult())
+          .thenReturn(ResistanceDTO.ResistanceResultEnum.RESISTANT);
+
+      var versionMap = new HashMap<String, String>();
+      versionMap.put("http://snomed.info/sct", "snomedVersion");
+
+      List<Observation> observations =
+          ObservationCreator.createObservationsForResistances(
+              List.of(resistanceDTO), patient, specimen, "PathogenCode", versionMap);
+
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getCode().getCodingFirstRep().getCode()).isEqualTo("R123");
+      assertThat(observation.getCode().getCodingFirstRep().getDisplay())
+          .isEqualTo("Resistance Display");
+      assertThat(observation.getInterpretationFirstRep().getCodingFirstRep().getCode())
+          .isEqualTo("R");
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
+          .isEqualTo("30714006");
+
+      CodeableConcept codeableConcept = (CodeableConcept) observation.getValue();
+      assertThat(codeableConcept.getCodingFirstRep().getVersion()).isEqualTo("snomedVersion");
     }
 
     @Test
@@ -281,7 +324,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistances(
-              List.of(resistanceDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceDTO), patient, specimen, "PathogenCode", null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -311,7 +354,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistances(
-              List.of(resistanceDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceDTO), patient, specimen, "PathogenCode", null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -341,7 +384,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistances(
-              List.of(resistanceDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceDTO), patient, specimen, "PathogenCode", null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -371,7 +414,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistances(
-              List.of(resistanceDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceDTO), patient, specimen, "PathogenCode", null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -391,10 +434,12 @@ class ObservationCreatorTest {
     @Test
     void shouldReturnEmptyCollectionForResistanceNull() {
 
-      assertThat(ObservationCreator.createObservationsForResistanceGenes(null, null, null, null))
+      assertThat(
+              ObservationCreator.createObservationsForResistanceGenes(null, null, null, null, null))
           .isEmpty();
       assertThat(
-              ObservationCreator.createObservationsForResistanceGenes(List.of(), null, null, null))
+              ObservationCreator.createObservationsForResistanceGenes(
+                  List.of(), null, null, null, null))
           .isEmpty();
     }
 
@@ -415,7 +460,41 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistanceGenes(
-              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode", null);
+
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getCode().getCodingFirstRep().getCode()).isEqualTo("RG123");
+      assertThat(observation.getCode().getCodingFirstRep().getDisplay())
+          .isEqualTo("Resistance Gene Display");
+      assertThat(observation.getInterpretationFirstRep().getCodingFirstRep().getCode())
+          .isEqualTo("IND");
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
+          .isEqualTo("82334004");
+      assertThat(observation.getMethod().getCodingFirstRep().getCode()).isEqualTo("708068002");
+    }
+
+    @Test
+    void shouldCreateObservationsForResistanceGenesIntermediateWithVersionMap() {
+
+      ResistanceGeneDTO resistanceGeneDTO = mock(ResistanceGeneDTO.class);
+      Patient patient = new Patient();
+      patient.setId("Patient/123");
+      Specimen specimen = new Specimen();
+      specimen.setId("Specimen/456");
+
+      CodeDisplay rg123 = new CodeDisplay("RG123");
+      rg123.setDisplay("Resistance Gene Display");
+      when(resistanceGeneDTO.getResistanceGene()).thenReturn(rg123);
+      when(resistanceGeneDTO.getResistanceGeneResult())
+          .thenReturn(ResistanceGeneDTO.ResistanceGeneResultEnum.INDETERMINATE);
+
+      var versionMap = new HashMap<String, String>();
+      versionMap.put("http://snomed.info/sct", "snomedVersion");
+
+      List<Observation> observations =
+          ObservationCreator.createObservationsForResistanceGenes(
+              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode", versionMap);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -446,7 +525,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistanceGenes(
-              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode", null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -476,7 +555,7 @@ class ObservationCreatorTest {
 
       List<Observation> observations =
           ObservationCreator.createObservationsForResistanceGenes(
-              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode");
+              List.of(resistanceGeneDTO), patient, specimen, "PathogenCode", null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -487,6 +566,46 @@ class ObservationCreatorTest {
           .isEqualTo("S");
       assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
           .isEqualTo("260415000");
+    }
+  }
+
+  @Nested
+  class VersionsThroughPortalTest {
+    @Test
+    void shouldCreateObservationsForPathogen() {
+
+      PathogenDTO pathogenDTO = mock(PathogenDTO.class);
+      MethodPathogenDTO methodPathogenDTO = mock(MethodPathogenDTO.class);
+      Patient patient = new Patient();
+      patient.setId("Patient/123");
+      Specimen specimen = new Specimen();
+      specimen.setId("Specimen/456");
+      NotificationLaboratoryCategory notificationCategory =
+          mock(NotificationLaboratoryCategory.class);
+
+      when(notificationCategory.getPathogen()).thenReturn(new CodeDisplay("12345"));
+      when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("67890"));
+      when(methodPathogenDTO.getResult()).thenReturn(MethodPathogenDTO.ResultEnum.POS);
+      when(methodPathogenDTO.getMethod())
+          .thenReturn(new CodeDisplay("MethodCode").display("Method"));
+
+      var versionMap = new HashMap<String, String>();
+      versionMap.put("http://snomed.info/sct", "snomedVersion");
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              versionMap);
+
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getValue()).isInstanceOf(CodeableConcept.class);
+      CodeableConcept codeableConcept = (CodeableConcept) observation.getValue();
+      assertThat(codeableConcept.getCodingFirstRep().getVersion()).isEqualTo("snomedVersion");
     }
   }
 }

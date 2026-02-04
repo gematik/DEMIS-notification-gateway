@@ -349,6 +349,20 @@
                                     ]
                                   },
                                   {
+                                    "linkId": "reason",
+                                    "answer": [
+                                      {
+                                        "valueCoding": {
+                                          "code": "forIsolation",
+                                          "display": "Hospitalisiert zur Isolierung",
+                                          "designations": null,
+                                          "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationReason",
+                                          "version": "1.0.1"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
                                     "linkId": "serviceProvider",
                                     "answer": [
                                       {
@@ -1050,7 +1064,8 @@
                                           "value": "Vaccine product containing only live attenuated Measles morbillivirus and Mumps orthorubulavirus and Rubella virus and Human alphaherpesvirus 3 antigens (medicinal product)"
                                         }
                                       ],
-                                      "system": "http://snomed.info/sct"
+                                      "system": "http://snomed.info/sct",
+                                      "version": "1.2.3"
                                     }
                                   }
                                 ]

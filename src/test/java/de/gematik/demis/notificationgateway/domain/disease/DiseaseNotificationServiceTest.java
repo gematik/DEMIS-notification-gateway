@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.disease;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -35,25 +36,13 @@ import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponse;
 import de.gematik.demis.notificationgateway.common.exceptions.HoneypotException;
-import de.gematik.demis.notificationgateway.common.properties.NESProperties;
-import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
-import de.gematik.demis.notificationgateway.common.services.OkResponseService;
-import de.gematik.demis.notificationgateway.domain.HeaderProperties;
-import de.gematik.demis.notificationgateway.domain.disease.fhir.DiseaseNotificationBundleCreationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class DiseaseNotificationServiceTest {
-
-  @Mock private DiseaseNotificationBundleCreationService bundleCreationService;
-  @Mock private BundlePublisher bundlePublisher;
-  @Mock private OkResponseService okResponseService;
-  @Mock private NESProperties nesProperties;
-  @Mock private HeaderProperties headerProperties;
 
   @InjectMocks private DiseaseNotificationService diseaseNotificationService;
 
@@ -78,6 +67,6 @@ class DiseaseNotificationServiceTest {
   private void verifyHoneyPotDetection(DiseaseNotification diseaseNotification) {
     assertThrows(
         HoneypotException.class,
-        () -> diseaseNotificationService.sendNotification(diseaseNotification, null));
+        () -> diseaseNotificationService.sendNotification(diseaseNotification, null, null));
   }
 }

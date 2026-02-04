@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,17 +22,15 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.CODE_SYSTEM_ORGANIZATION_TYPE;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.FacilityInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
@@ -62,11 +60,8 @@ class OrganizationCreationServiceTest {
     final String orgaTypeCode = "mySpecialCodeValue";
     facilityInfo.setOrganizationType(orgaTypeCode);
 
-    final FeatureFlags featureFlags = mock(FeatureFlags.class);
-    when(featureFlags.isNotifications73()).thenReturn(false);
-
     final OrganizationCreationService creationService =
-        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
+        new OrganizationCreationService(fhirObjectCreationServiceMock);
 
     final Organization result = creationService.createNotifierFacility(notifierFacility);
 
@@ -80,11 +75,8 @@ class OrganizationCreationServiceTest {
 
     final NotifierFacility notifierFacilityContent = quickTest.getNotifierFacility();
 
-    final FeatureFlags featureFlags = mock(FeatureFlags.class);
-    when(featureFlags.isNotifications73()).thenReturn(false);
-
     final OrganizationCreationService creationService =
-        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
+        new OrganizationCreationService(fhirObjectCreationServiceMock);
 
     final Organization notifierFacility =
         creationService.createHospitalNotifierFacility(notifierFacilityContent);
@@ -102,11 +94,8 @@ class OrganizationCreationServiceTest {
     final String orgaTypeCode = "mySpecialCodeValue";
     facilityInfo.setOrganizationType(orgaTypeCode);
 
-    final FeatureFlags featureFlags = mock(FeatureFlags.class);
-    when(featureFlags.isNotifications73()).thenReturn(true);
-
     final OrganizationCreationService creationServiceActiveFlag =
-        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
+        new OrganizationCreationService(fhirObjectCreationServiceMock);
 
     final Organization result = creationServiceActiveFlag.createNotifierFacility(notifierFacility);
 
@@ -120,11 +109,8 @@ class OrganizationCreationServiceTest {
 
     final NotifierFacility notifierFacilityContent = quickTest.getNotifierFacility();
 
-    final FeatureFlags featureFlags = mock(FeatureFlags.class);
-    when(featureFlags.isNotifications73()).thenReturn(true);
-
     final OrganizationCreationService creationServiceActiveFlag =
-        new OrganizationCreationService(fhirObjectCreationServiceMock, featureFlags);
+        new OrganizationCreationService(fhirObjectCreationServiceMock);
 
     final Organization notifierFacility =
         creationServiceActiveFlag.createHospitalNotifierFacility(notifierFacilityContent);

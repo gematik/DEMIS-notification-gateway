@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,18 +22,16 @@ package de.gematik.demis.notificationgateway.domain.disease;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
@@ -54,30 +52,8 @@ class DiseaseRestControllerTest {
   private DiseaseRestController controller;
 
   @Test
-  void addDiseaseNotification_shouldSucceedRegression() throws Exception {
-    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
-    when(featureFlagsMock.isNotifications73()).thenReturn(false);
-
-    controller = new DiseaseRestController(validator, notificationService, featureFlagsMock);
-
-    DiseaseNotification diseaseNotification =
-        FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");
-    when(this.notificationService.sendNotification(eq(diseaseNotification), any()))
-        .thenReturn(new OkResponse());
-    when(headers.get("Authorization")).thenReturn(List.of("Bearer " + "token"));
-
-    this.controller.addDiseaseNotification(diseaseNotification, headers);
-    verify(this.notificationService).sendNotification(eq(diseaseNotification), any());
-    verify(this.notificationService, never())
-        .sendNotification((eq(diseaseNotification)), any(), any());
-  }
-
-  @Test
   void addDiseaseNotification_shouldSucceed() throws Exception {
-    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
-    when(featureFlagsMock.isNotifications73()).thenReturn(true);
-
-    controller = new DiseaseRestController(validator, notificationService, featureFlagsMock);
+    controller = new DiseaseRestController(validator, notificationService);
 
     DiseaseNotification diseaseNotification =
         FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");
@@ -87,15 +63,11 @@ class DiseaseRestControllerTest {
 
     this.controller.addDiseaseNotification(diseaseNotification, headers);
     verify(this.notificationService).sendNotification(eq(diseaseNotification), any(), any());
-    verify(this.notificationService, never()).sendNotification(eq(diseaseNotification), any());
   }
 
   @Test
   void addDiseaseNotificationFollowUp_shouldSucceed() throws Exception {
-    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
-    when(featureFlagsMock.isPathogenStrictSnapshotActive()).thenReturn(true);
-
-    controller = new DiseaseRestController(validator, notificationService, featureFlagsMock);
+    controller = new DiseaseRestController(validator, notificationService);
 
     DiseaseNotification diseaseNotification =
         FileUtils.createDiseaseNotification(
@@ -106,6 +78,33 @@ class DiseaseRestControllerTest {
 
     this.controller.addDiseaseNotification(diseaseNotification, headers);
     verify(this.notificationService).sendNotification(eq(diseaseNotification), any(), any());
-    verify(this.notificationService, never()).sendNotification(eq(diseaseNotification), any());
+  }
+
+  @Test
+  void send7_3_non_nominal_shouldSucceed() throws Exception {
+    controller = new DiseaseRestController(validator, notificationService);
+
+    DiseaseNotification diseaseNotification =
+        FileUtils.createDiseaseNotification("portal/disease/73.notifications/input/disease_1.json");
+    when(this.notificationService.sendNotification(eq(diseaseNotification), any(), any()))
+        .thenReturn(new OkResponse());
+    when(headers.get("Authorization")).thenReturn(List.of("Bearer " + "token"));
+
+    this.controller.send7_3_non_nominal(diseaseNotification, headers);
+    verify(this.notificationService).sendNotification(eq(diseaseNotification), any(), any());
+  }
+
+  @Test
+  void send7_3_anonymous_shouldSucceed() throws Exception {
+    controller = new DiseaseRestController(validator, notificationService);
+
+    DiseaseNotification diseaseNotification =
+        FileUtils.createDiseaseNotification("portal/disease/73.notifications/input/disease_1.json");
+    when(this.notificationService.sendNotification(eq(diseaseNotification), any(), any()))
+        .thenReturn(new OkResponse());
+    when(headers.get("Authorization")).thenReturn(List.of("Bearer " + "token"));
+
+    this.controller.send7_3_anonymous(diseaseNotification, headers);
+    verify(this.notificationService).sendNotification(eq(diseaseNotification), any(), any());
   }
 }

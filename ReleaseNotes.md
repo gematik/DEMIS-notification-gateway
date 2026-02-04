@@ -1,6 +1,17 @@
-<img align="right" width="200" height="37" src="media/Gematik_Logo_Flag.png"/> <br/>
+<div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 
 # Release notes notification-gateway
+
+## 6.7.7
+- add forwarding of headers x-fhir-profile, x-fhir-api-version, x-fhir-api-request-origin, x-fhir-api-submission-type to nps 
+- remove version and profile header from application.properties for bed occupancy, laboratory and disease
+- update spring-parent to 2.14.20
+- update gender extension handling for notifiedPerson and notifiedPersonAnonymous
+- changed coding system version handling of upcoming strict disease profile
+- removed assignment of other private lab to submitter
+- added feature flag FEATURE_FLAG_OTH_PRIVAT_LAB_SUBMITTER_ASSIGNMENT_DISABLED
+- added possibility to use standard version passed through portal. expanded data model for portal
+- removed feature flags FEATURE_FLAG_NOTIFICATIONS_7_3 and FEATURE_FLAG_SNAPSHOT_6_ACTIVE
 
 ## 6.7.6
 add handling for notifiedPerson namentlich zu NVG for 7.3 nonnominal notifications

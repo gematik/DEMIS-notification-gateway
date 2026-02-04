@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,15 +22,13 @@ package de.gematik.demis.notificationgateway.domain.disease;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.Condition;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
@@ -63,11 +61,9 @@ class DiseaseRestControllerNotificationValidationTest {
   }
 
   private static void createController() {
-    FeatureFlags featureFlagsMock = mock(FeatureFlags.class);
-    when(featureFlagsMock.isNotifications73()).thenReturn(false);
 
     final var validator = Validation.buildDefaultValidatorFactory().getValidator();
-    controller = new DiseaseRestController(validator, null, featureFlagsMock);
+    controller = new DiseaseRestController(validator, null);
   }
 
   @AfterAll

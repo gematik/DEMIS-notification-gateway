@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.common.services.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.common.services.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -30,15 +31,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
-import de.gematik.demis.notificationgateway.domain.pathogen.fhir.PathogenBundleCreationService;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
 import java.util.List;
 import java.util.UUID;
@@ -53,21 +50,14 @@ import org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 class FhirObjectCreationServiceTest {
-  @Mock private FeatureFlags featureFlags;
 
-  private PathogenBundleCreationService pathogenBundleCreationService;
   private FhirObjectCreationService creationService;
 
   @BeforeEach
   void setUp() {
-    featureFlags = mock(FeatureFlags.class);
-    when(featureFlags.isNotifications73()).thenReturn(false);
-
-    pathogenBundleCreationService = new PathogenBundleCreationService(this.featureFlags);
-    creationService = new FhirObjectCreationService(featureFlags);
+    creationService = new FhirObjectCreationService();
   }
 
   @Test
@@ -86,7 +76,7 @@ class FhirObjectCreationServiceTest {
     final List<ParametersParameterComponent> parameterList = parameters.getParameter();
     assertEquals(1, parameterList.size());
 
-    final ParametersParameterComponent parameter = parameterList.get(0);
+    final ParametersParameterComponent parameter = parameterList.getFirst();
     assertTrue(parameter.hasName());
     assertEquals("content", parameter.getName());
     assertTrue(parameter.hasResource());
@@ -103,7 +93,7 @@ class FhirObjectCreationServiceTest {
 
     final List<Extension> addressExtensions = address.getExtension();
     assertEquals(1, addressExtensions.size());
-    final Extension addressExtension = addressExtensions.get(0);
+    final Extension addressExtension = addressExtensions.getFirst();
     assertEquals(FhirConstants.STRUCTURE_DEFINITION_ADDRESS_USE, addressExtension.getUrl());
     final Coding value = (Coding) addressExtension.getValue();
     assertEquals(FhirConstants.CODE_SYSTEM_ADDRESS_USE, value.getSystem());
@@ -126,24 +116,18 @@ class FhirObjectCreationServiceTest {
 
     final List<Extension> addressExtensions = address.getExtension();
     assertEquals(1, addressExtensions.size());
-    final Extension addressExtension = addressExtensions.get(0);
+    final Extension addressExtension = addressExtensions.getFirst();
     assertEquals(FhirConstants.STRUCTURE_DEFINITION_ADDRESS_USE, addressExtension.getUrl());
     final Coding addressExtensionValue = (Coding) addressExtension.getValue();
     assertEquals(FhirConstants.CODE_SYSTEM_ADDRESS_USE, addressExtensionValue.getSystem());
     assertEquals("current", addressExtensionValue.getCode());
     assertEquals("Derzeitiger Aufenthaltsort", addressExtensionValue.getDisplay());
 
-    final StringType addressLine = address.getLine().get(0);
+    final StringType addressLine = address.getLine().getFirst();
+
     assertEquals("Betroffenenstraße 1", addressLine.asStringValue());
     final List<Extension> addressLineExtensions = addressLine.getExtension();
-    assertEquals(2, addressLineExtensions.size());
-    final Extension streetNameExtension = addressLineExtensions.get(0);
-    assertEquals(FhirConstants.STRUCTURE_DEFINITION_ADXP_STREET_NAME, streetNameExtension.getUrl());
-    assertEquals("Betroffenenstraße", streetNameExtension.getValue().toString());
-    final Extension houseNumberExtension = addressLineExtensions.get(1);
-    assertEquals(
-        FhirConstants.STRUCTURE_DEFINITION_ADXP_HOUSE_NUMBER, houseNumberExtension.getUrl());
-    assertEquals("1", houseNumberExtension.getValue().toString());
+    assertEquals(0, addressLineExtensions.size());
 
     assertEquals("21481", address.getPostalCode());
     assertEquals("Buchhorst", address.getCity());
@@ -160,24 +144,17 @@ class FhirObjectCreationServiceTest {
 
     final List<Extension> addressExtensions = address.getExtension();
     assertEquals(1, addressExtensions.size());
-    final Extension addressExtension = addressExtensions.get(0);
+    final Extension addressExtension = addressExtensions.getFirst();
     assertEquals(FhirConstants.STRUCTURE_DEFINITION_ADDRESS_USE, addressExtension.getUrl());
     final Coding addressExtensionValue = (Coding) addressExtension.getValue();
     assertEquals(FhirConstants.CODE_SYSTEM_ADDRESS_USE, addressExtensionValue.getSystem());
     assertEquals("primary", addressExtensionValue.getCode());
     assertEquals("Hauptwohnsitz", addressExtensionValue.getDisplay());
 
-    final StringType addressLine = address.getLine().get(0);
+    final StringType addressLine = address.getLine().getFirst();
     assertEquals("Andere Straße 3", addressLine.asStringValue());
     final List<Extension> addressLineExtensions = addressLine.getExtension();
-    assertEquals(2, addressLineExtensions.size());
-    final Extension streetNameExtension = addressLineExtensions.get(0);
-    assertEquals(FhirConstants.STRUCTURE_DEFINITION_ADXP_STREET_NAME, streetNameExtension.getUrl());
-    assertEquals("Andere Straße", streetNameExtension.getValue().toString());
-    final Extension houseNumberExtension = addressLineExtensions.get(1);
-    assertEquals(
-        FhirConstants.STRUCTURE_DEFINITION_ADXP_HOUSE_NUMBER, houseNumberExtension.getUrl());
-    assertEquals("3", houseNumberExtension.getValue().toString());
+    assertEquals(0, addressLineExtensions.size());
 
     assertEquals("11223", address.getPostalCode());
     assertEquals("Stadt", address.getCity());
@@ -190,7 +167,7 @@ class FhirObjectCreationServiceTest {
         FileUtils.createQuickTest("portal/laboratory/notification_content_max.json");
 
     final List<ContactPointInfo> contacts = quickTest.getNotifiedPerson().getContacts();
-    final ContactPoint phoneContactPoint = creationService.createContactPoint(contacts.get(0));
+    final ContactPoint phoneContactPoint = creationService.createContactPoint(contacts.getFirst());
     assertEquals("phone", phoneContactPoint.getSystem().toCode());
     assertEquals("01234567", phoneContactPoint.getValue());
 

@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -30,10 +31,8 @@ import static de.gematik.demis.notificationgateway.common.enums.NotificationType
 import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NOMINAL;
 import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NON_NOMINAL;
 
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
-import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.domain.pathogen.services.PathogenSendService;
 import jakarta.security.auth.message.AuthException;
@@ -55,25 +54,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class PathogenRestController {
 
   private final PathogenSendService sendService;
-  private final FeatureFlags featureFlags;
 
   @PostMapping({"/pathogen", "/pathogen/7.1"})
   ResponseEntity<OkResponse> send(
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
       throws AuthException {
 
-    if (featureFlags.isNotifications73() || featureFlags.isPathogenStrictSnapshotActive()) {
-      return ResponseEntity.ok(
-          sendService.processPortalNotificationData(pathogenTest, Token.of(headers), NOMINAL));
-    } else {
-      return ResponseEntity.ok(sendService.send(pathogenTest, Token.of(headers)));
-    }
+    return ResponseEntity.ok(
+        sendService.processPortalNotificationData(pathogenTest, Token.of(headers), NOMINAL));
   }
 
   @PostMapping("/pathogen/7.3/non_nominal")
   ResponseEntity<OkResponse> send7_3_non_nominal(
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
-      throws BadRequestException, AuthException {
+      throws AuthException {
 
     return ResponseEntity.ok(
         sendService.processPortalNotificationData(pathogenTest, Token.of(headers), NON_NOMINAL));
@@ -82,7 +76,7 @@ public class PathogenRestController {
   @PostMapping("/pathogen/7.3/anonymous")
   ResponseEntity<OkResponse> send7_3_anonymous(
       @RequestBody @Valid PathogenTest pathogenTest, @RequestHeader HttpHeaders headers)
-      throws BadRequestException, AuthException {
+      throws AuthException {
 
     return ResponseEntity.ok(
         sendService.processPortalNotificationData(pathogenTest, Token.of(headers), ANONYMOUS));

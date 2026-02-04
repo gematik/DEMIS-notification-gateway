@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.common.proxies;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.common.proxies;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -36,7 +37,7 @@ import de.gematik.demis.notificationgateway.common.properties.RPSProperties;
 import de.gematik.demis.notificationgateway.common.utils.Reachability;
 import de.gematik.demis.notificationgateway.common.utils.Token;
 import de.gematik.demis.notificationgateway.utils.FileUtils;
-import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +67,7 @@ class BundlePublisherE2ETest implements BaseTestUtils {
   @Autowired private NESProperties nesProperties;
   @Autowired private RPSProperties rpsProperties;
   @Mock private Token token;
+  @Mock private static HttpServletRequest request;
 
   @BeforeEach
   void assumeReachableNes() {
@@ -76,18 +78,17 @@ class BundlePublisherE2ETest implements BaseTestUtils {
   }
 
   @Test
-  void testPostRequestLaboratoryBundleToNotificationApi() throws AuthException {
+  void testPostRequestLaboratoryBundleToNotificationApi() {
     final Parameters input =
         FileUtils.createParametersFromFile("parameters_laboratorybundle_v2_testuser.json");
 
     final Parameters parameters =
         bundlePublisher.postRequest(
-            (Bundle) input.getParameter().get(0).getResource(),
+            (Bundle) input.getParameter().getFirst().getResource(),
             nesProperties.laboratoryUrl(),
             NESProperties.OPERATION_NAME,
-            "rki.demis.r4.core",
-            "1.24.0",
-            token);
+            token,
+            request);
 
     assertNotNull(parameters);
 
@@ -104,7 +105,7 @@ class BundlePublisherE2ETest implements BaseTestUtils {
     final List<OperationOutcomeIssueComponent> issues = operationOutcome.getIssue();
 
     assertEquals(1, issues.size());
-    assertEquals("All OK", issues.get(0).getDetails().getText());
+    assertEquals("All OK", issues.getFirst().getDetails().getText());
   }
 
   @Test
@@ -115,12 +116,11 @@ class BundlePublisherE2ETest implements BaseTestUtils {
     final ThrowableAssert.ThrowingCallable throwingCallable =
         () ->
             bundlePublisher.postRequest(
-                (Bundle) input.getParameter().get(0).getResource(),
+                (Bundle) input.getParameter().getFirst().getResource(),
                 nesProperties.laboratoryUrl(),
                 NESProperties.OPERATION_NAME,
-                "rki.demis.r4.core",
-                "1.24.0",
-                token);
+                token,
+                request);
 
     assertThatThrownBy(throwingCallable)
         .isInstanceOf(UnprocessableEntityException.class)
@@ -128,18 +128,17 @@ class BundlePublisherE2ETest implements BaseTestUtils {
   }
 
   @Test
-  void testPostRequestDiseaseBundleToNES() throws AuthException {
+  void testPostRequestDiseaseBundleToNES() {
     final Parameters input =
         FileUtils.createParametersFromFile("parameters_diseasebundle_v2_testuser.json");
 
     final Parameters parameters =
         bundlePublisher.postRequest(
-            (Bundle) input.getParameter().get(0).getResource(),
+            (Bundle) input.getParameter().getFirst().getResource(),
             nesProperties.hospitalizationUrl(),
             NESProperties.OPERATION_NAME,
-            "rki.demis.r4.core",
-            "1.24.0",
-            token);
+            token,
+            request);
 
     assertNotNull(parameters);
 
@@ -156,21 +155,20 @@ class BundlePublisherE2ETest implements BaseTestUtils {
     final List<OperationOutcomeIssueComponent> issues = operationOutcome.getIssue();
 
     assertEquals(1, issues.size());
-    assertEquals("All OK", issues.get(0).getDetails().getText());
+    assertEquals("All OK", issues.getFirst().getDetails().getText());
   }
 
   @Test
-  void testPostRequestBedOccupancyReportToRPS() throws AuthException {
+  void testPostRequestBedOccupancyReportToRPS() {
     final Parameters input =
         FileUtils.createParametersFromFile("parameters_report_bedoccupancy.json");
     final Parameters parameters =
         bundlePublisher.postRequest(
-            (Bundle) input.getParameter().get(0).getResource(),
+            (Bundle) input.getParameter().getFirst().getResource(),
             rpsProperties.bedOccupancyUrl(),
             RPSProperties.OPERATION_NAME,
-            "rki.demis.r4.core",
-            "1.24.0",
-            token);
+            token,
+            request);
 
     assertNotNull(parameters);
 
@@ -187,6 +185,6 @@ class BundlePublisherE2ETest implements BaseTestUtils {
     final List<OperationOutcomeIssueComponent> issues = operationOutcome.getIssue();
 
     assertEquals(1, issues.size());
-    assertEquals("All OK", issues.get(0).getDetails().getText());
+    assertEquals("All OK", issues.getFirst().getDetails().getText());
   }
 }

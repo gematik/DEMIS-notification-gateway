@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.a
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,16 +22,31 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.a
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import java.util.function.Supplier;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public final class AnswersFactory implements Supplier<Answers> {
+
+  private final FeatureFlags featureFlags;
+
+  public AnswersFactory(boolean diseaseStrictProfile) {
+    this(FeatureFlags.builder().diseaseStrictProfile(diseaseStrictProfile).build());
+  }
+
+  public AnswersFactory() {
+    this(false);
+  }
+
   @Override
   public Answers get() {
-    final Answers answers = new Answers();
+    final Answers answers = new Answers(this.featureFlags);
     answers.createDataTypesList();
     return answers;
   }

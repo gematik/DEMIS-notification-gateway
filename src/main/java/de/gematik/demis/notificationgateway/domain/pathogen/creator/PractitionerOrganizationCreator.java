@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -119,7 +120,9 @@ public class PractitionerOrganizationCreator {
    * @return A {@link PractitionerRole} object populated with the provided submitter facility data.
    */
   public static PractitionerRole createSubmitterPractitionerRole(
-      SubmitterFacility submitterFacility, boolean isNotifiedPersonFacility) {
+      SubmitterFacility submitterFacility,
+      boolean isNotifiedPersonFacility,
+      final boolean isOthPrivatLabSubmitterAssignmentDisabled) {
     final SubmittingFacilityInfo facilityInfo = submitterFacility.getFacilityInfo();
     final FacilityAddressInfo addressInfo = submitterFacility.getAddress();
 
@@ -134,11 +137,15 @@ public class PractitionerOrganizationCreator {
             .asSubmittingFacility()
             .setSubmitterDetails(contactName, facilityInfo.getDepartmentName())
             .setDefaults()
-            .setTypeCode(OTH_PRIVAT_LAB)
-            .setTypeDisplay(SONSTIGE_PRIVATE_UNTERSUCHUNGSSTELLE)
             .setFacilityName(facilityInfo.getInstitutionName())
             .setAddress(submitterAddress)
             .setTelecomList(contactPoints);
+
+    if (!isOthPrivatLabSubmitterAssignmentDisabled) {
+      organizationBuilder
+          .setTypeCode(OTH_PRIVAT_LAB)
+          .setTypeDisplay(SONSTIGE_PRIVATE_UNTERSUCHUNGSSTELLE);
+    }
     if (isNotifiedPersonFacility) {
       organizationBuilder.addNotifiedPersonFacilityProfile();
     }

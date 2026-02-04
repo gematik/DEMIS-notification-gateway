@@ -32,7 +32,6 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "version": "0.0.0",
               "code": "34782-3",
               "display": "Infectious disease Note"
             }
@@ -43,7 +42,6 @@
             "coding": [
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/notificationType",
-                "version": "0.0.0",
                 "code": "6.1_2",
                 "display": "Meldung gemäß §6 Absatz 1, 2 IfSG"
               }
@@ -62,12 +60,11 @@
         "title": "Meldung gemäß §6 Absatz 1, 2 IfSG",
         "section": [
           {
-            "title": "disease",
+            "title": "Diagnose",
             "code": {
               "coding": [
                 {
                   "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
-                  "version": "0.0.0",
                   "code": "diagnosis",
                   "display": "Diagnose"
                 }
@@ -85,7 +82,6 @@
               "coding": [
                 {
                   "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
-                  "version": "0.0.0",
                   "code": "generalClinAndEpiInformation",
                   "display": "Meldetatbestandsübergreifende klinische und epidemiologische Angaben"
                 }
@@ -112,7 +108,7 @@
         },
         "name": [
           {
-            "use": "official",
+            "text": "Marta Analytika",
             "family": "Analytika",
             "given": [
               "Marta"
@@ -127,7 +123,6 @@
                 "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
-                  "version": "0.0.0",
                   "code": "current",
                   "display": "Derzeitiger Aufenthaltsort"
                 }
@@ -142,7 +137,6 @@
                 "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
-                  "version": "0.0.0",
                   "code": "ordinary",
                   "display": "Gewöhnlicher Aufenthaltsort"
                 }
@@ -168,7 +162,6 @@
           "coding": [
             {
               "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-              "version": "0.0.0",
               "code": "active"
             }
           ]
@@ -177,7 +170,6 @@
           "coding": [
             {
               "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
-              "version": "0.0.0",
               "code": "confirmed"
             }
           ]
@@ -186,7 +178,6 @@
           "coding": [
             {
               "system": "https://demis.rki.de/fhir/CodeSystem/notificationDiseaseCategory",
-              "version": "0.0.0",
               "code": "rund"
             }
           ]
@@ -232,7 +223,6 @@
             "coding": [
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
-                "version": "0.0.0",
                 "code": "hospital",
                 "display": "Krankenhaus"
               }
@@ -259,20 +249,6 @@
           {
             "line": [
               "Donaustrasse 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Donaustrasse"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Riedlingen",
             "postalCode": "21481",
@@ -314,7 +290,6 @@
               {
                 "valueCoding": {
                   "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "version": "0.0.0",
                   "code": "NASK",
                   "display": "nicht erhoben"
                 }
@@ -327,7 +302,6 @@
               {
                 "valueCoding": {
                   "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "version": "0.0.0",
                   "code": "NASK",
                   "display": "nicht erhoben"
                 }
@@ -340,7 +314,6 @@
               {
                 "valueCoding": {
                   "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "version": "0.0.0",
                   "code": "NASK",
                   "display": "nicht erhoben"
                 }
@@ -353,7 +326,6 @@
               {
                 "valueCoding": {
                   "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "version": "0.0.0",
                   "code": "NASK",
                   "display": "nicht erhoben"
                 }
@@ -366,7 +338,6 @@
               {
                 "valueCoding": {
                   "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "version": "0.0.0",
                   "code": "NASK",
                   "display": "nicht erhoben"
                 }
@@ -379,7 +350,6 @@
               {
                 "valueCoding": {
                   "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "version": "0.0.0",
                   "code": "NASK",
                   "display": "nicht erhoben"
                 }
@@ -392,7 +362,6 @@
               {
                 "valueCoding": {
                   "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "version": "0.0.0",
                   "code": "NASK",
                   "display": "nicht erhoben"
                 }

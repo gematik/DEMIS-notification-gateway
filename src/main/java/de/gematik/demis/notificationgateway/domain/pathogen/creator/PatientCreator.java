@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,11 +22,14 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static de.gematik.demis.notificationgateway.common.creator.HumanNameCreator.createHumanName;
+import static de.gematik.demis.notificationgateway.common.mappers.GenderMapper.createGenderExtension;
+import static de.gematik.demis.notificationgateway.common.mappers.GenderMapper.mapGender;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonAnonymousDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.NotifiedPersonNominalDataBuilder;
@@ -35,6 +38,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.tec
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.OrganizationBuilder;
 import de.gematik.demis.notificationgateway.common.creator.ContactPointCreator;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
+import de.gematik.demis.notificationgateway.common.dto.Gender;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAnonymous;
@@ -99,22 +103,24 @@ public class PatientCreator {
     List<Address> addresses =
         List.of(whereabouts, AddressCreator.createAddress(rawPatientData.getResidenceAddress()));
 
+    Gender gender = rawPatientData.getInfo().getGender();
     NotifiedPersonNominalDataBuilder patientBuilder =
         new NotifiedPersonNominalDataBuilder()
             .setDefault()
             .setBirthdate(
                 new DateType(DateUtils.createDate(rawPatientData.getInfo().getBirthDate())))
             .setHumanName(createHumanName(rawPatientData.getInfo()))
-            .setGender(
-                Enumerations.AdministrativeGender.valueOf(
-                    rawPatientData.getInfo().getGender().getValue()));
+            .setGender(mapGender(gender));
 
     addresses.stream().filter(Objects::nonNull).forEach(patientBuilder::addAddress);
     rawPatientData.getContacts().stream()
         .map(ContactPointCreator::createContactPoint)
         .forEach(patientBuilder::addTelecom);
 
-    return patientBuilder.build();
+    Patient patient = patientBuilder.build();
+    createGenderExtension(gender)
+        .ifPresent(extension -> patient.getGenderElement().addExtension(extension));
+    return patient;
   }
 
   private static Patient createPatientWithFollowUpAndNonnominalOptions(
@@ -145,14 +151,17 @@ public class PatientCreator {
             .setCountry(country)
             .build();
 
-    return new NotifiedPersonAnonymousDataBuilder()
-        .setDefault()
-        .addAddress(addressFinal)
-        .setGender(
-            Enumerations.AdministrativeGender.valueOf(
-                notifiedPersonAnonymous.getGender().getValue()))
-        .setBirthdate(new DateType(notifiedPersonAnonymous.getBirthDate()))
-        .build();
+    Gender gender = notifiedPersonAnonymous.getGender();
+    Patient patient =
+        new NotifiedPersonAnonymousDataBuilder()
+            .setDefault()
+            .addAddress(addressFinal)
+            .setGender(mapGender(notifiedPersonAnonymous.getGender()))
+            .setBirthdate(new DateType(notifiedPersonAnonymous.getBirthDate()))
+            .build();
+    createGenderExtension(gender)
+        .ifPresent(extension -> patient.getGenderElement().addExtension(extension));
+    return patient;
   }
 
   private static Patient createNotifiedPersonNominal(
@@ -177,22 +186,24 @@ public class PatientCreator {
       throw new IllegalArgumentException("Residence address of patient cannot be null");
     }
 
+    Gender gender = rawPatientData.getInfo().getGender();
+
     NotifiedPersonNominalDataBuilder patientBuilder =
         new NotifiedPersonNominalDataBuilder()
             .setHumanName(createHumanName(rawPatientData.getInfo()))
             .setDefault()
             .setBirthdate(
                 new DateType(DateUtils.createDate(rawPatientData.getInfo().getBirthDate())))
-            .setGender(
-                Enumerations.AdministrativeGender.valueOf(
-                    rawPatientData.getInfo().getGender().getValue()));
+            .setGender(mapGender(rawPatientData.getInfo().getGender()));
 
     addresses.stream().filter(Objects::nonNull).forEach(patientBuilder::addAddress);
     rawPatientData.getContacts().stream()
         .map(ContactPointCreator::createContactPoint)
         .forEach(patientBuilder::addTelecom);
-
-    return patientBuilder.build();
+    Patient patient = patientBuilder.build();
+    createGenderExtension(gender)
+        .ifPresent(extension -> patient.getGenderElement().addExtension(extension));
+    return patient;
   }
 
   /**

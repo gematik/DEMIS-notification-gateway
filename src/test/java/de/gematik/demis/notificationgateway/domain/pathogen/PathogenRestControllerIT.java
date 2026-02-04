@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -30,7 +31,6 @@ import static de.gematik.demis.notificationgateway.common.constants.WebConstants
 import static de.gematik.demis.notificationgateway.utils.FileUtils.loadJsonFromFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -40,7 +40,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import ca.uhn.fhir.context.FhirContext;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -75,7 +74,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ActiveProfiles("test")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "feature.flag.notifications-73=true")
+    properties = {"feature.flag.othPrivatLab.submitter.assignment.disabled=true"})
 class PathogenRestControllerIT implements BaseTestUtils {
 
   @Autowired private ObjectMapper objectMapper;
@@ -97,8 +96,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       headers.setBearerAuth("token");
       headers.setContentType(MediaType.APPLICATION_JSON);
 
-      when(bundlePublisher.postRequest(
-              any(), any(), any(), eq("fhir-profile-snapshots"), eq("v6"), any()))
+      when(bundlePublisher.postRequest(any(), any(), any(), any(), any()))
           .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
 
       final String jsonContent = loadJsonFromFile("/portal/pathogen/specimenPrep.json");
@@ -203,7 +201,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
     public MockMvc mockMvc;
     @MockitoBean BundlePublisher bundlePublisher;
 
-    Paragraph7_3_nonNominal() throws JsonProcessingException {}
+    Paragraph7_3_nonNominal() {}
 
     @BeforeEach
     void init(WebApplicationContext context) {
@@ -217,8 +215,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       headers.setBearerAuth("token");
       headers.setContentType(MediaType.APPLICATION_JSON);
 
-      when(bundlePublisher.postRequest(
-              any(), any(), any(), eq("fhir-profile-snapshots"), eq("v6"), any()))
+      when(bundlePublisher.postRequest(any(), any(), any(), any(), any()))
           .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
 
       final String jsonContent = loadJsonFromFile("/portal/pathogen/pathogen7_3DTO.json");
@@ -249,9 +246,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
 
       // Capture the Bundle passed to the postRequest method
       ArgumentCaptor<Bundle> bundleCaptor = ArgumentCaptor.forClass(Bundle.class);
-      verify(bundlePublisher)
-          .postRequest(
-              bundleCaptor.capture(), any(), any(), eq("fhir-profile-snapshots"), eq("v6"), any());
+      verify(bundlePublisher).postRequest(bundleCaptor.capture(), any(), any(), any(), any());
 
       // Convert the captured Bundle to JSON
       Bundle capturedBundle = bundleCaptor.getValue();

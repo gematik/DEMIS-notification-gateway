@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -40,6 +41,7 @@ import de.gematik.demis.notificationgateway.domain.pathogen.mapper.RkiCodeUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DiagnosticReport;
@@ -58,7 +60,7 @@ public class ObservationCreator {
   /** SNOMED CT URL used for coding in FHIR {@link Observation} objects. */
   public static final String SNOMED_CT_URL = "http://snomed.info/sct";
 
-  public static final String SNOMED_CT_VERSION =
+  public static final String SNOMED_CT_VERSION_FALLBACK =
       "http://snomed.info/sct/11000274103/version/20241115";
 
   /**
@@ -85,7 +87,8 @@ public class ObservationCreator {
       List<MethodPathogenDTO> methodPathogenDTOList,
       Patient patient,
       Specimen specimen,
-      NotificationLaboratoryCategory notificationCategory) {
+      NotificationLaboratoryCategory notificationCategory,
+      Map<String, String> versionMap) {
     final List<Observation> collect = new ArrayList<>();
     final String pathogenCode = notificationCategory.getPathogen().getCode();
     final String pathogenDisplay = notificationCategory.getPathogen().getDisplay();
@@ -100,7 +103,8 @@ public class ObservationCreator {
             pathogenDisplay,
             patient,
             specimen,
-            pathogenShortCode));
+            pathogenShortCode,
+            versionMap));
 
     // Observation 2 - only if analyt is not null
     if (firstMethodPathogenDTO.getAnalyt() != null) {
@@ -111,7 +115,8 @@ public class ObservationCreator {
               firstMethodPathogenDTO.getAnalyt().getDisplay(),
               patient,
               specimen,
-              pathogenShortCode));
+              pathogenShortCode,
+              versionMap));
     }
 
     // Observations for all other diagnostik input
@@ -127,7 +132,8 @@ public class ObservationCreator {
         display = pathogenDisplay;
       }
       collect.add(
-          createSingleObservation(pdto, code, display, patient, specimen, pathogenShortCode));
+          createSingleObservation(
+              pdto, code, display, patient, specimen, pathogenShortCode, versionMap));
     }
 
     return collect;
@@ -147,7 +153,8 @@ public class ObservationCreator {
       List<ResistanceGeneDTO> resistanceGenes,
       Patient patient,
       Specimen specimen,
-      String pathogenCode) {
+      String pathogenCode,
+      Map<String, String> versionMap) {
     if (resistanceGenes == null || resistanceGenes.isEmpty()) {
       return Collections.emptyList();
     }
@@ -178,18 +185,21 @@ public class ObservationCreator {
 
       String methodCode = "708068002";
       String methodDisplay = "Molecular genetics technique (qualifier value)";
+      String snomedVersion =
+          versionMap == null || versionMap.isEmpty()
+              ? SNOMED_CT_VERSION_FALLBACK
+              : versionMap.get(SNOMED_CT_URL);
       Observation observation =
           new PathogenDetectionDataBuilder()
               .setDefaultData()
               .setMethodCode(methodCode)
               .setMethodDisplay(methodDisplay)
               .setMethodSystem(SNOMED_CT_URL)
-              .setMethodCodingVersion(SNOMED_CT_VERSION)
+              .setMethodCodingVersion(snomedVersion)
               .setInterpretationCode(interpretation)
               .setValue(
                   new CodeableConcept(
-                      new Coding(SNOMED_CT_URL, valueCode, valueDisplay)
-                          .setVersion(SNOMED_CT_VERSION)))
+                      new Coding(SNOMED_CT_URL, valueCode, valueDisplay).setVersion(snomedVersion)))
               .setNotifiedPerson(patient)
               .setSpecimen(specimen)
               .setProfileUrlHelper(pathogenCode)
@@ -214,7 +224,11 @@ public class ObservationCreator {
    * @return A list of {@link Observation} objects populated with resistance data.
    */
   public static List<Observation> createObservationsForResistances(
-      List<ResistanceDTO> resistances, Patient patient, Specimen specimen, String pathogenCode) {
+      List<ResistanceDTO> resistances,
+      Patient patient,
+      Specimen specimen,
+      String pathogenCode,
+      Map<String, String> versionMap) {
     if (resistances == null || resistances.isEmpty()) {
       return Collections.emptyList();
     }
@@ -244,19 +258,21 @@ public class ObservationCreator {
           }
         }
       }
-
+      String snomedVersion =
+          versionMap == null || versionMap.isEmpty()
+              ? SNOMED_CT_VERSION_FALLBACK
+              : versionMap.get(SNOMED_CT_URL);
       Observation observation =
           new PathogenDetectionDataBuilder()
               .setDefaultData()
               .setMethodCode("14788002")
               .setMethodDisplay("Antimicrobial susceptibility test (procedure)")
               .setMethodSystem(SNOMED_CT_URL)
-              .setMethodCodingVersion(SNOMED_CT_VERSION)
+              .setMethodCodingVersion(snomedVersion)
               .setInterpretationCode(interpretation)
               .setValue(
                   new CodeableConcept(
-                      new Coding(SNOMED_CT_URL, valueCode, valueDisplay)
-                          .setVersion(SNOMED_CT_VERSION)))
+                      new Coding(SNOMED_CT_URL, valueCode, valueDisplay).setVersion(snomedVersion)))
               .setNotifiedPerson(patient)
               .setSpecimen(specimen)
               .setProfileUrlHelper(pathogenCode)
@@ -289,7 +305,8 @@ public class ObservationCreator {
       String valueDisplay,
       Patient patient,
       Specimen specimen,
-      String pathogenCode) {
+      String pathogenCode,
+      Map<String, String> versionMap) {
 
     String methodSystem = null;
     String methodVersion = null;
@@ -302,7 +319,10 @@ public class ObservationCreator {
         methodVersion = splitSystem[1];
       }
     }
-
+    String snomedVersion =
+        versionMap == null || versionMap.isEmpty()
+            ? SNOMED_CT_VERSION_FALLBACK
+            : versionMap.get(SNOMED_CT_URL);
     return new PathogenDetectionDataBuilder()
         .setDefaultData()
         .setInterpretationCode(methodPathogenDTO.getResult().getValue())
@@ -312,7 +332,7 @@ public class ObservationCreator {
         .setMethodSystem(methodSystem)
         .setValue(
             new CodeableConcept(
-                new Coding(SNOMED_CT_URL, valueCode, valueDisplay).setVersion(SNOMED_CT_VERSION)))
+                new Coding(SNOMED_CT_URL, valueCode, valueDisplay).setVersion(snomedVersion)))
         .setObservationCodeCode("41852-5")
         .setObservationCodeDisplay("Microorganism or agent identified in Specimen")
         .setObservationCodeSystem("http://loinc.org")

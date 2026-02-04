@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -75,7 +76,8 @@ class SpecimenCreatorTest {
     specimenDTO.setResistanceList(List.of(resistanceDTO));
 
     List<Specimen> specimen =
-        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
+        createSpecimen(
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimen).hasSize(1);
     assertThat(specimen.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
@@ -124,7 +126,8 @@ class SpecimenCreatorTest {
     specimenDTO.setResistanceList(List.of(resistanceDTO));
 
     List<Specimen> specimen =
-        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
+        createSpecimen(
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimen).hasSize(1);
     assertThat(specimen.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
@@ -159,7 +162,8 @@ class SpecimenCreatorTest {
     when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("PathogenCode"));
 
     List<Specimen> specimen =
-        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
+        createSpecimen(
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimen).isEmpty();
     assertThat(observationList).isEmpty();
@@ -179,7 +183,8 @@ class SpecimenCreatorTest {
     when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("PathogenCode"));
 
     List<Specimen> specimen =
-        createSpecimen(pathogenDTO, patient, submittingRole, observationList, notificationCategory);
+        createSpecimen(
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimen).isEmpty();
     assertThat(observationList).isEmpty();
@@ -200,7 +205,7 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory);
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimens).isEmpty();
     assertThat(observationList).isEmpty();
@@ -221,7 +226,7 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory);
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimens).isEmpty();
     assertThat(observationList).isEmpty();
@@ -277,7 +282,7 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory);
+            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimens).hasSize(2);
     assertThat(specimens.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode1");

@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.a
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,11 +22,13 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.a
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseAnswer;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
@@ -49,24 +51,40 @@ import org.hl7.fhir.r4.model.UriType;
 import org.springframework.stereotype.Service;
 
 /** Easy handling of all the data types of questionnaire response item answer values. */
-@RequiredArgsConstructor
 @Service
 @Slf4j
 public final class Answers {
 
-  private final QuantityDataType quantities = new QuantityDataType();
-  private final BooleanDataType booleans = new BooleanDataType();
-  private final DecimalDataType decimals = new DecimalDataType();
-  private final IntegerDataType integers = new IntegerDataType();
-  private final DateDataType dates = new DateDataType();
-  private final DateTimeDataType dateTimes = new DateTimeDataType();
-  private final TimeDataType times = new TimeDataType();
-  private final UriDataType uris = new UriDataType();
-  private final CodingDataType codings = new CodingDataType();
-  private final ReferenceDataType references = new ReferenceDataType();
-  private final StringDataType strings = new StringDataType();
+  private final FeatureFlags featureFlags;
+  private final QuantityDataType quantities;
+  private final BooleanDataType booleans;
+  private final DecimalDataType decimals;
+  private final IntegerDataType integers;
+  private final DateDataType dates;
+  private final DateTimeDataType dateTimes;
+  private final TimeDataType times;
+  private final UriDataType uris;
+  private final CodingDataType codings;
+  private final ReferenceDataType references;
+  private final StringDataType strings;
 
   private List<DataType<?>> dataTypes;
+
+  Answers(FeatureFlags featureFlags) {
+    this.featureFlags = featureFlags;
+    // Initialize all data types
+    this.quantities = new QuantityDataType();
+    this.booleans = new BooleanDataType();
+    this.decimals = new DecimalDataType();
+    this.integers = new IntegerDataType();
+    this.dates = new DateDataType();
+    this.dateTimes = new DateTimeDataType();
+    this.times = new TimeDataType();
+    this.uris = new UriDataType();
+    this.codings = new CodingDataType(this.featureFlags);
+    this.references = new ReferenceDataType();
+    this.strings = new StringDataType();
+  }
 
   @PostConstruct
   void createDataTypesList() {

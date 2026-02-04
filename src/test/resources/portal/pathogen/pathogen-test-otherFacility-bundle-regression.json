@@ -241,17 +241,6 @@
             "https://demis.rki.de/fhir/StructureDefinition/SubmittingFacility"
           ]
         },
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
-                "code": "othPrivatLab",
-                "display": "Sonstige private Untersuchungsstelle"
-              }
-            ]
-          }
-        ],
         "name": "Das Einsenderinstitut",
         "telecom": [
           {

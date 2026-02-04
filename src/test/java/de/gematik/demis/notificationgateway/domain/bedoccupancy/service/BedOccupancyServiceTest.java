@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy.service;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy.service;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -41,9 +42,7 @@ import de.gematik.demis.notificationgateway.common.properties.RPSProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
-import de.gematik.demis.notificationgateway.domain.HeaderProperties;
 import de.gematik.demis.notificationgateway.domain.bedoccupancy.fhir.ReportBundleCreationService;
-import jakarta.security.auth.message.AuthException;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
 import org.hl7.fhir.r4.model.Bundle;
@@ -61,7 +60,6 @@ class BedOccupancyServiceTest {
   @Mock private BundlePublisher bundlePublisherMock;
   @Mock private OkResponseService okResponseServiceMock;
   @Mock private RPSProperties rpsPropertiesMock;
-  @Mock private HeaderProperties headerPropertiesMock;
   @Mock private Token token;
 
   @InjectMocks private BedOccupancyService bedOccupancyService;
@@ -77,7 +75,7 @@ class BedOccupancyServiceTest {
   }
 
   @Test
-  void shouldCreateBedOccupancyServiceAndUseHandleBedOccupancyMethod() throws AuthException {
+  void shouldCreateBedOccupancyServiceAndUseHandleBedOccupancyMethod() {
     BedOccupancy bedOccupancy = createBedOccupancy();
 
     Bundle t = new Bundle();
@@ -87,15 +85,8 @@ class BedOccupancyServiceTest {
 
     when(bundleCreationServiceMock.createReportBundle(bedOccupancy)).thenReturn(t);
     when(rpsPropertiesMock.bedOccupancyUrl()).thenReturn(url);
-    when(headerPropertiesMock.getBedOccupancyProfile()).thenReturn("profileId");
-    when(headerPropertiesMock.getBedOccupancyVersion()).thenReturn("profileVersion");
     when(bundlePublisherMock.postRequest(
-            eq(t),
-            eq(url),
-            eq(RPSProperties.OPERATION_NAME),
-            eq("profileId"),
-            eq("profileVersion"),
-            any()))
+            eq(t), eq(url), eq(RPSProperties.OPERATION_NAME), any(), any()))
         .thenReturn(result);
     when(okResponseServiceMock.buildOkResponse(result)).thenReturn(expectedResponse);
 

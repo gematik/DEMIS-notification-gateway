@@ -1,5 +1,4 @@
-<img src="media/Gematik_Logo_Flag.png" alt="Gematik Logo" width="200" height="37">
-
+<div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 # notification-gateway
 
 ## Description

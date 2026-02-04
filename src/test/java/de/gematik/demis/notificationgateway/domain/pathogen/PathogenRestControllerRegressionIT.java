@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.pathogen;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -30,7 +31,6 @@ import static de.gematik.demis.notificationgateway.common.constants.WebConstants
 import static de.gematik.demis.notificationgateway.utils.FileUtils.loadJsonFromFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
@@ -64,9 +64,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "feature.flag.notifications-73=false")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PathogenRestControllerRegressionIT implements BaseTestUtils {
 
   @MockitoBean BundlePublisher bundlePublisher;
@@ -84,8 +82,7 @@ class PathogenRestControllerRegressionIT implements BaseTestUtils {
     headers.setBearerAuth("token");
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    when(bundlePublisher.postRequest(
-            any(), any(), any(), eq("fhir-profile-snapshots"), eq("v6"), any()))
+    when(bundlePublisher.postRequest(any(), any(), any(), any(), any()))
         .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
 
     final String jsonContent = loadJsonFromFile("/portal/pathogen/specimenPrep.json");

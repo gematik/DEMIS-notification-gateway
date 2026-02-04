@@ -49,7 +49,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "date": "2024-03-14T14:45:00+01:00",
         "author": [
@@ -72,7 +72,7 @@
         ],
         "section": [
           {
-            "title": "disease",
+            "title": "Diagnose",
             "code": {
               "coding": [
                 {
@@ -126,10 +126,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-3",
+      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-4",
       "resource": {
         "resourceType": "Patient",
-        "id": "555-42-23-3",
+        "id": "555-42-23-4",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
@@ -137,7 +137,7 @@
         },
         "name": [
           {
-            "use": "official",
+            "text": "Max Masen",
             "family": "Masen",
             "given": [
               "Max"
@@ -152,7 +152,7 @@
               {
                 "url": "https://demis.rki.de/fhir/StructureDefinition/FacilityAddressNotifiedPerson",
                 "valueReference": {
-                  "reference": "Organization/555-42-23-4"
+                  "reference": "Organization/555-42-23-3"
                 }
               },
               {
@@ -179,20 +179,6 @@
             "line": [
               "Herbertstraße 14"
             ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Herbertstraße"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "14"
-                  }
-                ]
-              }
-            ],
             "city": "Oederingen",
             "postalCode": "21481",
             "country": "20422"
@@ -201,10 +187,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-3",
       "resource": {
         "resourceType": "Organization",
-        "id": "555-42-23-4",
+        "id": "555-42-23-3",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
@@ -215,20 +201,6 @@
           {
             "line": [
               "Otherfacilitystraße 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Otherfacilitystraße"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Berlin",
             "postalCode": "21481",
@@ -264,7 +236,7 @@
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "onsetDateTime": "2024-01-31",
         "recordedDate": "2024-03-04",
@@ -368,20 +340,6 @@
           {
             "line": [
               "Donaustrasse 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Donaustrasse"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Riedlingen",
             "postalCode": "21481",
@@ -611,7 +569,7 @@
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "period": {
           "start": "2024-03-03"
@@ -646,7 +604,7 @@
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "period": {
           "start": "2024-01-30",
@@ -670,7 +628,7 @@
         "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsCommon",
         "status": "completed",
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "item": [
           {
@@ -984,7 +942,7 @@
           ]
         },
         "patient": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "occurrenceDateTime": "2023-12-10",
         "note": [
@@ -1007,7 +965,7 @@
         "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsMSVD",
         "status": "completed",
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "item": [
           {

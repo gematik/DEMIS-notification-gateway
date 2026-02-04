@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,12 +22,15 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -37,6 +40,7 @@ import static org.mockito.Mockito.when;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.laboratory.NotificationBundleLaboratoryDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
+import de.gematik.demis.notificationgateway.common.dto.Gender;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPerson;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAnonymous;
@@ -45,6 +49,7 @@ import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import java.time.LocalDate;
 import java.util.Collections;
 import org.hl7.fhir.r4.model.Address;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
@@ -78,7 +83,7 @@ class PatientCreatorTest {
       notifiedPerson.setInfo(basicInfo);
 
       basicInfo.setBirthDate(LocalDate.of(1990, 1, 1));
-      basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+      basicInfo.setGender(Gender.MALE);
       basicInfo.setFirstname("Max");
       basicInfo.setLastname("Mustermann");
 
@@ -124,7 +129,7 @@ class PatientCreatorTest {
       addressInfoSubmittingAddress.setAddressType(AddressType.OTHER_FACILITY);
 
       NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
-      basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+      basicInfo.setGender(Gender.MALE);
       basicInfo.setFirstname("Max");
       basicInfo.setLastname("Mustermann");
       NotifiedPerson notifiedPerson = new NotifiedPerson();
@@ -172,7 +177,7 @@ class PatientCreatorTest {
       addressInfoSubmittingAddress.setAddressType(AddressType.SUBMITTING_FACILITY);
 
       NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
-      basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+      basicInfo.setGender(Gender.MALE);
       basicInfo.setLastname("Lastname");
       basicInfo.setFirstname("Firstname");
       NotifiedPerson notifiedPerson = new NotifiedPerson();
@@ -208,7 +213,7 @@ class PatientCreatorTest {
   }
 
   @Test
-  void createsPatientWithValidData() {
+  void createsPatientWithValidDataAndDiverseGender() {
     NotificationBundleLaboratoryDataBuilder bundleBuilder =
         mock(NotificationBundleLaboratoryDataBuilder.class);
     PathogenTest rawData = new PathogenTest();
@@ -225,7 +230,7 @@ class PatientCreatorTest {
     notifiedPerson.setInfo(basicInfo);
 
     basicInfo.setBirthDate(LocalDate.of(1990, 1, 1));
-    basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+    basicInfo.setGender(Gender.DIVERSE);
     basicInfo.setFirstname("Max");
     basicInfo.setLastname("Mustermann");
 
@@ -236,8 +241,15 @@ class PatientCreatorTest {
 
     assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEqualTo("Max");
     assertThat(result.getNameFirstRep().getFamily()).isEqualTo("Mustermann");
-    assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
+    assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.OTHER);
     assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
+    assertThat(result.getGenderElement().getExtensionFirstRep().getUrl())
+        .isEqualTo("http://fhir.de/StructureDefinition/gender-amtlich-de");
+    assertInstanceOf(Coding.class, result.getGenderElement().getExtensionFirstRep().getValue());
+    org.hl7.fhir.r4.model.Coding coding =
+        (org.hl7.fhir.r4.model.Coding) result.getGenderElement().getExtensionFirstRep().getValue();
+    assertEquals("D", coding.getCode());
+    assertEquals("Divers", coding.getDisplay());
     verifyNoInteractions(bundleBuilder);
   }
 
@@ -272,7 +284,7 @@ class PatientCreatorTest {
     addressInfoSubmittingAddress.setAddressType(AddressType.OTHER_FACILITY);
 
     NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
-    basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+    basicInfo.setGender(Gender.MALE);
     basicInfo.setFirstname("Max");
     basicInfo.setLastname("Mustermann");
     NotifiedPerson notifiedPerson = new NotifiedPerson();
@@ -320,7 +332,7 @@ class PatientCreatorTest {
     addressInfoSubmittingAddress.setAddressType(AddressType.SUBMITTING_FACILITY);
 
     NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
-    basicInfo.setGender(NotifiedPersonBasicInfo.GenderEnum.MALE);
+    basicInfo.setGender(Gender.MALE);
     basicInfo.setLastname("Lastname");
     basicInfo.setFirstname("Firstname");
     NotifiedPerson notifiedPerson = new NotifiedPerson();
@@ -355,7 +367,7 @@ class PatientCreatorTest {
   }
 
   @Test
-  void shouldCreateNotifiedPersonAnonymous() {
+  void shouldCreateNotifiedPersonAnonymousWithXGender() {
     NotificationBundleLaboratoryDataBuilder bundleBuilder =
         mock(NotificationBundleLaboratoryDataBuilder.class);
     PathogenTest rawData = new PathogenTest();
@@ -367,7 +379,7 @@ class PatientCreatorTest {
     addressInfo.setAddressType(AddressType.PRIMARY);
 
     notifiedPersonAnonymous.setBirthDate("1990-01");
-    notifiedPersonAnonymous.setGender(NotifiedPersonAnonymous.GenderEnum.MALE);
+    notifiedPersonAnonymous.setGender(Gender.OTHERX);
 
     Organization organization = mock(Organization.class);
     submittingRole.setOrganization(new Reference(organization));
@@ -376,7 +388,14 @@ class PatientCreatorTest {
 
     assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEmpty();
     assertThat(result.getNameFirstRep().getFamily()).isNull();
-    assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
+    assertThat(result.getGenderElement().getExtensionFirstRep().getUrl())
+        .isEqualTo("http://fhir.de/StructureDefinition/gender-amtlich-de");
+    assertInstanceOf(Coding.class, result.getGenderElement().getExtensionFirstRep().getValue());
+    org.hl7.fhir.r4.model.Coding coding =
+        (org.hl7.fhir.r4.model.Coding) result.getGenderElement().getExtensionFirstRep().getValue();
+    assertEquals("X", coding.getCode());
+    assertEquals("Kein Geschlechtseintrag", coding.getDisplay());
+    assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.OTHER);
     assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
     assertThat(result.getAddress().get(0).getExtension().get(0).getValue())
         .extracting("code")
@@ -395,7 +414,7 @@ class PatientCreatorTest {
     NotifiedPersonAddressInfo addressInfo = new NotifiedPersonAddressInfo();
     notifiedPersonAnonymous.setResidenceAddress(addressInfo);
     notifiedPersonAnonymous.setBirthDate("1990-01");
-    notifiedPersonAnonymous.setGender(NotifiedPersonAnonymous.GenderEnum.MALE);
+    notifiedPersonAnonymous.setGender(Gender.MALE);
 
     Organization organization = mock(Organization.class);
     submittingRole.setOrganization(new Reference(organization));

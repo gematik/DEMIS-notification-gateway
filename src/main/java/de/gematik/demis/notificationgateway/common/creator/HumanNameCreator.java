@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.common.creator;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,28 +22,30 @@ package de.gematik.demis.notificationgateway.common.creator;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.HumanNameDataBuilder;
-import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonBasicInfo;
 import de.gematik.demis.notificationgateway.common.dto.PractitionerInfo;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.HumanName;
 
 /**
- * Creates a FHIR {@link ContactPoint} object using the provided {@link ContactPointInfo}.
+ * Utility class for creating FHIR {@link org.hl7.fhir.r4.model.HumanName} objects.
  *
- * @param contactPointInfo The information required to create the ContactPoint, including contact
- *     type, value, and usage.
- * @return A {@link ContactPoint} object populated with the provided data.
+ * <p>This class provides static methods to construct {@code HumanName} instances from various
+ * domain-specific data transfer objects, such as {@link PractitionerInfo} and {@link
+ * NotifiedPersonBasicInfo}. It handles the extraction and formatting of given names, family names,
+ * prefixes, and salutations according to FHIR requirements.
+ *
+ * <p>This class is not intended to be instantiated.
  */
 public class HumanNameCreator {
 
@@ -65,8 +67,12 @@ public class HumanNameCreator {
     final HumanNameDataBuilder humanNameDataBuilder =
         new HumanNameDataBuilder()
             .setFamilyName(practitionerInfo.getLastname())
-            .addGivenName(practitionerInfo.getFirstname())
             .addPrefix(practitionerInfo.getPrefix());
+    if (practitionerInfo.getFirstname() != null) {
+      for (String firstName : practitionerInfo.getFirstname().split("\\s+")) {
+        humanNameDataBuilder.addGivenName(firstName);
+      }
+    }
     findSalutation(practitionerInfo).ifPresent(humanNameDataBuilder::setSalutation);
     return humanNameDataBuilder.build();
   }
@@ -114,8 +120,8 @@ public class HumanNameCreator {
    * names. This is useful for creating FHIR-compliant HumanName resources, where the given names
    * are expected as a list.
    *
-   * @param givenName The given name as a string, possibly containing multiple names separated by
-   *     spaces.
+   * @param personInfo The basic info of a notified person including given name as a string,
+   *     possibly containing multiple names separated by spaces.
    * @return A list of individual given names.
    */
   private static List<String> extractGivenName(NotifiedPersonBasicInfo personInfo) {

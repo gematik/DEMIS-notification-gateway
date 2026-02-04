@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.services;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,10 +22,14 @@ package de.gematik.demis.notificationgateway.domain.pathogen.services;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
+import static de.gematik.demis.notificationgateway.domain.pathogen.creator.BundleCreator.createBundle;
+
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.dto.PathogenTest;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
@@ -34,9 +38,7 @@ import de.gematik.demis.notificationgateway.common.properties.NESProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
-import de.gematik.demis.notificationgateway.domain.HeaderProperties;
-import de.gematik.demis.notificationgateway.domain.pathogen.fhir.PathogenBundleCreationService;
-import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,12 +51,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class PathogenSendService {
-
+  private final FeatureFlags featureFlags;
   private final BundlePublisher bundlePublisher;
   private final OkResponseService okResponseService;
-  private final PathogenBundleCreationService pathogenBundleCreationService;
   private final NESProperties nesProperties;
-  private final HeaderProperties headerProperties;
+
+  private final HttpServletRequest request;
 
   private static void verifyHoneypot(PathogenTest pathogenTest) {
     if (isSpammer(pathogenTest)) {
@@ -72,46 +74,20 @@ public class PathogenSendService {
     return Arrays.stream(a).anyMatch(StringUtils::isNotBlank);
   }
 
-  /**
-   * @deprecated
-   * @param pathogenTest
-   * @param token
-   * @return
-   */
-  @Deprecated(forRemoval = true)
-  public OkResponse send(PathogenTest pathogenTest, Token token) {
-    verifyHoneypot(pathogenTest);
-    final Bundle bundle = pathogenBundleCreationService.toBundle(pathogenTest);
-    final String url = nesProperties.laboratoryUrl();
-    final String operation = NESProperties.OPERATION_NAME;
-    log.info("Sending request to {}, operation: {}", "NES", operation);
-    Parameters result =
-        bundlePublisher.postRequest(
-            bundle,
-            url,
-            operation,
-            headerProperties.getLaboratoryNotificationProfile(),
-            headerProperties.getLaboratoryNotificationVersion(),
-            token);
-    return okResponseService.buildOkResponse(result);
-  }
-
   public OkResponse processPortalNotificationData(
-      PathogenTest pathogenTest, Token token, NotificationType notificationType)
-      throws AuthException {
+      PathogenTest pathogenTest, Token token, NotificationType notificationType) {
     verifyHoneypot(pathogenTest);
-    final Bundle bundle = pathogenBundleCreationService.toBundle(pathogenTest, notificationType);
+
+    final Bundle bundle =
+        createBundle(
+            pathogenTest,
+            notificationType,
+            featureFlags.isFollowUpNotificationActive(),
+            featureFlags.isOthPrivatLabSubmitterAssignmentDisabled());
     final String url = nesProperties.laboratoryUrl();
     final String operation = NESProperties.OPERATION_NAME;
     log.info("Sending request to {}, operation: {}", "NES", operation);
-    Parameters result =
-        bundlePublisher.postRequest(
-            bundle,
-            url,
-            operation,
-            headerProperties.getLaboratoryNotificationProfile(),
-            headerProperties.getLaboratoryNotificationVersion(),
-            token);
+    Parameters result = bundlePublisher.postRequest(bundle, url, operation, token, request);
     return okResponseService.buildOkResponse(result);
   }
 }

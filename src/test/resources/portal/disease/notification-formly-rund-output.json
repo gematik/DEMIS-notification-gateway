@@ -60,7 +60,7 @@
         "title": "Meldung gemäß §6 Absatz 1, 2 IfSG",
         "section": [
           {
-            "title": "disease",
+            "title": "Diagnose",
             "code": {
               "coding": [
                 {
@@ -108,7 +108,7 @@
         },
         "name": [
           {
-            "use": "official",
+            "text": "Marta Analytika",
             "family": "Analytika",
             "given": [
               "Marta"
@@ -249,20 +249,6 @@
           {
             "line": [
               "Donaustrasse 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Donaustrasse"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Riedlingen",
             "postalCode": "21481",

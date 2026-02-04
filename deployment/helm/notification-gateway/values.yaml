@@ -34,14 +34,13 @@ deploymentLabels: {}
 customEnvVars:
   GATEWAY_SERVER_PORT: "8080"
   # new checkboxes at hospitalization to copy the address and contact data
-  FEATURE_FLAG_NOTIFICATIONS_7_3: "false"
   FEATURE_FLAG_PORTAL_ERROR_DIALOG_FILTERING: "false"
   RPS_BASE_URL: http://report-processing-service.demis.svc.cluster.local/
   NES_BASE_URL: http://notification-processing-service.demis.svc.cluster.local/
   FEATURE_FLAG_NEW_API_ENDPOINTS: "false"
   FEATURE_FLAG_FOLLOW_UP_NOTIFICATION: "false"
   FEATURE_FLAG_DISEASE_STRICT: "false"
-  FEATURE_FLAG_SNAPSHOT_6_ACTIVE: "false"
+  FEATURE_FLAG_OTH_PRIVAT_LAB_SUBMITTER_ASSIGNMENT_DISABLED: "false"
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)
 # If not given, the Entrypoint defined in Dockerfile will be used

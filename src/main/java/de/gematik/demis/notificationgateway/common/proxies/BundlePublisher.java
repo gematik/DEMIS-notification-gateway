@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.common.proxies;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.common.proxies;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -36,6 +37,7 @@ import de.gematik.demis.notificationgateway.common.properties.ApplicationPropert
 import de.gematik.demis.notificationgateway.common.properties.LoggingProperties;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
@@ -57,11 +59,10 @@ public class BundlePublisher {
       @NonNull Bundle bundle,
       @NonNull String url,
       @NonNull String operationName,
-      @NonNull String fhirProfile,
-      @NonNull String fhirProfileVersion,
-      @NonNull Token token) {
+      @NonNull Token token,
+      @NonNull HttpServletRequest request) {
     Parameters parameters = fhirObjectCreationService.createParameters(bundle);
-    IGenericClient client = createClient(url, fhirProfile, fhirProfileVersion, token);
+    IGenericClient client = createClient(url, token, request);
     return processParameters(client, parameters, operationName);
   }
 
@@ -79,8 +80,7 @@ public class BundlePublisher {
     return parametersResult;
   }
 
-  private IGenericClient createClient(
-      String url, String fhirProfile, String fhirProfileVersion, Token token) {
+  private IGenericClient createClient(String url, Token token, HttpServletRequest request) {
     RestfulClientFactory clientFactory =
         (RestfulClientFactory) fhirContext.getRestfulClientFactory();
     // Override default, unchangeable properties from generic interface
@@ -91,17 +91,15 @@ public class BundlePublisher {
     clientFactory.setSocketTimeout(applicationProperties.getHttpSocketTimeoutMilliseconds());
     clientFactory.setServerValidationMode(ServerValidationModeEnum.NEVER);
     final IGenericClient client = fhirContext.newRestfulGenericClient(url);
-    registerUserAgentHeader(client, fhirProfile, fhirProfileVersion);
+    registerHeaders(client, request);
     setLogging(client);
     client.registerInterceptor(new BearerTokenAuthInterceptor(token.asText()));
     return client;
   }
 
-  private void registerUserAgentHeader(
-      IGenericClient notificationApiClient, String fhirProfile, String fhirProfileVersion) {
+  private void registerHeaders(IGenericClient notificationApiClient, HttpServletRequest request) {
     notificationApiClient.registerInterceptor(
-        new FhirRequestInterceptor(
-            fhirProfile, fhirProfileVersion, applicationProperties.identifier()));
+        new FhirRequestInterceptor(applicationProperties.identifier(), request));
   }
 
   private void setLogging(IGenericClient client) {

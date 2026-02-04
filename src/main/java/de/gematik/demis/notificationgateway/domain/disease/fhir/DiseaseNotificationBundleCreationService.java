@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -31,14 +32,12 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationDiseaseDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.RelatesToBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.DemisConstants;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponse;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
-import de.gematik.demis.notificationgateway.common.terminology.TerminologyCurator;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.QuestionnaireResponses;
 import jakarta.annotation.Nullable;
 import java.util.Objects;
@@ -65,18 +64,6 @@ public class DiseaseNotificationBundleCreationService {
   private final PractitionerRoleCreationService practitionerRoleCreationService;
   private final Diseases diseases;
   private final QuestionnaireResponses questionnaireResponses;
-  private final FeatureFlags featureFlags;
-
-  /**
-   * @deprecated should be removed with feature.flag.notifications.7_3
-   * @param diseaseNotification
-   * @return
-   * @throws BadRequestException
-   */
-  @Deprecated
-  public Bundle createBundle(DiseaseNotification diseaseNotification) throws BadRequestException {
-    return createBundle(diseaseNotification, NotificationType.NOMINAL);
-  }
 
   /**
    * Create FHIR bundleBuilder for disease notification
@@ -91,34 +78,19 @@ public class DiseaseNotificationBundleCreationService {
 
     Patient patient;
 
-    if (featureFlags.isFollowUpNotificationActive()
-        || featureFlags.isPathogenStrictSnapshotActive()) {
-      Object patientDataFromFE =
-          diseaseNotification.getNotifiedPerson() != null
-              ? diseaseNotification.getNotifiedPerson()
-              : diseaseNotification.getNotifiedPersonAnonymous();
-      patient = this.notifiedPersonCreationService.createPatient(patientDataFromFE, notifier);
-    } else {
-      patient =
-          this.notifiedPersonCreationService.createPatientLegacy(
-              diseaseNotification.getNotifiedPerson(), notifier);
-    }
+    Object patientDataFromFE =
+        diseaseNotification.getNotifiedPerson() != null
+            ? diseaseNotification.getNotifiedPerson()
+            : diseaseNotification.getNotifiedPersonAnonymous();
+    patient = this.notifiedPersonCreationService.createPatient(patientDataFromFE, notifier);
+
     final DiseaseNotificationContext context =
         createContext(diseaseNotification, notifier, patient, notificationType);
     createDisease(context);
     createCommonQuestionnaireResponse(diseaseNotification, context);
     createDiseaseQuestionnaireResponse(diseaseNotification, context);
     createComposition(context);
-    final Bundle bundle = context.bundleBuilder().build();
-    setTerminologyVersions(diseaseNotification, bundle);
-    return bundle;
-  }
-
-  private void setTerminologyVersions(DiseaseNotification diseaseNotification, Bundle bundle) {
-    if (featureFlags.isDiseaseStrictProfile()) {
-      new TerminologyCurator(diseaseNotification.getTerminologyVersions())
-          .setCodeSystemVersions(bundle);
-    }
+    return context.bundleBuilder().build();
   }
 
   private PractitionerRole createNotifier(DiseaseNotification diseaseNotification)

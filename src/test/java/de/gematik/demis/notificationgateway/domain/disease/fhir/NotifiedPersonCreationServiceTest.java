@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -31,12 +32,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.lenient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.PractitionerRoleBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.igs.InvalidInputDataException;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
@@ -60,23 +59,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NotifiedPersonCreationServiceTest {
-  @Mock private FeatureFlags featureFlags;
-
-  private FhirObjectCreationService fhirObjectCreationService;
-  private OrganizationCreationService organizationCreationService;
   private NotifiedPersonCreationService notifiedPersonCreationService;
 
   @BeforeEach
   void setUp() {
-    lenient().when(featureFlags.isNotifications73()).thenReturn(false);
-    fhirObjectCreationService = new FhirObjectCreationService(featureFlags);
-    organizationCreationService =
-        new OrganizationCreationService(fhirObjectCreationService, featureFlags);
+    FhirObjectCreationService fhirObjectCreationService = new FhirObjectCreationService();
+    OrganizationCreationService organizationCreationService =
+        new OrganizationCreationService(fhirObjectCreationService);
     notifiedPersonCreationService =
         new NotifiedPersonCreationService(fhirObjectCreationService, organizationCreationService);
   }
@@ -101,6 +94,7 @@ class NotifiedPersonCreationServiceTest {
     final List<HumanName> names = notifiedPerson.getName();
     assertEquals(1, names.size());
     final HumanName name = names.getFirst();
+    assertEquals("Bertha Betroffen", name.getText());
     assertEquals("Betroffen", name.getFamily());
     assertEquals("Bertha", name.getGiven().getFirst().asStringValue());
 
@@ -130,7 +124,7 @@ class NotifiedPersonCreationServiceTest {
 
     final PractitionerRole submitter = new PractitionerRoleBuilder().setDefaults().build();
     final Patient notifiedPerson =
-        notifiedPersonCreationService.createPatientLegacy(quickTest.getNotifiedPerson(), submitter);
+        notifiedPersonCreationService.createPatient(quickTest.getNotifiedPerson(), submitter);
     Assertions.assertNotNull(notifiedPerson);
 
     assertTrue(notifiedPerson.hasId());
@@ -142,6 +136,7 @@ class NotifiedPersonCreationServiceTest {
     final List<HumanName> names = notifiedPerson.getName();
     assertEquals(1, names.size());
     final HumanName name = names.getFirst();
+    assertEquals("Bertha-Luise Hanna Karin Betroffen", name.getText());
     assertEquals("Betroffen", name.getFamily());
     final List<StringType> givens = name.getGiven();
     assertEquals(3, givens.size());
@@ -204,7 +199,7 @@ class NotifiedPersonCreationServiceTest {
 
   @Test
   void shouldThrowException() {
-    Object notifiedPerson = new String();
+    Object notifiedPerson = "";
     PractitionerRole practitionerRole = new PractitionerRole();
     assertThatThrownBy(
             () -> notifiedPersonCreationService.createPatient(notifiedPerson, practitionerRole))

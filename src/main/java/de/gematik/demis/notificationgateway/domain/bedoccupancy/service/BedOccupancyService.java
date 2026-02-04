@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy.service;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.bedoccupancy.service;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -33,8 +34,8 @@ import de.gematik.demis.notificationgateway.common.properties.RPSProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
-import de.gematik.demis.notificationgateway.domain.HeaderProperties;
 import de.gematik.demis.notificationgateway.domain.bedoccupancy.fhir.ReportBundleCreationService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,8 @@ public class BedOccupancyService {
   private final BundlePublisher bundlePublisher;
   private final OkResponseService okResponseService;
   private final RPSProperties rpsProperties;
-  private final HeaderProperties headerProperties;
+
+  private final HttpServletRequest request;
 
   private static void validateHoneypot(BedOccupancy bedOccupancy) {
     if (isSpammer(bedOccupancy)) {
@@ -76,14 +78,7 @@ public class BedOccupancyService {
     final String url = rpsProperties.bedOccupancyUrl();
     final String operation = RPSProperties.OPERATION_NAME;
     log.info("Sending request to {}, operation: {}", "RPS", operation);
-    Parameters result =
-        bundlePublisher.postRequest(
-            bundle,
-            url,
-            operation,
-            headerProperties.getBedOccupancyProfile(),
-            headerProperties.getBedOccupancyVersion(),
-            token);
+    Parameters result = bundlePublisher.postRequest(bundle, url, operation, token, request);
     return okResponseService.buildOkResponse(result);
   }
 }

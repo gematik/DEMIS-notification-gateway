@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -32,6 +33,7 @@ import ca.uhn.fhir.context.FhirContext;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
+import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.Hospitalizations;
@@ -73,8 +75,7 @@ import org.springframework.test.context.TestPropertySource;
       Organizations.class,
       Answers.class
     })
-@TestPropertySource(
-    properties = {"feature.flag.notifications-73=true", "logging.level.de.gematik=DEBUG"})
+@TestPropertySource(properties = {"logging.level.de.gematik=DEBUG"})
 class HospitalizationCopyCheckboxesTest {
 
   @Autowired private DiseaseNotificationBundleCreationService service;
@@ -112,7 +113,7 @@ class HospitalizationCopyCheckboxesTest {
   }
 
   private void testBundleCreation(String outputFile) throws BadRequestException {
-    final Bundle bundle = this.service.createBundle(this.input);
+    final Bundle bundle = this.service.createBundle(this.input, NotificationType.NOMINAL);
     assertThat(bundle).isNotNull();
     verify(outputFile, bundle);
   }

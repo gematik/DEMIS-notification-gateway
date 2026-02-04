@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,11 +22,15 @@ package de.gematik.demis.notificationgateway.domain.disease;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
-import de.gematik.demis.notificationgateway.FeatureFlags;
+import static de.gematik.demis.notificationgateway.common.enums.NotificationType.ANONYMOUS;
+import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NOMINAL;
+import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NON_NOMINAL;
+
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
@@ -54,17 +58,11 @@ class DiseaseRestController {
 
   private final Validator validator;
   private final DiseaseNotificationService notificationService;
-  private final Boolean notification7_3Active;
-  private final Boolean snapshots6Active;
 
   public DiseaseRestController(
-      Validator validator,
-      DiseaseNotificationService notificationService,
-      FeatureFlags featureFlags) {
+      Validator validator, DiseaseNotificationService notificationService) {
     this.validator = validator;
     this.notificationService = notificationService;
-    this.notification7_3Active = featureFlags.isNotifications73();
-    this.snapshots6Active = featureFlags.isPathogenStrictSnapshotActive();
   }
 
   @PostMapping(
@@ -77,7 +75,7 @@ class DiseaseRestController {
     final long startMillis = System.currentTimeMillis();
     log.debug("Received disease notification.");
     validate(notification);
-    OkResponse okResponse = send(notification, headers);
+    OkResponse okResponse = send(notification, headers, NOMINAL);
     log.info(
         "Processed disease notification! Id: {} Duration: {}ms",
         okResponse.getNotificationId(),
@@ -90,7 +88,7 @@ class DiseaseRestController {
   public ResponseEntity<OkResponse> send7_3_non_nominal(
       @RequestBody DiseaseNotification notification, @RequestHeader HttpHeaders headers)
       throws AuthException, BadRequestException {
-    OkResponse okResponse = send(notification, headers, NotificationType.NON_NOMINAL);
+    OkResponse okResponse = send(notification, headers, NON_NOMINAL);
     return ResponseEntity.ok(okResponse);
   }
 
@@ -98,7 +96,7 @@ class DiseaseRestController {
   public ResponseEntity<OkResponse> send7_3_anonymous(
       @RequestBody DiseaseNotification notification, @RequestHeader HttpHeaders headers)
       throws AuthException, BadRequestException {
-    OkResponse okResponse = send(notification, headers, NotificationType.ANONYMOUS);
+    OkResponse okResponse = send(notification, headers, ANONYMOUS);
     return ResponseEntity.ok(okResponse);
   }
 
@@ -111,15 +109,6 @@ class DiseaseRestController {
     }
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
-    }
-  }
-
-  private OkResponse send(DiseaseNotification content, HttpHeaders headers)
-      throws BadRequestException, AuthException {
-    if (this.notification7_3Active || this.snapshots6Active) {
-      return send(content, headers, NotificationType.NOMINAL);
-    } else {
-      return this.notificationService.sendNotification(content, Token.of(headers));
     }
   }
 

@@ -32,7 +32,6 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "version": "0.0.0",
               "code": "34782-3",
               "display": "Infectious disease Note"
             }
@@ -43,7 +42,6 @@
             "coding": [
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/notificationType",
-                "version": "0.0.0",
                 "code": "6.1_2",
                 "display": "Meldung gemäß §6 Absatz 1, 2 IfSG"
               }
@@ -51,7 +49,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "date": "2024-03-14T14:45:00+01:00",
         "author": [
@@ -74,12 +72,11 @@
         ],
         "section": [
           {
-            "title": "disease",
+            "title": "Diagnose",
             "code": {
               "coding": [
                 {
                   "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
-                  "version": "0.0.0",
                   "code": "diagnosis",
                   "display": "Diagnose"
                 }
@@ -97,7 +94,6 @@
               "coding": [
                 {
                   "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
-                  "version": "0.0.0",
                   "code": "generalClinAndEpiInformation",
                   "display": "Meldetatbestandsübergreifende klinische und epidemiologische Angaben"
                 }
@@ -115,7 +111,6 @@
               "coding": [
                 {
                   "system": "https://demis.rki.de/fhir/CodeSystem/sectionCode",
-                  "version": "0.0.0",
                   "code": "specificClinAndEpiInformation",
                   "display": "Meldetatbestandsspezifische klinische und epidemiologische Angaben"
                 }
@@ -131,10 +126,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-3",
+      "fullUrl": "https://demis.rki.de/fhir/Patient/555-42-23-4",
       "resource": {
         "resourceType": "Patient",
-        "id": "555-42-23-3",
+        "id": "555-42-23-4",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotifiedPerson"
@@ -142,7 +137,7 @@
         },
         "name": [
           {
-            "use": "official",
+            "text": "Max Masen",
             "family": "Masen",
             "given": [
               "Max"
@@ -157,14 +152,13 @@
               {
                 "url": "https://demis.rki.de/fhir/StructureDefinition/FacilityAddressNotifiedPerson",
                 "valueReference": {
-                  "reference": "Organization/555-42-23-4"
+                  "reference": "Organization/555-42-23-3"
                 }
               },
               {
                 "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
-                  "version": "0.0.0",
                   "code": "current",
                   "display": "Derzeitiger Aufenthaltsort"
                 }
@@ -177,7 +171,6 @@
                 "url": "https://demis.rki.de/fhir/StructureDefinition/AddressUse",
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/addressUse",
-                  "version": "0.0.0",
                   "code": "primary",
                   "display": "Hauptwohnsitz"
                 }
@@ -185,20 +178,6 @@
             ],
             "line": [
               "Herbertstraße 14"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Herbertstraße"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "14"
-                  }
-                ]
-              }
             ],
             "city": "Oederingen",
             "postalCode": "21481",
@@ -208,10 +187,10 @@
       }
     },
     {
-      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-4",
+      "fullUrl": "https://demis.rki.de/fhir/Organization/555-42-23-3",
       "resource": {
         "resourceType": "Organization",
-        "id": "555-42-23-4",
+        "id": "555-42-23-3",
         "meta": {
           "profile": [
             "https://demis.rki.de/fhir/StructureDefinition/NotifiedPersonFacility"
@@ -237,20 +216,6 @@
           {
             "line": [
               "Donaustrasse 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Donaustrasse"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Riedlingen",
             "postalCode": "21481",
@@ -284,7 +249,6 @@
           "coding": [
             {
               "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
-              "version": "0.0.0",
               "code": "entered-in-error"
             }
           ]
@@ -293,13 +257,12 @@
           "coding": [
             {
               "system": "https://demis.rki.de/fhir/CodeSystem/notificationDiseaseCategory",
-              "version": "0.0.0",
               "code": "msvd"
             }
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "onsetDateTime": "2024-01-31",
         "recordedDate": "2024-03-04",
@@ -310,7 +273,6 @@
                 "coding": [
                   {
                     "system": "http://snomed.info/sct",
-                    "version": "0.0.0",
                     "code": "49727002",
                     "display": "Husten"
                   }
@@ -324,7 +286,6 @@
                 "coding": [
                   {
                     "system": "http://snomed.info/sct",
-                    "version": "0.0.0",
                     "code": "386661006",
                     "display": "Fieber"
                   }
@@ -379,7 +340,6 @@
             "coding": [
               {
                 "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
-                "version": "0.0.0",
                 "code": "dayHospital",
                 "display": "Tagesklinik"
               }
@@ -406,20 +366,6 @@
           {
             "line": [
               "Donaustrasse 1"
-            ],
-            "_line": [
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
-                    "valueString": "Donaustrasse"
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
-                    "valueString": "1"
-                  }
-                ]
-              }
             ],
             "city": "Riedlingen",
             "postalCode": "21481",
@@ -637,21 +583,19 @@
         "status": "in-progress",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-          "version": "0.0.0",
           "code": "IMP"
         },
         "serviceType": {
           "coding": [
             {
               "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType",
-              "version": "0.0.0",
               "code": "0436",
               "display": "Intensivmedizin"
             }
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "period": {
           "start": "2024-03-03"
@@ -674,21 +618,19 @@
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-          "version": "0.0.0",
           "code": "IMP"
         },
         "serviceType": {
           "coding": [
             {
               "system": "https://demis.rki.de/fhir/CodeSystem/hospitalizationServiceType",
-              "version": "0.0.0",
               "code": "2700",
               "display": "Augenheilkunde"
             }
           ]
         },
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "period": {
           "start": "2024-01-30",
@@ -712,7 +654,7 @@
         "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsCommon",
         "status": "completed",
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "item": [
           {
@@ -721,7 +663,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },
@@ -744,7 +685,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/militaryAffiliation",
-                  "version": "0.0.0",
                   "code": "civilPersonActiveInBundeswehr",
                   "display": "Zivilperson tätig/untergebracht in Einrichtung der BW"
                 }
@@ -757,7 +697,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },
@@ -782,7 +721,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },
@@ -827,7 +765,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },
@@ -841,7 +778,6 @@
                           {
                             "valueCoding": {
                               "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
-                              "version": "0.0.0",
                               "code": "childDayNursery",
                               "display": "Kindertagespflege"
                             }
@@ -870,7 +806,6 @@
                           {
                             "valueCoding": {
                               "system": "https://demis.rki.de/fhir/CodeSystem/organizationAssociation",
-                              "version": "0.0.0",
                               "code": "care",
                               "display": "Betreuung"
                             }
@@ -899,7 +834,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },
@@ -929,7 +863,6 @@
                           {
                             "valueCoding": {
                               "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                              "version": "0.0.0",
                               "code": "NASK",
                               "display": "nicht erhoben"
                             }
@@ -971,7 +904,6 @@
                           {
                             "valueCoding": {
                               "system": "https://demis.rki.de/fhir/CodeSystem/geographicRegion",
-                              "version": "0.0.0",
                               "code": "21000140",
                               "display": "Schweiz"
                             }
@@ -998,7 +930,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 }
@@ -1031,14 +962,13 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "version": "0.0.0",
               "code": "2251000221101",
               "display": "Masern- Mumps-Röteln- Varizellen Lebendvirusimpfstoff (Priorix-Tetra, ProQuad)"
             }
           ]
         },
         "patient": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "occurrenceDateTime": "2023-12-10",
         "note": [
@@ -1061,7 +991,7 @@
         "questionnaire": "https://demis.rki.de/fhir/Questionnaire/DiseaseQuestionsMSVD",
         "status": "completed",
         "subject": {
-          "reference": "Patient/555-42-23-3"
+          "reference": "Patient/555-42-23-4"
         },
         "item": [
           {
@@ -1070,7 +1000,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },
@@ -1103,7 +1032,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },
@@ -1114,7 +1042,6 @@
                       {
                         "valueCoding": {
                           "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                          "version": "0.0.0",
                           "code": "NASK",
                           "display": "nicht erhoben"
                         }
@@ -1131,7 +1058,6 @@
               {
                 "valueCoding": {
                   "system": "https://demis.rki.de/fhir/CodeSystem/yesOrNoAnswer",
-                  "version": "0.0.0",
                   "code": "yes",
                   "display": "Ja"
                 },

@@ -30,13 +30,7 @@ components:
       type: object
       properties:
         gender:
-          description: gender of the notified person
-          default: UNKNOWN
-          enum:
-            - MALE
-            - FEMALE
-            - OTHER
-            - UNKNOWN
+          $ref: '#/components/schemas/Gender'
         birthDate:
           type: string
           description: |
@@ -188,14 +182,7 @@ components:
           description: lastname of the notified person
           type: string
         gender:
-          description: gender of the notified person
-          default: UNKNOWN
-          enum:
-            - MALE
-            - FEMALE
-            - OTHER
-            - UNKNOWN
-          type: string
+          $ref: '#/components/schemas/Gender'
         birthDate:
           format: date
           description: notified person's date of birth
@@ -249,7 +236,33 @@ components:
           properties:
             pathogenDTO:
               $ref: '#/components/schemas/PathogenDTO'
+            staticSystemVersions:
+              type: array
+              nullable: true
+              description: |
+                (Optional) List of code system URLs with their versions for the versioned FHIR profile.
+                Used for hard-coded standard codes (e.g. LOINC, SNOMED) in the Notification Gateway.
+                If not specified, default versions will be used.
+              items:
+                $ref: '#/components/schemas/StaticSystemVersion'
         - $ref: '#/components/schemas/NotificationContent'
+    StaticSystemVersion:
+      description: |
+        Code system with URL and version for versioned FHIR profiles.
+        Defines the versions of hard-coded standard code systems (e.g. LOINC, SNOMED).
+      type: object
+      required:
+        - system
+        - version
+      properties:
+        system:
+          type: string
+          description: The URL of the code system
+          example: "http://loinc.org"
+        version:
+          type: string
+          description: The version of the code system
+          example: "2.74"
     BedOccupancy:
       description: Bettenbelegung
       required:
@@ -305,6 +318,14 @@ components:
         - otherFacility
         - primaryAsCurrent
       type: string
+    Gender:
+      default: UNKNOWN
+      enum:
+        - MALE
+        - FEMALE
+        - OTHERX
+        - DIVERSE
+        - UNKNOWN
     FacilityAddressInfo:
       description: Adresse einer Einrichtung
       required:
@@ -429,6 +450,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CodeDisplay'
+        staticSystemVersions:
+          type: array
+          nullable: true
+          description: |
+            (Optional) List of code system URLs with their versions for the versioned FHIR profile.
+            Used for hard-coded standard codes (e.g. LOINC, SNOMED) in the Notification Gateway.
+            If not specified, default versions will be used.
+          items:
+            $ref: '#/components/schemas/StaticSystemVersion'
     PathogenDTO:
       required:
         - codeDisplay
@@ -548,6 +578,9 @@ components:
         system:
           description: Kontext des Codes, wie Adressnutzungsart oder normierte Bundesländer
           type: string
+        version:
+          description: Version des Codesystems
+          type: string
         code:
           type: string
         display:
@@ -579,20 +612,6 @@ components:
           type: string
         component:
           type: string
-    TerminologyVersion:
-      type: object
-      required:
-        - system
-        - version
-      properties:
-        system:
-          type: string
-        version:
-          type: string
-    TerminologyVersions:
-      type: array
-      items:
-        $ref: '#/components/schemas/TerminologyVersion'
     LocationDTO:
       description: location representation
       type: object
@@ -706,8 +725,6 @@ components:
           $ref: '#/components/schemas/QuestionnaireResponse'
         disease:
           $ref: '#/components/schemas/QuestionnaireResponse'
-        terminologyVersions:
-          $ref: '#/components/schemas/TerminologyVersions'
     DiseaseStatus:
       description: Kombinierte Statusinformationen
       type: object

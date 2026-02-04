@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.common.services.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,22 +22,20 @@ package de.gematik.demis.notificationgateway.common.services.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.*;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo.UsageEnum;
-import de.gematik.demis.notificationgateway.common.dto.FacilityAddressInfo;
 import de.gematik.demis.notificationgateway.common.dto.NotifiedPersonAddressInfo;
 import de.gematik.demis.notificationgateway.common.utils.ConfiguredCodeSystems;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Coding;
@@ -46,14 +44,11 @@ import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class FhirObjectCreationService {
-
-  private final FeatureFlags featureFlags;
 
   public Parameters createParameters(Bundle bundle) {
     Parameters parameters = new Parameters();
@@ -64,26 +59,15 @@ public class FhirObjectCreationService {
 
   public Address createAddress(NotifiedPersonAddressInfo address, boolean withAddressUse) {
     final Address fhirAddress;
-    if (featureFlags.isNotifications73() || featureFlags.isPathogenStrictSnapshotActive()) {
-      fhirAddress =
-          new AddressDataBuilder()
-              .setStreet(address.getStreet())
-              .setHouseNumber(address.getHouseNumber())
-              .setAdditionalInfo(address.getAdditionalInfo())
-              .setCountry(address.getCountry())
-              .setPostalCode(address.getZip())
-              .setCity(address.getCity())
-              .build();
-    } else {
-      fhirAddress =
-          createAddress(
-              address.getStreet(),
-              address.getHouseNumber(),
-              address.getAdditionalInfo(),
-              address.getZip(),
-              address.getCity(),
-              address.getCountry());
-    }
+    fhirAddress =
+        new AddressDataBuilder()
+            .setStreet(address.getStreet())
+            .setHouseNumber(address.getHouseNumber())
+            .setAdditionalInfo(address.getAdditionalInfo())
+            .setCountry(address.getCountry())
+            .setPostalCode(address.getZip())
+            .setCity(address.getCity())
+            .build();
 
     final AddressType addressType = address.getAddressType();
     if (withAddressUse && addressType != null) {
@@ -95,22 +79,6 @@ public class FhirObjectCreationService {
     }
 
     return fhirAddress;
-  }
-
-  /**
-   * @deprecated remove with feature.flag.notifications.7_3
-   * @param address
-   * @return
-   */
-  @Deprecated(forRemoval = true)
-  public Address createAddress(FacilityAddressInfo address) {
-    return createAddress(
-        address.getStreet(),
-        address.getHouseNumber(),
-        address.getAdditionalInfo(),
-        address.getZip(),
-        address.getCity(),
-        address.getCountry());
   }
 
   public Address createAddress(NotifiedPersonAddressInfo personAddress) {
@@ -157,64 +125,6 @@ public class FhirObjectCreationService {
         };
 
     return ConfiguredCodeSystems.getInstance().getAddressUseCoding(referencedCodingValue);
-  }
-
-  /**
-   * @deprecated remove with feature.flag.notifications.7_3
-   * @param street
-   * @param houseNumber
-   * @param additionalInfo
-   * @param zip
-   * @param city
-   * @param country
-   * @return
-   */
-  @Deprecated(forRemoval = true)
-  public Address createAddress(
-      String street,
-      String houseNumber,
-      String additionalInfo,
-      String zip,
-      String city,
-      String country) {
-    final Address fhirAddress = new Address();
-    if (StringUtils.isNotBlank(zip)) {
-      fhirAddress.setPostalCode(zip);
-    }
-    if (StringUtils.isNotBlank(country)) {
-      fhirAddress.setCountry(country);
-    }
-
-    if (StringUtils.isNotBlank(street)) {
-      StringBuilder lineBuilder = new StringBuilder();
-      lineBuilder.append(street);
-
-      final StringType lineElement = fhirAddress.addLineElement();
-      lineElement
-          .addExtension()
-          .setUrl(STRUCTURE_DEFINITION_ADXP_STREET_NAME)
-          .setValue(new StringType(street));
-
-      if (StringUtils.isNotBlank(houseNumber)) {
-        lineBuilder.append(" ").append(houseNumber);
-        lineElement
-            .addExtension()
-            .setUrl(STRUCTURE_DEFINITION_ADXP_HOUSE_NUMBER)
-            .setValue(new StringType(houseNumber));
-      }
-
-      if (StringUtils.isNotBlank(additionalInfo)) {
-        lineBuilder.append(" ").append(additionalInfo);
-      }
-
-      lineElement.setValue(lineBuilder.toString());
-    }
-
-    if (StringUtils.isNotBlank(city)) {
-      fhirAddress.setCity(city);
-    }
-
-    return fhirAddress;
   }
 
   public ContactPoint createContactPoint(ContactPointInfo contact) {

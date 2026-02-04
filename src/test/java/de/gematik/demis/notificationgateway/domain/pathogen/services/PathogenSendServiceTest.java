@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.pathogen.services;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,18 +22,20 @@ package de.gematik.demis.notificationgateway.domain.pathogen.services;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
 import static de.gematik.demis.notificationgateway.common.constants.MessageConstants.CONTENT_NOT_ACCEPTED;
+import static de.gematik.demis.notificationgateway.common.enums.NotificationType.NOMINAL;
 import static de.gematik.demis.notificationgateway.utils.FileUtils.loadJsonFromFile;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.BaseTestUtils;
 import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.OkResponse;
@@ -43,45 +45,46 @@ import de.gematik.demis.notificationgateway.common.properties.NESProperties;
 import de.gematik.demis.notificationgateway.common.proxies.BundlePublisher;
 import de.gematik.demis.notificationgateway.common.services.OkResponseService;
 import de.gematik.demis.notificationgateway.common.utils.Token;
-import de.gematik.demis.notificationgateway.domain.HeaderProperties;
-import de.gematik.demis.notificationgateway.domain.pathogen.fhir.PathogenBundleCreationService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PathogenSendServiceTest implements BaseTestUtils {
 
   private final OkResponseService okResponseService = new OkResponseService();
-  private PathogenBundleCreationService mapper;
 
   private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
   @Mock private BundlePublisher bundlePublisher;
   @Mock private NESProperties nesProperties;
-  @Mock private HeaderProperties headerPropertiesMock;
+  @Mock private HttpServletRequest request;
   @Mock private Token token;
   @Mock private FeatureFlags featureFlags;
 
   private PathogenSendService service;
   private String jsonContent;
-  private static RandomStringUtils random = RandomStringUtils.secure();
+  private static final RandomStringUtils random = RandomStringUtils.secure();
+
+  private MockedStatic<Utils> utils;
 
   @BeforeEach
   void createService() {
-    lenient().when(featureFlags.isNotifications73()).thenReturn(false);
-
-    mapper = new PathogenBundleCreationService(featureFlags);
+    utils = mockStatic(Utils.class);
+    utils.when(Utils::generateUuidString).thenAnswer(i -> "555-42-23-");
 
     service =
         new PathogenSendService(
-            bundlePublisher, okResponseService, mapper, nesProperties, headerPropertiesMock);
+            featureFlags, bundlePublisher, okResponseService, nesProperties, request);
   }
 
   @BeforeEach
@@ -90,10 +93,13 @@ class PathogenSendServiceTest implements BaseTestUtils {
     assert jsonContent != null;
   }
 
+  @AfterEach
+  void closeMocks() {
+    utils.close();
+  }
+
   private void mockPostResponse() throws Exception {
-    when(headerPropertiesMock.getLaboratoryNotificationProfile()).thenReturn("core");
-    when(headerPropertiesMock.getLaboratoryNotificationVersion()).thenReturn("1.0.0");
-    when(bundlePublisher.postRequest(any(), any(), any(), eq("core"), eq("1.0.0"), any()))
+    when(bundlePublisher.postRequest(any(), any(), any(), any(), any()))
         .thenReturn(createJsonOkParameters("nes/nes_response_OK.json"));
     when(nesProperties.laboratoryUrl()).thenReturn(random.nextAlphabetic(10));
   }
@@ -103,7 +109,7 @@ class PathogenSendServiceTest implements BaseTestUtils {
     mockPostResponse();
     PathogenTest pathogenTest = objectMapper.readValue(jsonContent, PathogenTest.class);
 
-    final OkResponse response = service.send(pathogenTest, token);
+    final OkResponse response = service.processPortalNotificationData(pathogenTest, token, NOMINAL);
 
     Assertions.assertThat(response)
         .isNotNull()
@@ -120,7 +126,7 @@ class PathogenSendServiceTest implements BaseTestUtils {
 
   private void verifyHoneyPotDetection(PathogenTest pathogenTest) {
     final ThrowableAssert.ThrowingCallable throwingCallable =
-        () -> service.send(pathogenTest, token);
+        () -> service.processPortalNotificationData(pathogenTest, token, NOMINAL);
     Assertions.assertThatThrownBy(throwingCallable)
         .isInstanceOf(HoneypotException.class)
         .hasMessage(CONTENT_NOT_ACCEPTED);

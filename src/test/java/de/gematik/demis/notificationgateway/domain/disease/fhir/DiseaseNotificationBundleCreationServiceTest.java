@@ -4,7 +4,7 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  * #%L
  * DEMIS Notification-Gateway
  * %%
- * Copyright (C) 2025 gematik GmbH
+ * Copyright (C) 2025 - 2026 gematik GmbH
  * %%
  * Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the
  * European Commission – subsequent versions of the EUPL (the "Licence").
@@ -22,7 +22,8 @@ package de.gematik.demis.notificationgateway.domain.disease.fhir;
  *
  * *******
  *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
+ * For additional notes and disclaimer from gematik and in case of changes by gematik,
+ * find details in the "Readme" file.
  * #L%
  */
 
@@ -120,7 +121,7 @@ class DiseaseNotificationBundleCreationServiceTest {
   }
 
   private void testBundleCreation(String outputFile) throws BadRequestException {
-    final Bundle bundle = this.service.createBundle(this.input);
+    final Bundle bundle = this.service.createBundle(this.input, NotificationType.NOMINAL);
     assertThat(bundle).isNotNull();
     verify(outputFile, bundle);
   }
@@ -141,7 +142,8 @@ class DiseaseNotificationBundleCreationServiceTest {
         FileUtils.createDiseaseNotification("portal/disease/notification-formly-input.json");
     input.getNotifierFacility().getFacilityInfo().setOrganizationType(null);
 
-    assertThrows(BadRequestException.class, () -> service.createBundle(input));
+    assertThrows(
+        BadRequestException.class, () -> service.createBundle(input, NotificationType.NOMINAL));
   }
 
   @Test

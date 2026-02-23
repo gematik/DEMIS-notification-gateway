@@ -53,6 +53,7 @@ import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Service;
 
+/** Creates FHIR Organization resources that are not within the questionnaires. */
 @Service
 @AllArgsConstructor
 class OrganizationCreationService {

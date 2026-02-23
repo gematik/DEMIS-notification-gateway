@@ -52,7 +52,7 @@ public final class Token {
     if (tokens == null || tokens.size() != 1) {
       throw new AuthException("Exactly one Authorization header expected");
     }
-    final String token = tokens.get(0);
+    final String token = tokens.getFirst();
     if (token == null || !token.startsWith(BEARER_PREFIX)) {
       throw new AuthException("Authorization header must contain a valid Bearer token");
     }

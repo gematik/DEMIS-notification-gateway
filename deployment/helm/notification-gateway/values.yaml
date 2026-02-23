@@ -37,7 +37,6 @@ customEnvVars:
   FEATURE_FLAG_PORTAL_ERROR_DIALOG_FILTERING: "false"
   RPS_BASE_URL: http://report-processing-service.demis.svc.cluster.local/
   NES_BASE_URL: http://notification-processing-service.demis.svc.cluster.local/
-  FEATURE_FLAG_NEW_API_ENDPOINTS: "false"
   FEATURE_FLAG_FOLLOW_UP_NOTIFICATION: "false"
   FEATURE_FLAG_DISEASE_STRICT: "false"
   FEATURE_FLAG_OTH_PRIVAT_LAB_SUBMITTER_ASSIGNMENT_DISABLED: "false"

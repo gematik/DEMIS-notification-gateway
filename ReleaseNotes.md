@@ -2,6 +2,11 @@
 
 # Release notes notification-gateway
 
+## 6.7.8
+- added the parameters identifier and type to organization answers in disease questionnaire responses
+- removed feature flag FEATURE_FLAG_NEW_API_ENDPOINTS
+- added graceful handling of empty analyte from portal 
+
 ## 6.7.7
 - add forwarding of headers x-fhir-profile, x-fhir-api-version, x-fhir-api-request-origin, x-fhir-api-submission-type to nps 
 - remove version and profile header from application.properties for bed occupancy, laboratory and disease

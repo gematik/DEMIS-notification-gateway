@@ -107,7 +107,11 @@ public class ObservationCreator {
             versionMap));
 
     // Observation 2 - only if analyt is not null
-    if (firstMethodPathogenDTO.getAnalyt() != null) {
+    if (firstMethodPathogenDTO.getAnalyt() != null
+        && firstMethodPathogenDTO.getAnalyt().getCode() != null
+        && !firstMethodPathogenDTO.getAnalyt().getCode().isBlank()
+        && firstMethodPathogenDTO.getAnalyt().getDisplay() != null
+        && !firstMethodPathogenDTO.getAnalyt().getDisplay().isBlank()) {
       collect.add(
           createSingleObservation(
               firstMethodPathogenDTO,

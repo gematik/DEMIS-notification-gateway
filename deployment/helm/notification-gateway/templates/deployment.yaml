@@ -70,18 +70,6 @@ spec:
           env:
             - name: TZ
               value: "Europe/Berlin"
-            {{- if eq (.Values.customEnvVars.FEATURE_FLAG_NEW_API_ENDPOINTS | toString) "true" }}
-            - name: "NES_LABORATORY_PATH"
-              value: "/"
-            - name: "NES_HOSPITALIZATION_PATH"
-              value: "/"
-            - name: "RPS_BEDOCCUPANCY_PATH"
-              value: "/"
-            - name: "API_NG_BASE_PATH"
-              value: "/notification/"
-            - name: "API_NG_BEDOCCUPANCY_BASE_PATH"
-              value: "/reports/"
-            {{- end }}
             {{- if .Values.debug.enable }}
             - name: "JAVA_TOOL_OPTIONS"
               value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9000"

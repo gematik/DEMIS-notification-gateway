@@ -80,8 +80,9 @@ class SpecimenCreatorTest {
             pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimen).hasSize(1);
-    assertThat(specimen.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
-    assertThat(specimen.get(0).getType().getCodingFirstRep().getDisplay())
+    assertThat(specimen.getFirst().getType().getCodingFirstRep().getCode())
+        .isEqualTo("MaterialCode");
+    assertThat(specimen.getFirst().getType().getCodingFirstRep().getDisplay())
         .isEqualTo("MaterialDisplay");
 
     assertThat(observationList)
@@ -90,7 +91,7 @@ class SpecimenCreatorTest {
             observation -> {
               assertThat(observation.getSubject().getReference()).isEqualTo("Patient/123");
               assertThat(observation.getSpecimen().getResource().getIdElement())
-                  .isEqualTo(specimen.get(0).getIdElement());
+                  .isEqualTo(specimen.getFirst().getIdElement());
             });
   }
 
@@ -130,12 +131,14 @@ class SpecimenCreatorTest {
             pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimen).hasSize(1);
-    assertThat(specimen.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode");
-    assertThat(specimen.get(0).getType().getCodingFirstRep().getDisplay())
+    assertThat(specimen.getFirst().getType().getCodingFirstRep().getCode())
+        .isEqualTo("MaterialCode");
+    assertThat(specimen.getFirst().getType().getCodingFirstRep().getDisplay())
         .isEqualTo("MaterialDisplay");
 
     // Extract the Date from the DateTimeType and compare
-    DateTimeType collectedDateTime = (DateTimeType) specimen.get(0).getCollection().getCollected();
+    DateTimeType collectedDateTime =
+        (DateTimeType) specimen.getFirst().getCollection().getCollected();
     assertThat(collectedDateTime.getValue()).isEqualTo(DateUtils.createDate(date));
 
     assertThat(observationList)
@@ -144,7 +147,7 @@ class SpecimenCreatorTest {
             observation -> {
               assertThat(observation.getSubject().getReference()).isEqualTo("Patient/123");
               assertThat(observation.getSpecimen().getResource().getIdElement())
-                  .isEqualTo(specimen.get(0).getIdElement());
+                  .isEqualTo(specimen.getFirst().getIdElement());
             });
   }
 
@@ -285,8 +288,9 @@ class SpecimenCreatorTest {
             pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
 
     assertThat(specimens).hasSize(2);
-    assertThat(specimens.get(0).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode1");
-    assertThat(specimens.get(0).getType().getCodingFirstRep().getDisplay())
+    assertThat(specimens.getFirst().getType().getCodingFirstRep().getCode())
+        .isEqualTo("MaterialCode1");
+    assertThat(specimens.getFirst().getType().getCodingFirstRep().getDisplay())
         .isEqualTo("MaterialDisplay1");
     assertThat(specimens.get(1).getType().getCodingFirstRep().getCode()).isEqualTo("MaterialCode2");
     assertThat(specimens.get(1).getType().getCodingFirstRep().getDisplay())

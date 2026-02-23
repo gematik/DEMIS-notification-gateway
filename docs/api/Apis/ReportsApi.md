@@ -4,12 +4,12 @@ All URIs are relative to *https://portal.ingress.local/notification-gateway*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**apiNgReportsBedOccupancyPost**](ReportsApi.md#apiNgReportsBedOccupancyPost) | **POST** /api/ng/reports/bedOccupancy | Create a bedOccupancy notification that will be send to the specified target |
+| [**reportsBedOccupancyPost**](ReportsApi.md#reportsBedOccupancyPost) | **POST** /reports/bedOccupancy | Create a bedOccupancy notification that will be send to the specified target |
 
 
-<a name="apiNgReportsBedOccupancyPost"></a>
-# **apiNgReportsBedOccupancyPost**
-> Object apiNgReportsBedOccupancyPost(body)
+<a name="reportsBedOccupancyPost"></a>
+# **reportsBedOccupancyPost**
+> Object reportsBedOccupancyPost(body)
 
 Create a bedOccupancy notification that will be send to the specified target
 

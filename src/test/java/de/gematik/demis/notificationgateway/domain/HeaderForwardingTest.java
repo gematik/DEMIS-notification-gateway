@@ -92,7 +92,7 @@ class HeaderForwardingTest {
 
     WireMock.verify(
         1,
-        postRequestedFor(urlEqualTo("/notification-api/fhir/$process-notification"))
+        postRequestedFor(urlEqualTo("/$process-notification"))
             .withHeader("x-fhir-api-request-origin", WireMock.equalTo("internal"))
             .withHeader("x-fhir-api-submission-type", WireMock.equalTo("pathogen"))
             .withHeader("x-fhir-api-version", WireMock.equalTo("v6"))

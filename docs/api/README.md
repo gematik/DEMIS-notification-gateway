@@ -7,9 +7,9 @@ All URIs are relative to *https://portal.ingress.local/notification-gateway*
 
 | Class | Method | HTTP request | Description |
 |------------ | ------------- | ------------- | -------------|
-| *NotificationsApi* | [**apiNgNotificationDiseasePost**](Apis/NotificationsApi.md#apiNgNotificationDiseasePost) | **POST** /api/ng/notification/disease | Create a disease notification that will be send to the specified target |
-*NotificationsApi* | [**apiNgNotificationPathogenPost**](Apis/NotificationsApi.md#apiNgNotificationPathogenPost) | **POST** /api/ng/notification/pathogen | Create a pathogen notification that will be send to the specified target |
-| *ReportsApi* | [**apiNgReportsBedOccupancyPost**](Apis/ReportsApi.md#apiNgReportsBedOccupancyPost) | **POST** /api/ng/reports/bedOccupancy | Create a bedOccupancy notification that will be send to the specified target |
+| *NotificationsApi* | [**notificationDiseasePost**](Apis/NotificationsApi.md#notificationDiseasePost) | **POST** /notification/disease | Create a disease notification that will be send to the specified target |
+*NotificationsApi* | [**notificationPathogenPost**](Apis/NotificationsApi.md#notificationPathogenPost) | **POST** /notification/pathogen | Create a pathogen notification that will be send to the specified target |
+| *ReportsApi* | [**reportsBedOccupancyPost**](Apis/ReportsApi.md#reportsBedOccupancyPost) | **POST** /reports/bedOccupancy | Create a bedOccupancy notification that will be send to the specified target |
 
 
 <a name="documentation-for-models"></a>

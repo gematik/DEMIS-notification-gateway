@@ -65,7 +65,7 @@ public class OkResponseService {
     if (bundleResource.isPresent()) {
       var bundle = ((Bundle) bundleResource.get());
       // we can do so, because its defined first element must be the composition
-      var compositionResource = ((Composition) bundle.getEntry().get(0).getResource());
+      var compositionResource = ((Composition) bundle.getEntry().getFirst().getResource());
       var binaryReference = findBinaryReferenceInComposition(compositionResource);
       var demisOrganisationReference =
           findDEMISOrganisationReferenceInComposition(compositionResource);
@@ -134,7 +134,9 @@ public class OkResponseService {
     var emailOptional =
         organization.getContact().stream()
             .filter(Organization.OrganizationContactComponent::hasTelecom)
-            .map(organizationContactComponent -> organizationContactComponent.getTelecom().get(0))
+            .map(
+                organizationContactComponent ->
+                    organizationContactComponent.getTelecom().getFirst())
             .filter(contact -> "Email".equals(contact.getSystem().getDisplay()))
             .map(ContactPoint::getValue)
             .findFirst();
@@ -154,7 +156,7 @@ public class OkResponseService {
     var operationOutcome = (OperationOutcome) resource.get();
 
     if (!operationOutcome.getIssue().isEmpty()) {
-      var issue = operationOutcome.getIssue().get(0);
+      var issue = operationOutcome.getIssue().getFirst();
       return issue.getDetails().getText();
     }
 

@@ -53,7 +53,7 @@ public class GenderMapper {
   public static Optional<Extension> createGenderExtension(Gender gender) {
     if (gender == Gender.DIVERSE || gender == Gender.OTHERX) {
       String code = gender == Gender.DIVERSE ? "D" : "X";
-      String display = gender == Gender.DIVERSE ? "Divers" : "Kein Geschlechtseintrag";
+      String display = gender == Gender.DIVERSE ? "divers" : "unbestimmt";
       Coding coding = new Coding("http://fhir.de/CodeSystem/gender-amtlich-de", code, display);
       Extension extension =
           new Extension("http://fhir.de/StructureDefinition/gender-amtlich-de", coding);

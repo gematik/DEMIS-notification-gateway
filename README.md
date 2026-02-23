@@ -135,16 +135,16 @@ The Spring application properties of the service.
 
 # Endpoints
 
-| Endpoint                               | Description                                                                                                                       |
-|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `/api/ng/notification/laboratory`      | This is a non-secured endpoint for test result notifications.                                                                     |
-| `/api/ng/notification/hospitalization` | This endpoint is used for hospitalization notifications.                                                                          |
-| `/api/ng/reports/bedOccupancy`         | This endpoint is used for bed occupancy reports.                                                                                  |
-| `/health`                              | Health endpoint to check the overall health of the application.                                                                   |
-| `/health/liveness`                     | Endpoint to check the liveness status of the application.                                                                         |
-| `/health/readiness`                    | Endpoint to check the readiness status of the application.                                                                        |
-| `/api-spec`                            | The [api-spec](src/main/resources/spec/api-spec.yml) file contains the specification for all the exposed endpoints.               |
-| `/notification-gateway`                | The gateway can be accessed locally at [http://localhost:9042/notification-gateway](http://localhost:9042/notification-gateway) . |
+| Endpoint                 | Description                                                                                                                       |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `/notification/laboratory` | This is a non-secured endpoint for test result notifications.                                                                     |
+| `/notification/hospitalization` | This endpoint is used for hospitalization notifications.                                                                          |
+| `/reports/bedOccupancy`  | This endpoint is used for bed occupancy reports.                                                                                  |
+| `/health`                | Health endpoint to check the overall health of the application.                                                                   |
+| `/health/liveness`       | Endpoint to check the liveness status of the application.                                                                         |
+| `/health/readiness`      | Endpoint to check the readiness status of the application.                                                                        |
+| `/api-spec`              | The [api-spec](src/main/resources/spec/api-spec.yml) file contains the specification for all the exposed endpoints.               |
+| `/notification-gateway`  | The gateway can be accessed locally at [http://localhost:9042/notification-gateway](http://localhost:9042/notification-gateway) . |
 
 
 ## Security

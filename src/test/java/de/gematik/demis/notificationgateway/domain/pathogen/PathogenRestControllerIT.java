@@ -104,7 +104,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post("/api/ng/notification/pathogen/7.3/non_nominal")
+                  post("/notification/pathogen/7.3/non_nominal")
                       .headers(headers)
                       .content(jsonContent)
                       .with(csrf()))
@@ -151,7 +151,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.CONTENT_NOT_ACCEPTED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.1")
+          .hasFieldOrPropertyWithValue("path", "/notification/pathogen/7.1")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .isNullOrEmpty();
@@ -185,7 +185,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.VALIDATION_ERROR_OCCURRED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.1")
+          .hasFieldOrPropertyWithValue("path", "/notification/pathogen/7.1")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .hasSize(1)
@@ -320,7 +320,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post("/api/ng/notification/pathogen/7.3/non_nominal")
+                  post("/notification/pathogen/7.3/non_nominal")
                       .content(getJsonContent(path))
                       .headers(headers)
                       .with(csrf()))
@@ -335,7 +335,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.CONTENT_NOT_ACCEPTED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.3/non_nominal")
+          .hasFieldOrPropertyWithValue("path", "/notification/pathogen/7.3/non_nominal")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .isNullOrEmpty();
@@ -354,7 +354,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       final MockHttpServletResponse response =
           this.mockMvc
               .perform(
-                  post("/api/ng/notification/pathogen/7.3/non_nominal")
+                  post("/notification/pathogen/7.3/non_nominal")
                       .content(getJsonContent(path))
                       .headers(headers)
                       .with(csrf()))
@@ -369,7 +369,7 @@ class PathogenRestControllerIT implements BaseTestUtils {
       assertThat(errorResponse)
           .isNotNull()
           .hasFieldOrPropertyWithValue("message", MessageConstants.VALIDATION_ERROR_OCCURRED)
-          .hasFieldOrPropertyWithValue("path", "/api/ng/notification/pathogen/7.3/non_nominal")
+          .hasFieldOrPropertyWithValue("path", "/notification/pathogen/7.3/non_nominal")
           .extracting("validationErrors")
           .asInstanceOf(InstanceOfAssertFactories.LIST)
           .hasSize(1)

@@ -150,15 +150,17 @@ class PatientCreatorTest {
       Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
 
       assertThat(result.getAddress()).hasSize(2);
-      assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
-      assertThat(result.getAddress().get(0).getExtension().get(0).getUrl())
+      assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
+      assertThat(result.getAddress().getFirst().getExtension().getFirst().getUrl())
           .contains("FacilityAddressNotifiedPerson");
-      assertThat(result.getAddress().get(0).getExtension().get(1).getUrl()).contains("AddressUse");
-      assertThat(result.getAddress().get(0).getExtension().get(1).getValue())
+      assertThat(result.getAddress().getFirst().getExtension().get(1).getUrl())
+          .contains("AddressUse");
+      assertThat(result.getAddress().getFirst().getExtension().get(1).getValue())
           .extracting("code")
           .isEqualTo("current");
-      assertThat(result.getAddress().get(1).getExtension().get(0).getUrl()).contains("AddressUse");
-      assertThat(result.getAddress().get(1).getExtension().get(0).getValue())
+      assertThat(result.getAddress().get(1).getExtension().getFirst().getUrl())
+          .contains("AddressUse");
+      assertThat(result.getAddress().get(1).getExtension().getFirst().getValue())
           .extracting("code")
           .isEqualTo("primary");
       verify(bundleBuilder).addAdditionalEntry(any(Organization.class));
@@ -198,15 +200,17 @@ class PatientCreatorTest {
       Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
 
       assertThat(result.getAddress()).hasSize(2);
-      assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
-      assertThat(result.getAddress().get(0).getExtension().get(0).getUrl())
+      assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
+      assertThat(result.getAddress().getFirst().getExtension().getFirst().getUrl())
           .contains("FacilityAddressNotifiedPerson");
-      assertThat(result.getAddress().get(0).getExtension().get(1).getUrl()).contains("AddressUse");
-      assertThat(result.getAddress().get(0).getExtension().get(1).getValue())
+      assertThat(result.getAddress().getFirst().getExtension().get(1).getUrl())
+          .contains("AddressUse");
+      assertThat(result.getAddress().getFirst().getExtension().get(1).getValue())
           .extracting("code")
           .isEqualTo("current");
-      assertThat(result.getAddress().get(1).getExtension().get(0).getUrl()).contains("AddressUse");
-      assertThat(result.getAddress().get(1).getExtension().get(0).getValue())
+      assertThat(result.getAddress().get(1).getExtension().getFirst().getUrl())
+          .contains("AddressUse");
+      assertThat(result.getAddress().get(1).getExtension().getFirst().getValue())
           .extracting("code")
           .isEqualTo("primary");
     }
@@ -249,7 +253,7 @@ class PatientCreatorTest {
     org.hl7.fhir.r4.model.Coding coding =
         (org.hl7.fhir.r4.model.Coding) result.getGenderElement().getExtensionFirstRep().getValue();
     assertEquals("D", coding.getCode());
-    assertEquals("Divers", coding.getDisplay());
+    assertEquals("divers", coding.getDisplay());
     verifyNoInteractions(bundleBuilder);
   }
 
@@ -305,15 +309,17 @@ class PatientCreatorTest {
     Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
 
     assertThat(result.getAddress()).hasSize(2);
-    assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
-    assertThat(result.getAddress().get(0).getExtension().get(0).getUrl())
+    assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
+    assertThat(result.getAddress().getFirst().getExtension().getFirst().getUrl())
         .contains("FacilityAddressNotifiedPerson");
-    assertThat(result.getAddress().get(0).getExtension().get(1).getUrl()).contains("AddressUse");
-    assertThat(result.getAddress().get(0).getExtension().get(1).getValue())
+    assertThat(result.getAddress().getFirst().getExtension().get(1).getUrl())
+        .contains("AddressUse");
+    assertThat(result.getAddress().getFirst().getExtension().get(1).getValue())
         .extracting("code")
         .isEqualTo("current");
-    assertThat(result.getAddress().get(1).getExtension().get(0).getUrl()).contains("AddressUse");
-    assertThat(result.getAddress().get(1).getExtension().get(0).getValue())
+    assertThat(result.getAddress().get(1).getExtension().getFirst().getUrl())
+        .contains("AddressUse");
+    assertThat(result.getAddress().get(1).getExtension().getFirst().getValue())
         .extracting("code")
         .isEqualTo("primary");
     verify(bundleBuilder).addAdditionalEntry(any(Organization.class));
@@ -353,15 +359,17 @@ class PatientCreatorTest {
     Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
 
     assertThat(result.getAddress()).hasSize(2);
-    assertThat(result.getAddress().get(0).getExtension()).hasSize(2);
-    assertThat(result.getAddress().get(0).getExtension().get(0).getUrl())
+    assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
+    assertThat(result.getAddress().getFirst().getExtension().getFirst().getUrl())
         .contains("FacilityAddressNotifiedPerson");
-    assertThat(result.getAddress().get(0).getExtension().get(1).getUrl()).contains("AddressUse");
-    assertThat(result.getAddress().get(0).getExtension().get(1).getValue())
+    assertThat(result.getAddress().getFirst().getExtension().get(1).getUrl())
+        .contains("AddressUse");
+    assertThat(result.getAddress().getFirst().getExtension().get(1).getValue())
         .extracting("code")
         .isEqualTo("current");
-    assertThat(result.getAddress().get(1).getExtension().get(0).getUrl()).contains("AddressUse");
-    assertThat(result.getAddress().get(1).getExtension().get(0).getValue())
+    assertThat(result.getAddress().get(1).getExtension().getFirst().getUrl())
+        .contains("AddressUse");
+    assertThat(result.getAddress().get(1).getExtension().getFirst().getValue())
         .extracting("code")
         .isEqualTo("primary");
   }
@@ -394,10 +402,10 @@ class PatientCreatorTest {
     org.hl7.fhir.r4.model.Coding coding =
         (org.hl7.fhir.r4.model.Coding) result.getGenderElement().getExtensionFirstRep().getValue();
     assertEquals("X", coding.getCode());
-    assertEquals("Kein Geschlechtseintrag", coding.getDisplay());
+    assertEquals("unbestimmt", coding.getDisplay());
     assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.OTHER);
     assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
-    assertThat(result.getAddress().get(0).getExtension().get(0).getValue())
+    assertThat(result.getAddress().getFirst().getExtension().getFirst().getValue())
         .extracting("code")
         .isEqualTo(AddressDataBuilder.PRIMARY);
     verifyNoInteractions(bundleBuilder);
@@ -425,7 +433,7 @@ class PatientCreatorTest {
     assertThat(result.getNameFirstRep().getFamily()).isNull();
     assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
     assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
-    assertThat(result.getAddress().get(0).getExtension().get(0).getValue())
+    assertThat(result.getAddress().getFirst().getExtension().getFirst().getValue())
         .extracting("code")
         .isEqualTo(AddressDataBuilder.PRIMARY);
     verifyNoInteractions(bundleBuilder);

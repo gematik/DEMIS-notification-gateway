@@ -228,6 +228,166 @@ class ObservationCreatorTest {
   }
 
   @Nested
+  class EmptyAnalytCases {
+
+    @Test
+    void emptyAnalytShouldNotLeadToEmptySpecimen() {
+      PathogenDTO pathogenDTO = mock(PathogenDTO.class);
+      MethodPathogenDTO methodPathogenDTO = mock(MethodPathogenDTO.class);
+      Patient patient = new Patient();
+      patient.setId("Patient/123");
+      Specimen specimen = new Specimen();
+      specimen.setId("Specimen/456");
+      NotificationLaboratoryCategory notificationCategory =
+          mock(NotificationLaboratoryCategory.class);
+
+      when(notificationCategory.getPathogen())
+          .thenReturn(new CodeDisplay("12345").display("12345Display"));
+      when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("67890"));
+      when(methodPathogenDTO.getResult()).thenReturn(MethodPathogenDTO.ResultEnum.POS);
+      when(methodPathogenDTO.getMethod())
+          .thenReturn(new CodeDisplay("MethodCode").display("Method"));
+      when(methodPathogenDTO.getAnalyt()).thenReturn(new CodeDisplay());
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              null);
+
+      // there is no extra observation when an analyt is empty
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
+          .isEqualTo("12345");
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getDisplay())
+          .isEqualTo("12345Display");
+      assertThat(observation.getMethod().getCodingFirstRep().getCode()).isEqualTo("MethodCode");
+      assertThat(observation.getMethod().getCodingFirstRep().getDisplay()).isEqualTo("Method");
+    }
+
+    @Test
+    void partlyEmptyAnalytShouldNotLeadToEmptySpecimen() {
+      PathogenDTO pathogenDTO = mock(PathogenDTO.class);
+      MethodPathogenDTO methodPathogenDTO = mock(MethodPathogenDTO.class);
+      Patient patient = new Patient();
+      patient.setId("Patient/123");
+      Specimen specimen = new Specimen();
+      specimen.setId("Specimen/456");
+      NotificationLaboratoryCategory notificationCategory =
+          mock(NotificationLaboratoryCategory.class);
+
+      when(notificationCategory.getPathogen())
+          .thenReturn(new CodeDisplay("12345").display("12345Display"));
+      when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("67890"));
+      when(methodPathogenDTO.getResult()).thenReturn(MethodPathogenDTO.ResultEnum.POS);
+      when(methodPathogenDTO.getMethod())
+          .thenReturn(new CodeDisplay("MethodCode").display("Method"));
+      when(methodPathogenDTO.getAnalyt()).thenReturn(new CodeDisplay(""));
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              null);
+
+      // there is no extra observation when an analyt is partly empty
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
+          .isEqualTo("12345");
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getDisplay())
+          .isEqualTo("12345Display");
+      assertThat(observation.getMethod().getCodingFirstRep().getCode()).isEqualTo("MethodCode");
+      assertThat(observation.getMethod().getCodingFirstRep().getDisplay()).isEqualTo("Method");
+    }
+
+    @Test
+    void partlyEmptyAnalytShouldNotLeadToEmptySpecimenDisplayCase() {
+      PathogenDTO pathogenDTO = mock(PathogenDTO.class);
+      MethodPathogenDTO methodPathogenDTO = mock(MethodPathogenDTO.class);
+      Patient patient = new Patient();
+      patient.setId("Patient/123");
+      Specimen specimen = new Specimen();
+      specimen.setId("Specimen/456");
+      NotificationLaboratoryCategory notificationCategory =
+          mock(NotificationLaboratoryCategory.class);
+
+      when(notificationCategory.getPathogen())
+          .thenReturn(new CodeDisplay("12345").display("12345Display"));
+      when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("67890"));
+      when(methodPathogenDTO.getResult()).thenReturn(MethodPathogenDTO.ResultEnum.POS);
+      when(methodPathogenDTO.getMethod())
+          .thenReturn(new CodeDisplay("MethodCode").display("Method"));
+      when(methodPathogenDTO.getAnalyt()).thenReturn(new CodeDisplay("foobar"));
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              null);
+
+      // there is no extra observation when an analyt is partly empty
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
+          .isEqualTo("12345");
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getDisplay())
+          .isEqualTo("12345Display");
+      assertThat(observation.getMethod().getCodingFirstRep().getCode()).isEqualTo("MethodCode");
+      assertThat(observation.getMethod().getCodingFirstRep().getDisplay()).isEqualTo("Method");
+    }
+
+    @Test
+    void partlyEmptyAnalytShouldNotLeadToEmptySpecimenDisplay2() {
+      PathogenDTO pathogenDTO = mock(PathogenDTO.class);
+      MethodPathogenDTO methodPathogenDTO = mock(MethodPathogenDTO.class);
+      Patient patient = new Patient();
+      patient.setId("Patient/123");
+      Specimen specimen = new Specimen();
+      specimen.setId("Specimen/456");
+      NotificationLaboratoryCategory notificationCategory =
+          mock(NotificationLaboratoryCategory.class);
+
+      when(notificationCategory.getPathogen())
+          .thenReturn(new CodeDisplay("12345").display("12345Display"));
+      when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("67890"));
+      when(methodPathogenDTO.getResult()).thenReturn(MethodPathogenDTO.ResultEnum.POS);
+      when(methodPathogenDTO.getMethod())
+          .thenReturn(new CodeDisplay("MethodCode").display("Method"));
+      when(methodPathogenDTO.getAnalyt()).thenReturn(new CodeDisplay("foobar").display(""));
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              null);
+
+      // there is no extra observation when an analyt is partly empty
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getCode())
+          .isEqualTo("12345");
+      assertThat(observation.getValueCodeableConcept().getCodingFirstRep().getDisplay())
+          .isEqualTo("12345Display");
+      assertThat(observation.getMethod().getCodingFirstRep().getCode()).isEqualTo("MethodCode");
+      assertThat(observation.getMethod().getCodingFirstRep().getDisplay()).isEqualTo("Method");
+    }
+  }
+
+  @Nested
   class ResistanceTest {
 
     @Test

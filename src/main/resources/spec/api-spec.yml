@@ -19,7 +19,7 @@ tags:
   - name: notifications
 
 paths:
-  /api/ng/reports/bedOccupancy:
+  /reports/bedOccupancy:
     post:
       summary: Create a bedOccupancy notification that will be send to the specified target
       tags:
@@ -79,7 +79,7 @@ paths:
             application/json:
               schema:
                 description: 'see ./schemas-spec.yml#ErrorResponse'
-  /api/ng/notification/pathogen:
+  /notification/pathogen:
     post:
       summary: Create a pathogen notification that will be send to the specified target
       tags:
@@ -125,7 +125,7 @@ paths:
             application/json:
               schema:
                 description: 'see ./schemas-spec.yml#ErrorResponse'
-  /api/ng/notification/disease:
+  /notification/disease:
     post:
       summary: Create a disease notification that will be send to the specified target
       tags:

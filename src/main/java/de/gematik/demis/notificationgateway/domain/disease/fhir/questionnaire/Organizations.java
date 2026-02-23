@@ -36,21 +36,16 @@ import de.gematik.demis.notificationgateway.common.dto.CodeDisplay;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseAnswer;
 import de.gematik.demis.notificationgateway.common.dto.QuestionnaireResponseItem;
 import de.gematik.demis.notificationgateway.domain.disease.fhir.DiseaseNotificationContext;
+import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.answer.Answers;
+import de.gematik.demis.notificationgateway.domain.disease.fhir.questionnaire.answer.FhirAnswer;
 import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.Address;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.ContactPoint;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.HumanName;
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.PractitionerRole;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -68,7 +63,12 @@ public class Organizations implements ResourceFactory {
   private static final String ADDRESS_USE_SYSTEM =
       "https://demis.rki.de/fhir/CodeSystem/addressUse";
   private static final String ADDRESS_USE_CODE_CURRENT = "current";
+  private static final String LABORATORY_FACILITY_LINK_ID = "LaboratoryFacility";
+  private static final String INFECT_PROTECT_FACILITY_LINK_ID = "InfectProtectFacility";
+  private static final Set<String> ORGANIZATION_LINK_IDS =
+      Set.of("Organization", INFECT_PROTECT_FACILITY_LINK_ID, LABORATORY_FACILITY_LINK_ID);
 
+  private final Answers answers;
   private final FeatureFlags featureFlags;
 
   @Override
@@ -78,11 +78,12 @@ public class Organizations implements ResourceFactory {
      * This code assumes that the first answer subitem is the reference to the organization
      * and that there are no other answer subitems.
      */
-    List<QuestionnaireResponseAnswer> answers = item.getAnswer();
-    if ((answers != null) && !answers.isEmpty()) {
-      List<QuestionnaireResponseItem> answerSubitems = answers.getFirst().getItem();
+    final List<QuestionnaireResponseAnswer> itemAnswers = item.getAnswer();
+    if ((itemAnswers != null) && !itemAnswers.isEmpty()) {
+      final List<QuestionnaireResponseItem> answerSubitems = itemAnswers.getFirst().getItem();
       if ((answerSubitems != null) && !answerSubitems.isEmpty()) {
-        return "Organization".equals(answerSubitems.getFirst().getLinkId());
+        final String linkId = answerSubitems.getFirst().getLinkId();
+        return ORGANIZATION_LINK_IDS.contains(linkId);
       }
     }
     return false;
@@ -92,7 +93,7 @@ public class Organizations implements ResourceFactory {
   public FhirResource createFhirResource(
       DiseaseNotificationContext context, QuestionnaireResponseItem item) {
     QuestionnaireResponseItem organizationItem = item.getAnswer().getFirst().getItem().getFirst();
-    Organization organization = creatHospitalizationOrganization(context, organizationItem);
+    Organization organization = createOrganization(context, organizationItem);
     setContactAndTelecom(context, organizationItem, organization);
     return createFhirResource(organization, item.getLinkId());
   }
@@ -104,11 +105,11 @@ public class Organizations implements ResourceFactory {
    * @param organizationItem form input
    * @return organization
    */
-  private Organization creatHospitalizationOrganization(
+  private Organization createOrganization(
       DiseaseNotificationContext context, QuestionnaireResponseItem organizationItem) {
     Organization organization = copyOrganizationIfRequested(context, organizationItem);
     if (organization == null) {
-      organization = creatHospitalizationOrganization(organizationItem);
+      organization = createOrganization(organizationItem);
     }
     context.bundleBuilder().addEncounterOrganization(organization);
     return organization;
@@ -181,17 +182,49 @@ public class Organizations implements ResourceFactory {
     return null;
   }
 
-  private Organization creatHospitalizationOrganization(QuestionnaireResponseItem item) {
-    final var organization = new OrganizationBuilder();
-    organization.setDefaults();
-    setFacilityName(item, organization);
-    setAddress(item, organization);
-    return organization.build();
+  private Organization createOrganization(QuestionnaireResponseItem item) {
+    final var builder = new OrganizationBuilder();
+    setMetaProfile(item, builder);
+    setFacilityName(item, builder);
+    setBsnr(item, builder);
+    setType(item, builder);
+    setAddress(item, builder);
+    builder.setDefaults();
+    return builder.build();
+  }
+
+  private void setBsnr(QuestionnaireResponseItem item, OrganizationBuilder builder) {
+    if (this.featureFlags.isDiseaseStrictProfile()) {
+      final String bsnr = getSubItemAnswerTextOrNull(item, "bsnr");
+      if (bsnr != null) {
+        builder.setBsnrValue(bsnr);
+      }
+    }
+  }
+
+  private void setMetaProfile(QuestionnaireResponseItem item, OrganizationBuilder builder) {
+    if (this.featureFlags.isDiseaseStrictProfile()) {
+      final String linkId = item.getLinkId();
+      if (LABORATORY_FACILITY_LINK_ID.equals(linkId)) {
+        builder.asLaboratoryFacility();
+      } else if (INFECT_PROTECT_FACILITY_LINK_ID.equals(linkId)) {
+        builder.asInfectProtectFacility();
+      }
+    }
+  }
+
+  private void setType(QuestionnaireResponseItem item, OrganizationBuilder organization) {
+    if (this.featureFlags.isDiseaseStrictProfile()) {
+      findSubItemAnswer(item, "type")
+          .map(this.answers::createFhirAnswer)
+          .map(FhirAnswer::value)
+          .map(FhirAnswer.Value::toCoding)
+          .ifPresent(organization::setType);
+    }
   }
 
   private void setFacilityName(QuestionnaireResponseItem item, OrganizationBuilder organization) {
-    findSubItemAnswer(item, "name")
-        .ifPresent(name -> organization.setFacilityName(name.getValueString()));
+    organization.setFacilityName(getSubItemAnswerTextOrNull(item, "name"));
   }
 
   private void setAddress(QuestionnaireResponseItem item, OrganizationBuilder organization) {

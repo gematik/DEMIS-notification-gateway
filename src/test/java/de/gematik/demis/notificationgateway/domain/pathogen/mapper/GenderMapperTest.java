@@ -72,7 +72,7 @@ class GenderMapperTest {
     org.hl7.fhir.r4.model.Coding coding = (org.hl7.fhir.r4.model.Coding) ext.get().getValue();
     assertEquals("http://fhir.de/StructureDefinition/gender-amtlich-de", ext.get().getUrl());
     assertEquals("D", coding.getCode());
-    assertEquals("Divers", coding.getDisplay());
+    assertEquals("divers", coding.getDisplay());
   }
 
   @Test
@@ -82,7 +82,7 @@ class GenderMapperTest {
     assertInstanceOf(Coding.class, ext.get().getValue());
     org.hl7.fhir.r4.model.Coding coding = (org.hl7.fhir.r4.model.Coding) ext.get().getValue();
     assertEquals("X", coding.getCode());
-    assertEquals("Kein Geschlechtseintrag", coding.getDisplay());
+    assertEquals("unbestimmt", coding.getDisplay());
   }
 
   @Test

@@ -54,12 +54,13 @@ public class ContactPointCreator {
    * @return A {@link ContactPoint} object populated with the provided data.
    */
   public static ContactPoint createContactPoint(ContactPointInfo contactPointInfo) {
-    final ContactPointInfo.UsageEnum usage = contactPointInfo.getUsage();
-    return new TelecomDataBuilder()
-        .setSystem(
-            ContactPoint.ContactPointSystem.fromCode(contactPointInfo.getContactType().getValue()))
-        .setValue(contactPointInfo.getValue())
-        .setUse(usage == null ? null : ContactPoint.ContactPointUse.fromCode(usage.getValue()))
-        .build();
+    TelecomDataBuilder telecomDataBuilder =
+        new TelecomDataBuilder()
+            .setSystem(
+                ContactPoint.ContactPointSystem.fromCode(
+                    contactPointInfo.getContactType().getValue()))
+            .setValue(contactPointInfo.getValue());
+
+    return telecomDataBuilder.build();
   }
 }

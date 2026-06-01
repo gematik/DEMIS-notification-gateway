@@ -59,7 +59,8 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            NotificationType.NOMINAL);
+            NotificationType.NOMINAL,
+            false);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
     assertThat(composition.getTitle()).isEqualTo("Meldung gemäß §7 Absatz 1 IfSG");
@@ -86,7 +87,8 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            NotificationType.ANONYMOUS);
+            NotificationType.ANONYMOUS,
+            false);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
     assertThat(composition.getTitle()).isEqualTo("Meldung gemäß §7 Absatz 3 IfSG");
@@ -113,7 +115,8 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            NotificationType.NON_NOMINAL);
+            NotificationType.NON_NOMINAL,
+            false);
 
     assertThat(composition.getStatus()).isEqualTo(Composition.CompositionStatus.FINAL);
     assertThat(composition.getTitle()).isEqualTo("Meldung gemäß §7 Absatz 3 IfSG");
@@ -142,11 +145,122 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            NotificationType.NOMINAL);
+            NotificationType.NOMINAL,
+            false);
 
     assertThat(
             ((Reference) composition.getRelatesToFirstRep().getTarget()).getIdentifier().getValue())
         .isEqualTo("12345");
+  }
+
+  @Test
+  void createCompositionShouldSetRelatesToNotificationIdWhenPresentAnRelatesToOtherFacility() {
+    Patient patient = new Patient();
+    patient.setId("Patient/123");
+    PractitionerRole practitionerRole = new PractitionerRole();
+    practitionerRole.setId("PractitionerRole/123");
+    DiagnosticReport diagnosticReport = new DiagnosticReport();
+    diagnosticReport.setId("DiagnosticReport/456");
+    NotificationLaboratoryCategory notificationCategory = new NotificationLaboratoryCategory();
+    notificationCategory.setReportStatus(NotificationLaboratoryCategory.ReportStatusEnum.FINAL);
+    notificationCategory.setInitialNotificationId("12345");
+    notificationCategory.setNotificationIdReference(
+        NotificationLaboratoryCategory.NotificationIdReferenceEnum.RELATES_TO_OTHER_FACILITY);
+
+    Composition composition =
+        CompositionCreator.createComposition(
+            patient,
+            practitionerRole,
+            diagnosticReport,
+            notificationCategory,
+            NotificationType.NOMINAL,
+            true);
+
+    assertThat(
+            ((Reference) composition.getRelatesToFirstRep().getTarget()).getIdentifier().getValue())
+        .isEqualTo("12345");
+  }
+
+  @Test
+  void createCompositionShouldSetNotificationIdWhenPresentAnRelatesToOwnFacility() {
+    Patient patient = new Patient();
+    patient.setId("Patient/123");
+    PractitionerRole practitionerRole = new PractitionerRole();
+    practitionerRole.setId("PractitionerRole/123");
+    DiagnosticReport diagnosticReport = new DiagnosticReport();
+    diagnosticReport.setId("DiagnosticReport/456");
+    NotificationLaboratoryCategory notificationCategory = new NotificationLaboratoryCategory();
+    notificationCategory.setReportStatus(NotificationLaboratoryCategory.ReportStatusEnum.FINAL);
+    notificationCategory.setInitialNotificationId("12345");
+    notificationCategory.setNotificationIdReference(
+        NotificationLaboratoryCategory.NotificationIdReferenceEnum.RELATES_TO_OWN_FACILITY);
+
+    Composition composition =
+        CompositionCreator.createComposition(
+            patient,
+            practitionerRole,
+            diagnosticReport,
+            notificationCategory,
+            NotificationType.NOMINAL,
+            true);
+
+    assertThat(composition.getRelatesTo()).isEmpty();
+    assertThat(composition.getIdentifier().getValue()).isEqualTo("12345");
+  }
+
+  @Test
+  void createCompositionShouldThrowExceptionWhenNotificationIdPresentAndNoReference() {
+    Patient patient = new Patient();
+    patient.setId("Patient/123");
+    PractitionerRole practitionerRole = new PractitionerRole();
+    practitionerRole.setId("PractitionerRole/123");
+    DiagnosticReport diagnosticReport = new DiagnosticReport();
+    diagnosticReport.setId("DiagnosticReport/456");
+    NotificationLaboratoryCategory notificationCategory = new NotificationLaboratoryCategory();
+    notificationCategory.setReportStatus(NotificationLaboratoryCategory.ReportStatusEnum.FINAL);
+    notificationCategory.setInitialNotificationId("12345");
+    notificationCategory.setNotificationIdReference(
+        NotificationLaboratoryCategory.NotificationIdReferenceEnum.NO_REFERENCE);
+
+    assertThat(
+            assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                    CompositionCreator.createComposition(
+                        patient,
+                        practitionerRole,
+                        diagnosticReport,
+                        notificationCategory,
+                        NotificationType.NOMINAL,
+                        true)))
+        .hasMessageContaining("NotificationIdReferenceEnum must be set to OWN ot OTHER");
+  }
+
+  @Test
+  void createCompositionShouldThrowExceptionWhenNotificationIdPresentAndReferenceIsNull() {
+    Patient patient = new Patient();
+    patient.setId("Patient/123");
+    PractitionerRole practitionerRole = new PractitionerRole();
+    practitionerRole.setId("PractitionerRole/123");
+    DiagnosticReport diagnosticReport = new DiagnosticReport();
+    diagnosticReport.setId("DiagnosticReport/456");
+    NotificationLaboratoryCategory notificationCategory = new NotificationLaboratoryCategory();
+    notificationCategory.setReportStatus(NotificationLaboratoryCategory.ReportStatusEnum.FINAL);
+    notificationCategory.setInitialNotificationId("12345");
+    notificationCategory.setNotificationIdReference(null);
+
+    assertThat(
+            assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                    CompositionCreator.createComposition(
+                        patient,
+                        practitionerRole,
+                        diagnosticReport,
+                        notificationCategory,
+                        NotificationType.NOMINAL,
+                        true)))
+        .hasMessageContaining("NotificationIdReferenceEnum must be set to OWN ot OTHER");
   }
 
   @Test
@@ -167,7 +281,8 @@ class CompositionCreatorTest {
             practitionerRole,
             diagnosticReport,
             notificationCategory,
-            NotificationType.NOMINAL);
+            NotificationType.NOMINAL,
+            false);
 
     assertThat(composition.getRelatesTo()).isEmpty();
   }
@@ -192,6 +307,7 @@ class CompositionCreatorTest {
                 practitionerRole,
                 diagnosticReport,
                 notificationCategory,
-                NotificationType.NOMINAL));
+                NotificationType.NOMINAL,
+                false));
   }
 }

@@ -77,50 +77,9 @@ public class PatientCreator {
   public static Patient createPatient(
       NotificationBundleLaboratoryDataBuilder bundleBuilder,
       PathogenTest rawData,
-      PractitionerRole submittingRole,
-      boolean featureFlagFollowUpActive) {
-
-    if (featureFlagFollowUpActive) {
-      return createPatientWithFollowUpAndNonnominalOptions(bundleBuilder, rawData, submittingRole);
-    } else {
-      return legacyPatientCreation(bundleBuilder, rawData, submittingRole);
-    }
-  }
-
-  private static Patient legacyPatientCreation(
-      NotificationBundleLaboratoryDataBuilder bundleBuilder,
-      PathogenTest rawData,
       PractitionerRole submittingRole) {
-    NotifiedPerson rawPatientData = rawData.getNotifiedPerson();
-    NotifiedPersonAddressInfo whereaboutsInfo = rawPatientData.getCurrentAddress();
 
-    if (whereaboutsInfo == null) {
-      throw new IllegalArgumentException("Current address of patient cannot be null");
-    }
-
-    Address whereabouts = createWhereaboutsAddress(bundleBuilder, whereaboutsInfo, submittingRole);
-
-    List<Address> addresses =
-        List.of(whereabouts, AddressCreator.createAddress(rawPatientData.getResidenceAddress()));
-
-    Gender gender = rawPatientData.getInfo().getGender();
-    NotifiedPersonNominalDataBuilder patientBuilder =
-        new NotifiedPersonNominalDataBuilder()
-            .setDefault()
-            .setBirthdate(
-                new DateType(DateUtils.createDate(rawPatientData.getInfo().getBirthDate())))
-            .setHumanName(createHumanName(rawPatientData.getInfo()))
-            .setGender(mapGender(gender));
-
-    addresses.stream().filter(Objects::nonNull).forEach(patientBuilder::addAddress);
-    rawPatientData.getContacts().stream()
-        .map(ContactPointCreator::createContactPoint)
-        .forEach(patientBuilder::addTelecom);
-
-    Patient patient = patientBuilder.build();
-    createGenderExtension(gender)
-        .ifPresent(extension -> patient.getGenderElement().addExtension(extension));
-    return patient;
+    return createPatientWithFollowUpAndNonnominalOptions(bundleBuilder, rawData, submittingRole);
   }
 
   private static Patient createPatientWithFollowUpAndNonnominalOptions(

@@ -38,6 +38,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Demis
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.Utils;
 import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
+import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
 import de.gematik.demis.notificationgateway.common.enums.NotificationType;
 import de.gematik.demis.notificationgateway.common.exceptions.BadRequestException;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
@@ -55,6 +56,8 @@ import java.util.Optional;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Composition;
 import org.hl7.fhir.r4.model.Reference;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -86,8 +89,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 class DiseaseNotificationBundleCreationServiceTest {
 
   @Autowired private DiseaseNotificationBundleCreationService service;
+  @Autowired private FeatureFlags featureFlags;
   private DiseaseNotification input;
   private int counter;
+  private boolean originalReferenceFieldValue;
+
+  @BeforeEach
+  void setUp() {
+    originalReferenceFieldValue = featureFlags.isReferenceField();
+  }
+
+  @AfterEach
+  void tearDown() {
+    featureFlags.setReferenceField(originalReferenceFieldValue);
+  }
 
   @ParameterizedTest
   @CsvSource({
@@ -190,6 +205,125 @@ class DiseaseNotificationBundleCreationServiceTest {
                 assertThat(ref.getIdentifier().getSystem())
                     .isEqualTo(DemisConstants.NOTIFICATION_ID_SYSTEM);
               });
+    }
+  }
+
+  /**
+   * When referenceField is enabled and notificationIdReference is RELATES_TO_OWN_FACILITY, the
+   * composition identifier must be set to the initialNotificationId (amended own report).
+   */
+  @Test
+  void thatOwnFacilityReferenceSetIdentifierWhenReferenceFieldEnabled() throws BadRequestException {
+    final String initialNotificationId = "05240c75-29e4-4a9f-8965-7c79d7f015ed";
+    input =
+        FileUtils.createDiseaseNotification(
+            "portal/disease/73.notifications/input/disease_with_initialNotificationId.json");
+    featureFlags.setReferenceField(true);
+
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      final Bundle bundle = service.createBundle(input, NotificationType.NOMINAL);
+
+      assertThat(bundle).isNotNull();
+      final Optional<Composition> from = Compositions.from(bundle);
+      assertThat(from).isPresent();
+      assertThat(from.get().getIdentifier().getValue()).isEqualTo(initialNotificationId);
+      assertThat(from.get().getRelatesTo()).isEmpty();
+    }
+  }
+
+  /**
+   * When referenceField is enabled and notificationIdReference is RELATES_TO_OTHER_FACILITY, the
+   * relatesTo element must point to the initialNotificationId (follow-up to another facility).
+   */
+  @Test
+  void thatOtherFacilityReferenceSetRelatesToWhenReferenceFieldEnabled()
+      throws BadRequestException {
+    final String initialNotificationId = "05240c75-29e4-4a9f-8965-7c79d7f015ed";
+    input =
+        FileUtils.createDiseaseNotification(
+            "portal/disease/73.notifications/input/disease_with_initialNotificationId.json");
+    input
+        .getStatus()
+        .setNotificationIdReference(
+            DiseaseStatus.NotificationIdReferenceEnum.RELATES_TO_OTHER_FACILITY);
+    featureFlags.setReferenceField(true);
+
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      final Bundle bundle = service.createBundle(input, NotificationType.NOMINAL);
+
+      assertThat(bundle).isNotNull();
+      final Optional<Composition> from = Compositions.from(bundle);
+      assertThat(from).isPresent();
+      assertThat(from.get().getIdentifier().getValue()).isNotEqualTo(initialNotificationId);
+      assertThat(from.get().getRelatesToFirstRep().getTarget())
+          .isInstanceOfSatisfying(
+              Reference.class,
+              ref -> {
+                assertThat(ref.getIdentifier().getValue()).isEqualTo(initialNotificationId);
+                assertThat(ref.getIdentifier().getSystem())
+                    .isEqualTo(DemisConstants.NOTIFICATION_ID_SYSTEM);
+              });
+    }
+  }
+
+  /**
+   * When referenceField is enabled but notificationIdReference is null, an IllegalArgumentException
+   * must be thrown because this is an invalid * state.
+   */
+  @Test
+  void thatNothingIsSetWhenNotificationIdReferenceIsNullAndReferenceFieldEnabled()
+      throws BadRequestException {
+    final String initialNotificationId = "05240c75-29e4-4a9f-8965-7c79d7f015ed";
+
+    input =
+        FileUtils.createDiseaseNotification(
+            "portal/disease/73.notifications/input/disease_with_initialNotificationId.json");
+    input.getStatus().setNotificationIdReference(null);
+    featureFlags.setReferenceField(true);
+
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      final Bundle bundle = service.createBundle(input, NotificationType.NOMINAL);
+
+      assertThat(bundle).isNotNull();
+      final Optional<Composition> from = Compositions.from(bundle);
+      assertThat(from).isPresent();
+      assertThat(from.get().getIdentifier().getValue()).isNotEqualTo(initialNotificationId);
+      assertThat(from.get().getRelatesToFirstRep().getTarget())
+          .isInstanceOfSatisfying(
+              Reference.class,
+              ref -> {
+                assertThat(ref.getIdentifier().getValue()).isEqualTo(initialNotificationId);
+                assertThat(ref.getIdentifier().getSystem())
+                    .isEqualTo(DemisConstants.NOTIFICATION_ID_SYSTEM);
+              });
+    }
+  }
+
+  /**
+   * When referenceField is enabled, initialNotificationId is provided, and notificationIdReference
+   * is set to NO_REFERENCE, an IllegalArgumentException must be thrown because this is an invalid
+   * state.
+   */
+  @Test
+  void thatIllegalArgumentExceptionIsThrownWhenNoReferenceIsSetWithInitialNotificationId() {
+    input =
+        FileUtils.createDiseaseNotification(
+            "portal/disease/73.notifications/input/disease_with_initialNotificationId.json");
+    input
+        .getStatus()
+        .setNotificationIdReference(DiseaseStatus.NotificationIdReferenceEnum.NO_REFERENCE);
+    featureFlags.setReferenceField(true);
+
+    try (final var utils = Mockito.mockStatic(Utils.class)) {
+      mockNblUtils(utils);
+      assertThat(
+              assertThrows(
+                  IllegalArgumentException.class,
+                  () -> service.createBundle(input, NotificationType.NOMINAL)))
+          .hasMessageContaining("NotificationIdReferenceEnum must be set to OWN ot OTHER");
     }
   }
 }

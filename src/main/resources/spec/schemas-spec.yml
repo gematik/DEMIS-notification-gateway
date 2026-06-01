@@ -490,6 +490,11 @@ components:
           type: string
         laboratoryOrderId:
           type: string
+        notificationIdReference:
+          enum:
+            - noReference
+            - relatesToOwnFacility
+            - relatesToOtherFacility
     SpecimenList:
       description: Liste der angegebenen Proben
       type: array
@@ -746,6 +751,11 @@ components:
         initialNotificationId:
           description: Initiale Meldungs-ID bei Folgemeldungen
           type: string
+        notificationIdReference:
+          enum:
+            - noReference
+            - relatesToOwnFacility
+            - relatesToOtherFacility
     Condition:
       description: Die Erkrankung enthält klinische Informationen wie Diagnose, Symptome und usw.
       type: object

@@ -77,7 +77,13 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimen =
         createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
+            pathogenDTO,
+            patient,
+            submittingRole,
+            observationList,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(specimen).hasSize(1);
     assertThat(specimen.getFirst().getType().getCodingFirstRep().getCode())
@@ -128,7 +134,13 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimen =
         createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
+            pathogenDTO,
+            patient,
+            submittingRole,
+            observationList,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(specimen).hasSize(1);
     assertThat(specimen.getFirst().getType().getCodingFirstRep().getCode())
@@ -166,7 +178,13 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimen =
         createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
+            pathogenDTO,
+            patient,
+            submittingRole,
+            observationList,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(specimen).isEmpty();
     assertThat(observationList).isEmpty();
@@ -187,7 +205,13 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimen =
         createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
+            pathogenDTO,
+            patient,
+            submittingRole,
+            observationList,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(specimen).isEmpty();
     assertThat(observationList).isEmpty();
@@ -208,7 +232,13 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
+            pathogenDTO,
+            patient,
+            submittingRole,
+            observationList,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(specimens).isEmpty();
     assertThat(observationList).isEmpty();
@@ -229,7 +259,13 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
+            pathogenDTO,
+            patient,
+            submittingRole,
+            observationList,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(specimens).isEmpty();
     assertThat(observationList).isEmpty();
@@ -285,7 +321,13 @@ class SpecimenCreatorTest {
 
     List<Specimen> specimens =
         SpecimenCreator.createSpecimen(
-            pathogenDTO, patient, submittingRole, observationList, notificationCategory, null);
+            pathogenDTO,
+            patient,
+            submittingRole,
+            observationList,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(specimens).hasSize(2);
     assertThat(specimens.getFirst().getType().getCodingFirstRep().getCode())

@@ -79,7 +79,8 @@ public class SpecimenCreator {
       PractitionerRole submittingRole,
       List<Observation> observation,
       NotificationLaboratoryCategory notificationLaboratoryCategory,
-      Map<String, String> versionMap) {
+      Map<String, String> versionMap,
+      final boolean loincVersionViaPortalEnabled) {
     List<Specimen> returnList = new ArrayList<>();
 
     // Retrieve the pathogen short code and the list of specimen data transfer objects (DTOs).
@@ -130,7 +131,8 @@ public class SpecimenCreator {
               patient,
               specimen,
               notificationLaboratoryCategory,
-              versionMap));
+              versionMap,
+              loincVersionViaPortalEnabled));
 
       // Add observations for resistance genes.
       observation.addAll(

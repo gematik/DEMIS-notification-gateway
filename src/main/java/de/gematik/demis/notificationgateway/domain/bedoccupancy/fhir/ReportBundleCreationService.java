@@ -46,6 +46,7 @@ import de.gematik.demis.notificationgateway.common.dto.OperableBeds;
 import de.gematik.demis.notificationgateway.common.dto.PractitionerInfo;
 import java.util.Date;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Composition;
 import org.hl7.fhir.r4.model.ContactPoint;
@@ -56,6 +57,7 @@ import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ReportBundleCreationService {
 
   private static QuestionnaireResponse createQuestionnaireResponse(BedOccupancy bedOccupancy) {
@@ -85,8 +87,7 @@ public class ReportBundleCreationService {
     }
   }
 
-  private static PractitionerRole createNotifierRole(
-      BedOccupancyNotifierFacility notifierFacility) {
+  private PractitionerRole createNotifierRole(BedOccupancyNotifierFacility notifierFacility) {
     final FacilityAddressInfo addressInfo = notifierFacility.getAddress();
     final FacilityInfo facilityInfo = notifierFacility.getFacilityInfo();
     final PractitionerInfo practitionerInfo = notifierFacility.getContact();

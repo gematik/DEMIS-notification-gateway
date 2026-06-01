@@ -50,7 +50,7 @@ class ContactPointCreatorTest {
 
     assertThat(result.getSystem()).isEqualTo(ContactPoint.ContactPointSystem.PHONE);
     assertThat(result.getValue()).isEqualTo("123456789");
-    assertThat(result.getUse()).isEqualTo(ContactPoint.ContactPointUse.HOME);
+    assertThat(result.getUse()).isNull();
   }
 
   @Test

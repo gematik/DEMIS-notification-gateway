@@ -56,165 +56,9 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class PatientCreatorTest {
-
-  @DisplayName("Regression Test for follow up notifications")
-  @Nested
-  class RegressionTest {
-    @Test
-    void createsPatientWithValidData() {
-      NotificationBundleLaboratoryDataBuilder bundleBuilder =
-          mock(NotificationBundleLaboratoryDataBuilder.class);
-      PathogenTest rawData = new PathogenTest();
-      PractitionerRole submittingRole = new PractitionerRole();
-      NotifiedPerson notifiedPerson = new NotifiedPerson();
-      rawData.setNotifiedPerson(notifiedPerson);
-      NotifiedPersonAddressInfo addressInfo = new NotifiedPersonAddressInfo();
-      notifiedPerson.setResidenceAddress(addressInfo);
-      addressInfo.setAddressType(AddressType.PRIMARY);
-      NotifiedPersonAddressInfo addressInfo2 = new NotifiedPersonAddressInfo();
-      notifiedPerson.setCurrentAddress(addressInfo2);
-      addressInfo2.setAddressType(AddressType.CURRENT);
-      NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
-      notifiedPerson.setInfo(basicInfo);
-
-      basicInfo.setBirthDate(LocalDate.of(1990, 1, 1));
-      basicInfo.setGender(Gender.MALE);
-      basicInfo.setFirstname("Max");
-      basicInfo.setLastname("Mustermann");
-
-      Organization organization = mock(Organization.class);
-      submittingRole.setOrganization(new Reference(organization));
-
-      Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
-
-      assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEqualTo("Max");
-      assertThat(result.getNameFirstRep().getFamily()).isEqualTo("Mustermann");
-      assertThat(result.getGender()).isEqualTo(Enumerations.AdministrativeGender.MALE);
-      assertThat(result.getBirthDateElement().getValue()).isEqualTo("1990-01-01");
-      verifyNoInteractions(bundleBuilder);
-    }
-
-    @Test
-    void shouldReturnExceptionForMissingAddressData() {
-      NotificationBundleLaboratoryDataBuilder bundleBuilder =
-          mock(NotificationBundleLaboratoryDataBuilder.class);
-      PathogenTest rawData = mock(PathogenTest.class);
-      PractitionerRole submittingRole = mock(PractitionerRole.class);
-      NotifiedPerson notifiedPerson = mock(NotifiedPerson.class);
-
-      when(rawData.getNotifiedPerson()).thenReturn(notifiedPerson);
-      when(notifiedPerson.getCurrentAddress()).thenReturn(null);
-
-      assertThatThrownBy(
-              () -> PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("Current address of patient cannot be null");
-    }
-
-    @Test
-    void shouldUseFacilityAddressWithOtherFacilityAsType() {
-      NotificationBundleLaboratoryDataBuilder bundleBuilder =
-          mock(NotificationBundleLaboratoryDataBuilder.class);
-
-      NotifiedPersonAddressInfo addressInfoResidence = new NotifiedPersonAddressInfo();
-      addressInfoResidence.setAddressType(AddressType.PRIMARY);
-      addressInfoResidence.setStreet("Straße");
-
-      NotifiedPersonAddressInfo addressInfoSubmittingAddress = new NotifiedPersonAddressInfo();
-      addressInfoSubmittingAddress.setAddressType(AddressType.OTHER_FACILITY);
-
-      NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
-      basicInfo.setGender(Gender.MALE);
-      basicInfo.setFirstname("Max");
-      basicInfo.setLastname("Mustermann");
-      NotifiedPerson notifiedPerson = new NotifiedPerson();
-      notifiedPerson.setResidenceAddress(addressInfoResidence);
-      notifiedPerson.setCurrentAddress(addressInfoSubmittingAddress);
-      notifiedPerson.setInfo(basicInfo);
-
-      PathogenTest rawData = new PathogenTest();
-      rawData.setNotifiedPerson(notifiedPerson);
-
-      PractitionerRole submittingRole = new PractitionerRole();
-      Organization submittingOrganization = new Organization();
-      submittingOrganization.setName("submitter");
-      submittingOrganization.addAddress(
-          new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
-      submittingRole.setOrganization(new Reference(submittingOrganization));
-
-      Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
-
-      assertThat(result.getAddress()).hasSize(2);
-      assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
-      assertThat(result.getAddress().getFirst().getExtension().getFirst().getUrl())
-          .contains("FacilityAddressNotifiedPerson");
-      assertThat(result.getAddress().getFirst().getExtension().get(1).getUrl())
-          .contains("AddressUse");
-      assertThat(result.getAddress().getFirst().getExtension().get(1).getValue())
-          .extracting("code")
-          .isEqualTo("current");
-      assertThat(result.getAddress().get(1).getExtension().getFirst().getUrl())
-          .contains("AddressUse");
-      assertThat(result.getAddress().get(1).getExtension().getFirst().getValue())
-          .extracting("code")
-          .isEqualTo("primary");
-      verify(bundleBuilder).addAdditionalEntry(any(Organization.class));
-    }
-
-    @Test
-    void addsSubmittingFacilityAddress() {
-      NotificationBundleLaboratoryDataBuilder bundleBuilder =
-          new NotificationBundleLaboratoryDataBuilder();
-
-      NotifiedPersonAddressInfo addressInfoResidence = new NotifiedPersonAddressInfo();
-      addressInfoResidence.setAddressType(AddressType.PRIMARY);
-      addressInfoResidence.setStreet("Straße");
-
-      NotifiedPersonAddressInfo addressInfoSubmittingAddress = new NotifiedPersonAddressInfo();
-      addressInfoSubmittingAddress.setAddressType(AddressType.SUBMITTING_FACILITY);
-
-      NotifiedPersonBasicInfo basicInfo = new NotifiedPersonBasicInfo();
-      basicInfo.setGender(Gender.MALE);
-      basicInfo.setLastname("Lastname");
-      basicInfo.setFirstname("Firstname");
-      NotifiedPerson notifiedPerson = new NotifiedPerson();
-      notifiedPerson.setResidenceAddress(addressInfoResidence);
-      notifiedPerson.setCurrentAddress(addressInfoSubmittingAddress);
-      notifiedPerson.setInfo(basicInfo);
-
-      PathogenTest rawData = new PathogenTest();
-      rawData.setNotifiedPerson(notifiedPerson);
-
-      PractitionerRole submittingRole = new PractitionerRole();
-      Organization submittingOrganization = new Organization();
-      submittingOrganization.setName("submitter");
-      submittingOrganization.addAddress(
-          new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
-      submittingRole.setOrganization(new Reference(submittingOrganization));
-
-      Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
-
-      assertThat(result.getAddress()).hasSize(2);
-      assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
-      assertThat(result.getAddress().getFirst().getExtension().getFirst().getUrl())
-          .contains("FacilityAddressNotifiedPerson");
-      assertThat(result.getAddress().getFirst().getExtension().get(1).getUrl())
-          .contains("AddressUse");
-      assertThat(result.getAddress().getFirst().getExtension().get(1).getValue())
-          .extracting("code")
-          .isEqualTo("current");
-      assertThat(result.getAddress().get(1).getExtension().getFirst().getUrl())
-          .contains("AddressUse");
-      assertThat(result.getAddress().get(1).getExtension().getFirst().getValue())
-          .extracting("code")
-          .isEqualTo("primary");
-    }
-  }
 
   @Test
   void createsPatientWithValidDataAndDiverseGender() {
@@ -241,7 +85,7 @@ class PatientCreatorTest {
     Organization organization = mock(Organization.class);
     submittingRole.setOrganization(new Reference(organization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
 
     assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEqualTo("Max");
     assertThat(result.getNameFirstRep().getFamily()).isEqualTo("Mustermann");
@@ -269,8 +113,7 @@ class PatientCreatorTest {
     when(notifiedPerson.getCurrentAddress()).thenReturn(null);
     when(notifiedPerson.getResidenceAddress()).thenReturn(null);
 
-    assertThatThrownBy(
-            () -> PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true))
+    assertThatThrownBy(() -> PatientCreator.createPatient(bundleBuilder, rawData, submittingRole))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Residence address of patient cannot be null");
   }
@@ -306,7 +149,7 @@ class PatientCreatorTest {
         new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
     submittingRole.setOrganization(new Reference(submittingOrganization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
 
     assertThat(result.getAddress()).hasSize(2);
     assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
@@ -356,7 +199,7 @@ class PatientCreatorTest {
         new Address().setLine(Collections.singletonList(new StringType("Pfad"))));
     submittingRole.setOrganization(new Reference(submittingOrganization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, false);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
 
     assertThat(result.getAddress()).hasSize(2);
     assertThat(result.getAddress().getFirst().getExtension()).hasSize(2);
@@ -392,7 +235,7 @@ class PatientCreatorTest {
     Organization organization = mock(Organization.class);
     submittingRole.setOrganization(new Reference(organization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
 
     assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEmpty();
     assertThat(result.getNameFirstRep().getFamily()).isNull();
@@ -427,7 +270,7 @@ class PatientCreatorTest {
     Organization organization = mock(Organization.class);
     submittingRole.setOrganization(new Reference(organization));
 
-    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole, true);
+    Patient result = PatientCreator.createPatient(bundleBuilder, rawData, submittingRole);
 
     assertThat(result.getNameFirstRep().getGivenAsSingleString()).isEmpty();
     assertThat(result.getNameFirstRep().getFamily()).isNull();

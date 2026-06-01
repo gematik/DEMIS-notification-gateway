@@ -37,8 +37,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Builder
 @ConfigurationProperties(prefix = "feature.flag")
 public class FeatureFlags {
-  boolean followUpNotificationActive;
-  boolean portalErrorDialogFiltering;
   boolean diseaseStrictProfile;
-  boolean othPrivatLabSubmitterAssignmentDisabled;
+  boolean loincVersionViaPortal;
+  boolean referenceField;
 }

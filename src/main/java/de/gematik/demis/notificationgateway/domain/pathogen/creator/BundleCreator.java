@@ -83,8 +83,8 @@ public class BundleCreator {
   public static Bundle createBundle(
       PathogenTest pathogenTest,
       NotificationType notificationType,
-      boolean featureFlagFollowUpActive,
-      boolean isOthPrivatLabSubmitterAssignmentDisabled) {
+      final boolean loincVersionViaPortalEnabled,
+      final boolean referenceFieldEnabled) {
 
     // DTOs
 
@@ -120,9 +120,7 @@ public class BundleCreator {
     final PractitionerRole notifierRole = createNotifierPractitionerRole(notifierFacility);
     final PractitionerRole submittingRole =
         createSubmitterPractitionerRole(
-            pathogenTest.getSubmittingFacility(),
-            isNotifiedPersonFacility,
-            isOthPrivatLabSubmitterAssignmentDisabled);
+            pathogenTest.getSubmittingFacility(), isNotifiedPersonFacility);
 
     // check for notification type and use the appropriate bundleBuilder builder
     final NotificationBundleLaboratoryDataBuilder bundleBuilder =
@@ -131,8 +129,7 @@ public class BundleCreator {
           case ANONYMOUS -> new NotificationBundleLaboratoryAnonymousDataBuilder().setDefaults();
           case NOMINAL -> new NotificationBundleLaboratoryDataBuilder().setDefaults();
         };
-    final Patient patient =
-        createPatient(bundleBuilder, pathogenTest, submittingRole, featureFlagFollowUpActive);
+    final Patient patient = createPatient(bundleBuilder, pathogenTest, submittingRole);
 
     List<Observation> observation = new ArrayList<>();
 
@@ -144,7 +141,8 @@ public class BundleCreator {
                 submittingRole,
                 observation,
                 notificationLaboratoryCategory,
-                extractVersionMap(pathogenTest)));
+                extractVersionMap(pathogenTest),
+                loincVersionViaPortalEnabled));
 
     final DiagnosticReport diagnosticReport =
         createDiagnosticReport(
@@ -162,7 +160,8 @@ public class BundleCreator {
                 notifierRole,
                 diagnosticReport,
                 notificationLaboratoryCategory,
-                notificationType))
+                notificationType,
+                referenceFieldEnabled))
         .setLaboratoryReport(diagnosticReport)
         .build();
   }

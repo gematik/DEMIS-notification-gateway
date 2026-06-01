@@ -48,7 +48,10 @@ final class FhirRequestInterceptor extends SimpleRequestHeaderInterceptor {
           "x-fhir-api-request-origin",
           "x-fhir-api-submission-type",
           "x-fhir-api-version",
-          "x-fhir-profile");
+          "x-fhir-profile",
+          "x-api-version",
+          "x-fhir-package",
+          "x-fhir-package-version");
 
   @Override
   public void interceptRequest(IHttpRequest theRequest) {

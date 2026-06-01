@@ -63,6 +63,7 @@ public class CompositionCreator {
    *     details about the notification category.
    * @param notificationType The {@link NotificationType} enum indicating the type of laboratory
    *     notification (e.g., NON_NOMINAL, ANONYMOUS, LAB).
+   * @param referenceFieldEnabled Flag to enable notification ID reference-field behavior.
    * @return A {@link Composition} object populated with the provided data.
    */
   public static Composition createComposition(
@@ -70,7 +71,8 @@ public class CompositionCreator {
       PractitionerRole practitionerRole,
       DiagnosticReport diagnosticReport,
       NotificationLaboratoryCategory notificationCategory,
-      NotificationType notificationType) {
+      NotificationType notificationType,
+      boolean referenceFieldEnabled) {
 
     final Composition.CompositionStatus compositionStatus =
         Composition.CompositionStatus.fromCode(notificationCategory.getReportStatus().getValue());
@@ -95,9 +97,28 @@ public class CompositionCreator {
         .setLaboratoryReport(diagnosticReport);
 
     final String initialNotificationId = notificationCategory.getInitialNotificationId();
-
     if (initialNotificationId != null) {
-      builder.setRelatesToNotificationId(initialNotificationId);
+      if (!referenceFieldEnabled) {
+        builder.setRelatesToNotificationId(initialNotificationId);
+      } else {
+        final NotificationLaboratoryCategory.NotificationIdReferenceEnum notificationIdReference =
+            notificationCategory.getNotificationIdReference();
+        final NotificationLaboratoryCategory.NotificationIdReferenceEnum
+            normalizedNotificationIdReference =
+                notificationIdReference == null
+                    ? NotificationLaboratoryCategory.NotificationIdReferenceEnum.NO_REFERENCE
+                    : notificationIdReference;
+
+        switch (normalizedNotificationIdReference) {
+          case RELATES_TO_OWN_FACILITY -> builder.setIdentifierValue(initialNotificationId);
+          case RELATES_TO_OTHER_FACILITY ->
+              // follow-up notification is always of type RELATES_TO_OTHER_FACILITY
+              builder.setRelatesToNotificationId(initialNotificationId);
+          default ->
+              throw new IllegalArgumentException(
+                  "NotificationIdReferenceEnum must be set to OWN ot OTHER when initialNotificationId is provided");
+        }
+      }
     }
 
     return builder.build();

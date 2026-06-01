@@ -46,15 +46,22 @@ class FhirRequestInterceptorTest {
 
   @Test
   void testInterceptRequest() {
-    // Arrange
-    String fhirProfile = "http://example.com/profile";
-    String fhirProfileVersion = "v6";
-    String identifier = "TestClient";
-    String submissionType = "pathogen";
-    String requestOrigin = "internal";
 
-    when(httpServletRequest.getHeader("x-fhir-profile")).thenReturn(fhirProfile);
-    when(httpServletRequest.getHeader("x-fhir-api-version")).thenReturn(fhirProfileVersion);
+    // Arrange
+    final String apiVersion = "preview6";
+    final String fhirPackage = "http://example.com/profile";
+    final String fhirPackageVersion = "v6";
+
+    final String identifier = "TestClient";
+    final String submissionType = "pathogen";
+    final String requestOrigin = "internal";
+
+    when(httpServletRequest.getHeader("x-api-version")).thenReturn(apiVersion);
+    when(httpServletRequest.getHeader("x-fhir-package")).thenReturn(fhirPackage);
+    when(httpServletRequest.getHeader("x-fhir-package-version")).thenReturn(fhirPackageVersion);
+
+    when(httpServletRequest.getHeader("x-fhir-profile")).thenReturn(fhirPackage);
+    when(httpServletRequest.getHeader("x-fhir-api-version")).thenReturn(fhirPackageVersion);
     when(httpServletRequest.getHeader("x-fhir-api-submission-type")).thenReturn(submissionType);
     when(httpServletRequest.getHeader("x-fhir-api-request-origin")).thenReturn(requestOrigin);
 
@@ -67,8 +74,12 @@ class FhirRequestInterceptorTest {
     // Assert
     verify(mockRequest).removeHeaders("User-Agent");
     verify(mockRequest).addHeader("User-Agent", identifier);
-    verify(mockRequest).addHeader("x-fhir-profile", fhirProfile);
-    verify(mockRequest).addHeader("x-fhir-api-version", fhirProfileVersion);
+    verify(mockRequest).addHeader("x-api-version", apiVersion);
+    verify(mockRequest).addHeader("x-fhir-package", fhirPackage);
+    verify(mockRequest).addHeader("x-fhir-package-version", fhirPackageVersion);
+
+    verify(mockRequest).addHeader("x-fhir-profile", fhirPackage);
+    verify(mockRequest).addHeader("x-fhir-api-version", fhirPackageVersion);
     verify(mockRequest).addHeader("x-fhir-api-submission-type", submissionType);
     verify(mockRequest).addHeader("x-fhir-api-request-origin", requestOrigin);
     verifyNoMoreInteractions(mockRequest);

@@ -96,4 +96,10 @@ public class FhirConstants {
       "http://terminology.hl7.org/CodeSystem/v3-NullFlavor";
 
   public static final String SYSTEM_LOINC = "http://loinc.org";
+  public static final String SYSTEM_SNOMED_CT = "http://snomed.info/sct";
+
+  public static final String SNOMED_CT_VERSION_FALLBACK =
+      "http://snomed.info/sct/11000274103/version/20241115";
+
+  public static final String LOINC_VERSION_FALLBACK = "2.79";
 }

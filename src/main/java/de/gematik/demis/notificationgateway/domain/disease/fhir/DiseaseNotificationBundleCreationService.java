@@ -32,6 +32,7 @@ import de.gematik.demis.notification.builder.demis.fhir.notification.builder.inf
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.infectious.disease.NotificationDiseaseDataBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.RelatesToBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.utils.DemisConstants;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseNotification;
 import de.gematik.demis.notificationgateway.common.dto.DiseaseStatus;
 import de.gematik.demis.notificationgateway.common.dto.NotifierFacility;
@@ -64,6 +65,7 @@ public class DiseaseNotificationBundleCreationService {
   private final PractitionerRoleCreationService practitionerRoleCreationService;
   private final Diseases diseases;
   private final QuestionnaireResponses questionnaireResponses;
+  private final FeatureFlags featureFlags;
 
   /**
    * Create FHIR bundleBuilder for disease notification
@@ -89,7 +91,7 @@ public class DiseaseNotificationBundleCreationService {
     createDisease(context);
     createCommonQuestionnaireResponse(diseaseNotification, context);
     createDiseaseQuestionnaireResponse(diseaseNotification, context);
-    createComposition(context);
+    createComposition(context, featureFlags.isReferenceField());
     return context.bundleBuilder().build();
   }
 
@@ -169,7 +171,8 @@ public class DiseaseNotificationBundleCreationService {
     }
   }
 
-  private void createComposition(DiseaseNotificationContext context) {
+  private void createComposition(
+      DiseaseNotificationContext context, boolean referenceFieldEnabled) {
     NotificationBundleDiseaseDataBuilder bundle = context.bundleBuilder();
     NotificationDiseaseDataBuilder composition = bundle.createComposition();
     DiseaseStatus status = context.notification().getStatus();
@@ -181,9 +184,33 @@ public class DiseaseNotificationBundleCreationService {
         };
     composition.setStatus(compositionStatus);
     String initialNotificationId = status.getInitialNotificationId();
+
     if (StringUtils.isNotBlank(initialNotificationId)) {
-      composition.setRelatesTo(RelatesToBuilder.forInitialNotificationId(initialNotificationId));
+      if (!referenceFieldEnabled) {
+        composition.setRelatesTo(RelatesToBuilder.forInitialNotificationId(initialNotificationId));
+      } else {
+        final DiseaseStatus.NotificationIdReferenceEnum notificationIdReference =
+            status.getNotificationIdReference();
+        if (notificationIdReference
+            == null) { // null check can be removed with feature flag referenceFieldEnabled
+          composition.setRelatesTo(
+              RelatesToBuilder.forInitialNotificationId(initialNotificationId));
+        } else {
+          switch (notificationIdReference) {
+            case RELATES_TO_OWN_FACILITY ->
+                composition.setIdentifierAsNotificationId(initialNotificationId);
+            case RELATES_TO_OTHER_FACILITY ->
+                // follow-up notification is always of type RELATES_TO_OTHER_FACILITY
+                composition.setRelatesTo(
+                    RelatesToBuilder.forInitialNotificationId(initialNotificationId));
+            default ->
+                throw new IllegalArgumentException(
+                    "NotificationIdReferenceEnum must be set to OWN ot OTHER when initialNotificationId is provided");
+          }
+        }
+      }
     }
+
     bundle.setNotificationDisease(composition.build());
   }
 }

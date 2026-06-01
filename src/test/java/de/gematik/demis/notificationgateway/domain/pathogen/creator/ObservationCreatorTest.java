@@ -27,16 +27,20 @@ package de.gematik.demis.notificationgateway.domain.pathogen.creator;
  * #L%
  */
 
+import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.LOINC_VERSION_FALLBACK;
+import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.SYSTEM_LOINC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import de.gematik.demis.notificationgateway.common.dto.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Specimen;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +65,13 @@ class ObservationCreatorTest {
 
     List<Observation> observations =
         ObservationCreator.createObservation(
-            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory, null);
+            pathogenDTO,
+            List.of(methodPathogenDTO),
+            patient,
+            specimen,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(observations).hasSize(1);
     Observation observation = observations.getFirst();
@@ -100,7 +110,13 @@ class ObservationCreatorTest {
 
     List<Observation> observations =
         ObservationCreator.createObservation(
-            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory, null);
+            pathogenDTO,
+            List.of(methodPathogenDTO),
+            patient,
+            specimen,
+            notificationCategory,
+            null,
+            true);
 
     assertThat(observations).hasSize(2);
     Observation observation = observations.getFirst();
@@ -151,7 +167,8 @@ class ObservationCreatorTest {
             patient,
             specimen,
             notificationCategory,
-            null);
+            null,
+            true);
 
     assertThat(observations).hasSize(3);
     Observation observation = observations.getFirst();
@@ -206,7 +223,8 @@ class ObservationCreatorTest {
             patient,
             specimen,
             notificationCategory,
-            null);
+            null,
+            true);
 
     assertThat(observations).hasSize(4);
     Observation observation = observations.getFirst();
@@ -256,7 +274,8 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null);
+              null,
+              true);
 
       // there is no extra observation when an analyt is empty
       assertThat(observations).hasSize(1);
@@ -295,7 +314,8 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null);
+              null,
+              true);
 
       // there is no extra observation when an analyt is partly empty
       assertThat(observations).hasSize(1);
@@ -334,7 +354,8 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null);
+              null,
+              true);
 
       // there is no extra observation when an analyt is partly empty
       assertThat(observations).hasSize(1);
@@ -373,7 +394,8 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null);
+              null,
+              true);
 
       // there is no extra observation when an analyt is partly empty
       assertThat(observations).hasSize(1);
@@ -384,6 +406,108 @@ class ObservationCreatorTest {
           .isEqualTo("12345Display");
       assertThat(observation.getMethod().getCodingFirstRep().getCode()).isEqualTo("MethodCode");
       assertThat(observation.getMethod().getCodingFirstRep().getDisplay()).isEqualTo("Method");
+    }
+  }
+
+  @Nested
+  class LoincVersionViaPortal {
+
+    PathogenDTO pathogenDTO = mock(PathogenDTO.class);
+    MethodPathogenDTO methodPathogenDTO = mock(MethodPathogenDTO.class);
+    Patient patient = new Patient();
+    Specimen specimen = new Specimen();
+    NotificationLaboratoryCategory notificationCategory =
+        mock(NotificationLaboratoryCategory.class);
+
+    @BeforeEach
+    void setup() {
+      patient.setId("Patient/123");
+      specimen.setId("Specimen/456");
+
+      when(notificationCategory.getPathogen()).thenReturn(new CodeDisplay("12345"));
+      when(pathogenDTO.getCodeDisplay()).thenReturn(new CodeDisplay("67890"));
+      when(methodPathogenDTO.getResult()).thenReturn(MethodPathogenDTO.ResultEnum.POS);
+      when(methodPathogenDTO.getMethod())
+          .thenReturn(new CodeDisplay("MethodCode").display("Method"));
+    }
+
+    @Test
+    void shouldCreateObservationForPathogen_setsVersionFromMap() {
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              Map.of(SYSTEM_LOINC, "2.81"),
+              true);
+
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getCode().getCodingFirstRep().getSystem()).isEqualTo(SYSTEM_LOINC);
+      assertThat(observation.getCode().getCodingFirstRep().getVersion()).isEqualTo("2.81");
+    }
+
+    @Test
+    void shouldCreateObservationsForPathogen_emptyMap_setsFallBackVersion() {
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              Map.of(),
+              true);
+
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getCode().getCodingFirstRep().getSystem()).isEqualTo(SYSTEM_LOINC);
+      assertThat(observation.getCode().getCodingFirstRep().getVersion())
+          .isEqualTo(LOINC_VERSION_FALLBACK);
+    }
+
+    @Test
+    void shouldCreateObservationsForPathogen_nullMap_setsFallbackVersion() {
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              null,
+              true);
+
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getCode().getCodingFirstRep().getSystem()).isEqualTo(SYSTEM_LOINC);
+      assertThat(observation.getCode().getCodingFirstRep().getVersion())
+          .isEqualTo(LOINC_VERSION_FALLBACK);
+    }
+
+    @Test
+    void shouldCreateObservationsForPathogen_Regression_setsFallbackVersion() {
+
+      List<Observation> observations =
+          ObservationCreator.createObservation(
+              pathogenDTO,
+              List.of(methodPathogenDTO),
+              patient,
+              specimen,
+              notificationCategory,
+              Map.of(SYSTEM_LOINC, "2.81"),
+              false);
+
+      assertThat(observations).hasSize(1);
+      Observation observation = observations.getFirst();
+      assertThat(observation.getCode().getCodingFirstRep().getSystem()).isEqualTo(SYSTEM_LOINC);
+      assertThat(observation.getCode().getCodingFirstRep().getVersion())
+          .isEqualTo(LOINC_VERSION_FALLBACK);
     }
   }
 
@@ -759,7 +883,8 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              versionMap);
+              versionMap,
+              true);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();

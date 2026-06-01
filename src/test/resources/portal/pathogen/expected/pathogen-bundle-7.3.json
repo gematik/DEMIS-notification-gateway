@@ -196,8 +196,7 @@
         "telecom": [
           {
             "system": "phone",
-            "value": "0182736912388889",
-            "use": "work"
+            "value": "0182736912388889"
           },
           {
             "system": "email",
@@ -255,23 +254,11 @@
             "https://demis.rki.de/fhir/StructureDefinition/SubmittingFacility"
           ]
         },
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://demis.rki.de/fhir/CodeSystem/organizationType",
-                "code": "othPrivatLab",
-                "display": "Sonstige private Untersuchungsstelle"
-              }
-            ]
-          }
-        ],
         "name": "Das Einsenderinstitut",
         "telecom": [
           {
             "system": "phone",
-            "value": "012345678",
-            "use": "work"
+            "value": "012345678"
           },
           {
             "system": "email",

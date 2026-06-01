@@ -1,6 +1,0 @@
-apiVersion: v2
-name: notification-gateway-istio
-description: DEMIS notification-gateway Istio Configuration
-type: application
-version: 6.7.7
-appVersion: "6.7.7"

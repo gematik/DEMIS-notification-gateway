@@ -45,7 +45,6 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import de.gematik.demis.exceptions.TokenException;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
 import de.gematik.demis.notificationgateway.common.dto.ValidationError;
 import de.gematik.demis.notificationgateway.common.enums.InternalCoreError;
@@ -82,7 +81,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ErrorResponseController {
 
   private final ObjectMapper objectMapper;
-  private final FeatureFlags featureFlags;
 
   private static HttpStatus resolveCoreExceptionStatus(int exceptionStatus) {
     final HttpStatus coreStatus = HttpStatus.resolve(exceptionStatus);
@@ -307,7 +305,7 @@ public class ErrorResponseController {
     validationError.setField(NOT_AVAILABLE);
     validationError.setMessage(issueComponent.getDiagnostics());
 
-    if (featureFlags.isPortalErrorDialogFiltering() && issueComponent.hasSeverity()) {
+    if (issueComponent.hasSeverity()) {
       OperationOutcome.IssueSeverity severityCode = issueComponent.getSeverity();
       validationError.setSeverity(
           switch (severityCode) {

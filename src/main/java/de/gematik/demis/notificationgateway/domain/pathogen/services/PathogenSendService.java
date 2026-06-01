@@ -82,8 +82,8 @@ public class PathogenSendService {
         createBundle(
             pathogenTest,
             notificationType,
-            featureFlags.isFollowUpNotificationActive(),
-            featureFlags.isOthPrivatLabSubmitterAssignmentDisabled());
+            featureFlags.isLoincVersionViaPortal(),
+            featureFlags.isReferenceField());
     final String url = nesProperties.laboratoryUrl();
     final String operation = NESProperties.OPERATION_NAME;
     log.info("Sending request to {}, operation: {}", "NES", operation);

@@ -72,9 +72,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = {"feature.flag.othPrivatLab.submitter.assignment.disabled=true"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PathogenRestControllerIT implements BaseTestUtils {
 
   @Autowired private ObjectMapper objectMapper;

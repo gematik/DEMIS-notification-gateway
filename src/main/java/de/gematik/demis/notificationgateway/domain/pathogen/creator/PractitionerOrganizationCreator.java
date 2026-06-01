@@ -120,9 +120,7 @@ public class PractitionerOrganizationCreator {
    * @return A {@link PractitionerRole} object populated with the provided submitter facility data.
    */
   public static PractitionerRole createSubmitterPractitionerRole(
-      SubmitterFacility submitterFacility,
-      boolean isNotifiedPersonFacility,
-      final boolean isOthPrivatLabSubmitterAssignmentDisabled) {
+      SubmitterFacility submitterFacility, boolean isNotifiedPersonFacility) {
     final SubmittingFacilityInfo facilityInfo = submitterFacility.getFacilityInfo();
     final FacilityAddressInfo addressInfo = submitterFacility.getAddress();
 
@@ -141,11 +139,6 @@ public class PractitionerOrganizationCreator {
             .setAddress(submitterAddress)
             .setTelecomList(contactPoints);
 
-    if (!isOthPrivatLabSubmitterAssignmentDisabled) {
-      organizationBuilder
-          .setTypeCode(OTH_PRIVAT_LAB)
-          .setTypeDisplay(SONSTIGE_PRIVATE_UNTERSUCHUNGSSTELLE);
-    }
     if (isNotifiedPersonFacility) {
       organizationBuilder.addNotifiedPersonFacilityProfile();
     }

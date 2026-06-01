@@ -42,7 +42,6 @@ import static org.springframework.http.HttpStatus.*;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.demis.exceptions.TokenException;
-import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
 import de.gematik.demis.notificationgateway.common.dto.ValidationError;
 import de.gematik.demis.notificationgateway.common.enums.InternalCoreError;
@@ -75,9 +74,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorResponseControllerTest {
-  private final FeatureFlags featureFlags = mock(FeatureFlags.class);
   private final ErrorResponseController responseController =
-      new ErrorResponseController(new ObjectMapper(), featureFlags);
+      new ErrorResponseController(new ObjectMapper());
   private static RandomStringUtils random = RandomStringUtils.secure();
   private static final String REQUEST_URI = random.nextAlphabetic(5);
 
@@ -364,35 +362,15 @@ class ErrorResponseControllerTest {
   }
 
   @ParameterizedTest
-  @CsvSource(
-      value = {
-        // featureFlag true, with severity
-        "true,FATAL,FATAL",
-        "true,ERROR,ERROR",
-        "true,WARNING,WARNING",
-        "true,INFORMATION,INFORMATION",
-
-        // featureFlag true, without severity
-        "true,,",
-        // featureFlag false, with severity
-        "false,ERROR,",
-        // featureFlag false, without severity
-        "false,,"
-      })
+  @CsvSource(value = {"FATAL,FATAL", "ERROR,ERROR", "WARNING,WARNING", "INFORMATION,INFORMATION"})
   void shouldMapSeverityCorrectlyInValidationError(
-      boolean featureFlag,
-      OperationOutcome.IssueSeverity issueSeverity,
-      ValidationError.SeverityEnum expectedSeverity) {
-
-    when(featureFlags.isPortalErrorDialogFiltering()).thenReturn(featureFlag);
+      OperationOutcome.IssueSeverity issueSeverity, ValidationError.SeverityEnum expectedSeverity) {
 
     OperationOutcome.OperationOutcomeIssueComponent issue =
         new OperationOutcome.OperationOutcomeIssueComponent();
     String diagnostics = "Test Diagnostics";
     issue.setDiagnostics(diagnostics);
-    if (issueSeverity != null) {
-      issue.setSeverity(issueSeverity);
-    }
+    issue.setSeverity(issueSeverity);
     OperationOutcome outcome = new OperationOutcome().addIssue(issue);
 
     BaseServerResponseException exception = mock(BaseServerResponseException.class);
@@ -413,5 +391,34 @@ class ErrorResponseControllerTest {
         .hasFieldOrPropertyWithValue("field", NOT_AVAILABLE)
         .hasFieldOrPropertyWithValue("message", diagnostics)
         .hasFieldOrPropertyWithValue("severity", expectedSeverity);
+  }
+
+  @Test
+  void shouldNotSetSeverityWhenIssueHasNoSeverity() {
+
+    OperationOutcome.OperationOutcomeIssueComponent issue =
+        new OperationOutcome.OperationOutcomeIssueComponent();
+    String diagnostics = "Test Diagnostics";
+    issue.setDiagnostics(diagnostics);
+    OperationOutcome outcome = new OperationOutcome().addIssue(issue);
+
+    BaseServerResponseException exception = mock(BaseServerResponseException.class);
+    when(exception.getOperationOutcome()).thenReturn(outcome);
+    when(exception.getMessage()).thenReturn(NG_300_REQUEST.reason());
+
+    MockHttpServletRequest request = new MockHttpServletRequest(GET.name(), REQUEST_URI);
+
+    ResponseEntity<ErrorResponse> responseEntity =
+        responseController.handleCoreException(exception, request);
+
+    assertThat(responseEntity.getBody()).isNotNull();
+    ErrorResponse errorResponse = responseEntity.getBody();
+
+    assertThat(errorResponse.getValidationErrors())
+        .isNotEmpty()
+        .first()
+        .hasFieldOrPropertyWithValue("field", NOT_AVAILABLE)
+        .hasFieldOrPropertyWithValue("message", diagnostics)
+        .hasFieldOrPropertyWithValue("severity", null);
   }
 }

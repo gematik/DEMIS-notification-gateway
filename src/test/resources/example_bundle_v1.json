@@ -178,23 +178,19 @@
                 "telecom": [
                     {
                         "system": "phone",
-                        "value": "+49 30 09876543 221",
-                        "use": "work"
+                        "value": "+49 30 09876543 221"
                     },
                     {
                         "system": "fax",
-                        "value": "+49 30 09876543 99221",
-                        "use": "work"
+                        "value": "+49 30 09876543 99221"
                     },
                     {
                         "system": "email",
-                        "value": "ifsg@demis-labortest.de",
-                        "use": "work"
+                        "value": "ifsg@demis-labortest.de"
                     },
                     {
                         "system": "url",
-                        "value": "https://www.demis-labortest.de",
-                        "use": "work"
+                        "value": "https://www.demis-labortest.de"
                     }
                 ],
                 "address": [
@@ -261,8 +257,7 @@
                             }
                         ],
                         "system": "phone",
-                        "value": "+49 30 1234567890",
-                        "use": "work"
+                        "value": "+49 30 1234567890"
                     }
                 ],
                 "address": [

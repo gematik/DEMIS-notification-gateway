@@ -41,20 +41,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.wiremock.spring.EnableWireMock;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     useMainMethod = SpringBootTest.UseMainMethod.ALWAYS,
     properties = {"notification.api.baseUrl=http://localhost:7070"})
 @TestPropertySource(locations = "classpath:application-test.properties")
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock
 class HeaderForwardingTest {
   private MockMvc mockMvc;
   private static final WireMockServer NPS_SERVER = new WireMockServer(7070);

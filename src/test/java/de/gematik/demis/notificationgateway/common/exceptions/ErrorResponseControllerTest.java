@@ -40,7 +40,6 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.*;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.demis.exceptions.TokenException;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
 import de.gematik.demis.notificationgateway.common.dto.ValidationError;
@@ -74,8 +73,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorResponseControllerTest {
-  private final ErrorResponseController responseController =
-      new ErrorResponseController(new ObjectMapper());
+  private final ErrorResponseController responseController = new ErrorResponseController();
   private static RandomStringUtils random = RandomStringUtils.secure();
   private static final String REQUEST_URI = random.nextAlphabetic(5);
 

@@ -1,12 +1,16 @@
 <div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 
 # Release notes notification-gateway
+## Release 6.9.0
+- spring boot 4 upgrade
+- removed contact point use from contact point creation for disease
+- added FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE for disease
 
 ## Release 6.8.2
 - removed FEATURE_FLAG_FOLLOW_UP_NOTIFICATION
 - updated spring-parent to 2.16.1
 - removed FEATURE_FLAG_OTH_PRIVAT_LAB_SUBMITTER_ASSIGNMENT_DISABLED
-- removed FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE
+- removed FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE for pathogen
 - relatesTo for laboratory and disease notifications is set by NotificationIdReference
 - added FEATURE_FLAG_REFERENCE_FIELD
 - removed FEATURE_FLAG_PORTAL_ERROR_DIALOG_FILTERING (severity mapping is now always active)
@@ -19,8 +23,8 @@
 
 ## Release 6.8.0
 - Removed istio helm chart
-- removed contact point use from contact point creation
-- added FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE
+- removed contact point use from contact point creation for pathogen 
+- added FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE for pathogen
 - updated base-image and updated from java 21 to java 25
 - changed hard coded loinc version to version from futs delivered via portal
 - added FEATURE_FLAG_LOINC_VERSION_VIA_PORTAL

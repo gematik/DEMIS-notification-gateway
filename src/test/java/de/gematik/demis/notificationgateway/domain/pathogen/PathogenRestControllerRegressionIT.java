@@ -38,7 +38,6 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.demis.notificationgateway.BaseTestUtils;
 import de.gematik.demis.notificationgateway.common.constants.MessageConstants;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
@@ -61,6 +60,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @ActiveProfiles("test")

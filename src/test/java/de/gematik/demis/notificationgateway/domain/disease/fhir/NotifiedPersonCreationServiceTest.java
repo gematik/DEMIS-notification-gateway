@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.PractitionerRoleBuilder;
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.igs.InvalidInputDataException;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
 import de.gematik.demis.notificationgateway.common.services.fhir.FhirObjectCreationService;
@@ -67,7 +68,8 @@ class NotifiedPersonCreationServiceTest {
 
   @BeforeEach
   void setUp() {
-    FhirObjectCreationService fhirObjectCreationService = new FhirObjectCreationService();
+    FhirObjectCreationService fhirObjectCreationService =
+        new FhirObjectCreationService(FeatureFlags.builder().withoutContactPointUse(true).build());
     OrganizationCreationService organizationCreationService =
         new OrganizationCreationService(fhirObjectCreationService);
     notifiedPersonCreationService =

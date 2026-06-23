@@ -4,12 +4,12 @@
   <parent>
     <groupId>de.gematik.demis</groupId>
     <artifactId>spring-parent</artifactId>
-    <version>2.16.1</version>
+    <version>4.0.6</version>
     <relativePath></relativePath><!-- lookup parent from repository -->
   </parent>
   <artifactId>notification-gateway</artifactId>
   <name>DEMIS Notification-Gateway</name>
-  <version>6.8.2-SNAPSHOT</version>
+  <version>6.9.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>Gateway Service for Notifications over Portal</description>
   <licenses>
@@ -19,82 +19,39 @@
     </license>
   </licenses>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>25</java.version>
-    <openapi-generator-maven-plugin.version>7.17.0</openapi-generator-maven-plugin.version>
     <demis-commons.version>3.3.1</demis-commons.version>
     <rest.assured.version>5.5.6</rest.assured.version>
-    <jackson-databind-nullable.version>0.2.4</jackson-databind-nullable.version>
-    <sonar.exclusions>**/de/gematik/demis/notificationgateway/common/constants/*,
-            **/de/gematik/demis/notificationgateway/common/mappers/BundleMapper.java,
-            **/de/gematik/demis/notificationgateway/common/properties/*,
-            **/de/gematik/demis/notificationgateway/common/enums/*,
-            **/de/gematik/demis/notificationgateway/NotificationGatewayApplication.java,
-            **/de/gematik/demis/notificationgateway/domain/bedoccupancy/BedOccupancyRestController.java,
-            **/de/gematik/demis/notificationgateway/domain/location/LocationRestController.java,
-            **/de/gematik/demis/notificationgateway/domain/pathogen/PathogenRestController.java</sonar.exclusions>
-    <commons-text.version>1.15.0</commons-text.version>
-    <hapi.fhir.version>8.6.0</hapi.fhir.version>
-    <pdfbox.version>3.0.6</pdfbox.version><!-- CVE Override -->
+    <pdfbox.version>3.0.6</pdfbox.version>
     <openapi-generator.inputSpec>${project.basedir}/src/main/resources/spec/api-spec.yml</openapi-generator.inputSpec>
+    <sonar.exclusions>**/de/gematik/demis/notificationgateway/common/constants/*,
+      **/de/gematik/demis/notificationgateway/common/mappers/BundleMapper.java,
+      **/de/gematik/demis/notificationgateway/common/properties/*,
+      **/de/gematik/demis/notificationgateway/common/enums/*,
+      **/de/gematik/demis/notificationgateway/NotificationGatewayApplication.java,
+      **/de/gematik/demis/notificationgateway/domain/bedoccupancy/BedOccupancyRestController.java,
+      **/de/gematik/demis/notificationgateway/domain/location/LocationRestController.java,
+      **/de/gematik/demis/notificationgateway/domain/pathogen/PathogenRestController.java</sonar.exclusions>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>33.5.0-jre</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.errorprone</groupId>
-        <artifactId>error_prone_annotations</artifactId>
-        <version>2.45.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
-        <version>${commons-text.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-fileupload</groupId>
-        <artifactId>commons-fileupload</artifactId>
-        <version>1.6.0</version>
-      </dependency>
-      <dependency>
         <groupId>ca.uhn.hapi.fhir</groupId>
         <artifactId>hapi-fhir-caching-api</artifactId>
-        <version>${hapi.fhir.version}</version>
       </dependency>
       <dependency>
         <groupId>ca.uhn.hapi.fhir</groupId>
         <artifactId>hapi-fhir-caching-caffeine</artifactId>
-        <version>${hapi.fhir.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>de.gematik.demis</groupId>
-      <artifactId>service-base</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.nimbusds</groupId>
-      <artifactId>nimbus-jose-jwt</artifactId>
-    </dependency>
-    <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-client</artifactId>
-      <version>${hapi.fhir.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents.client5</groupId>
       <artifactId>httpclient5</artifactId>
-      <version>${httpclient5.version}</version>
     </dependency>
     <dependency>
       <groupId>de.gematik.demis</groupId>
@@ -104,16 +61,10 @@
     <dependency>
       <groupId>de.gematik.demis</groupId>
       <artifactId>notification-builder-library</artifactId>
-      <version>${notification.builder.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-wiremock</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -139,24 +90,10 @@
       <artifactId>xml-path</artifactId>
       <version>${rest.assured.version}</version>
       <scope>test</scope>
-    </dependency><!-- test dependencies -->
+    </dependency>
   </dependencies>
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>${maven-deploy-plugin.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.plugin.version}</version>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -169,7 +106,6 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>${openapi-generator-maven-plugin.version}</version>
         <executions>
           <execution>
             <goals>
@@ -182,29 +118,12 @@
               <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
               <configOptions>
                 <delegatePattern>true</delegatePattern>
-                <useSpringBoot3>true</useSpringBoot3>
+                <useSpringBoot4>true</useSpringBoot4>
+                <useJackson3>true</useJackson3>
+                <useJakartaEe>true</useJakartaEe>
                 <openApiNullable>false</openApiNullable>
               </configOptions>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jasig.maven</groupId>
-        <artifactId>notice-maven-plugin</artifactId>
-        <version>2.0.0</version>
-        <configuration>
-          <noticeTemplate>NOTICE.template</noticeTemplate>
-          <outputDir>.</outputDir>
-          <licenseMapping>license-mappings.xml</licenseMapping>
-        </configuration>
-        <executions>
-          <execution>
-            <id>notice-generation</id>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <phase>generate-sources</phase>
           </execution>
         </executions>
       </plugin>

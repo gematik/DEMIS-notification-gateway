@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.constants.FhirConstants;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.QuickTest;
@@ -57,7 +58,8 @@ class FhirObjectCreationServiceTest {
 
   @BeforeEach
   void setUp() {
-    creationService = new FhirObjectCreationService();
+    creationService =
+        new FhirObjectCreationService(FeatureFlags.builder().withoutContactPointUse(true).build());
   }
 
   @Test

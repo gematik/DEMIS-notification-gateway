@@ -30,6 +30,7 @@ package de.gematik.demis.notificationgateway.common.services.fhir;
 import static de.gematik.demis.notificationgateway.common.constants.FhirConstants.*;
 
 import de.gematik.demis.notification.builder.demis.fhir.notification.builder.technicals.AddressDataBuilder;
+import de.gematik.demis.notificationgateway.FeatureFlags;
 import de.gematik.demis.notificationgateway.common.dto.AddressType;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo.UsageEnum;
@@ -49,6 +50,8 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class FhirObjectCreationService {
+
+  private final FeatureFlags featureFlags;
 
   public Parameters createParameters(Bundle bundle) {
     Parameters parameters = new Parameters();
@@ -133,9 +136,11 @@ public class FhirObjectCreationService {
             .setSystem(ContactPointSystem.fromCode(contact.getContactType().getValue()))
             .setValue(contact.getValue());
 
-    final UsageEnum usage = contact.getUsage();
-    if (usage != null) {
-      contactPoint.setUse(ContactPointUse.fromCode(usage.getValue()));
+    if (!featureFlags.isWithoutContactPointUse()) {
+      final UsageEnum usage = contact.getUsage();
+      if (usage != null) {
+        contactPoint.setUse(ContactPointUse.fromCode(usage.getValue()));
+      }
     }
     return contactPoint;
   }

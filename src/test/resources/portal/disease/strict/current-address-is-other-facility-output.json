@@ -332,8 +332,7 @@
           },
           {
             "system": "phone",
-            "value": "01234567",
-            "use": "work"
+            "value": "01234567"
           }
         ],
         "address": [

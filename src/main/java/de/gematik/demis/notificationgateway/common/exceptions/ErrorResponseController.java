@@ -37,13 +37,10 @@ import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT;
 import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import de.gematik.demis.exceptions.TokenException;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
 import de.gematik.demis.notificationgateway.common.dto.ValidationError;
@@ -74,13 +71,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import tools.jackson.core.JacksonException.Reference;
+import tools.jackson.databind.exc.ValueInstantiationException;
 
 @ControllerAdvice
 @Slf4j
 @RequiredArgsConstructor
 public class ErrorResponseController {
-
-  private final ObjectMapper objectMapper;
 
   private static HttpStatus resolveCoreExceptionStatus(int exceptionStatus) {
     final HttpStatus coreStatus = HttpStatus.resolve(exceptionStatus);
@@ -131,7 +128,8 @@ public class ErrorResponseController {
         handleMethodArgumentNotValidException(methodArgumentNotValidException, errorResponse);
         break;
       case HttpMessageNotReadableException httpMessageNotReadableException:
-        message = handleHttpMessageNotReadableException(exception, errorResponse);
+        message =
+            handleHttpMessageNotReadableException(httpMessageNotReadableException, errorResponse);
         break;
       case ConstraintViolationException constraintViolationException:
         message = handleConstraintViolationException(constraintViolationException);
@@ -252,9 +250,8 @@ public class ErrorResponseController {
   }
 
   private String handleHttpMessageNotReadableException(
-      Exception exception, ErrorResponse errorResponse) {
-    final String mostSpecificMessage =
-        ((HttpMessageNotReadableException) exception).getMostSpecificCause().getLocalizedMessage();
+      HttpMessageNotReadableException exception, ErrorResponse errorResponse) {
+    final String mostSpecificMessage = exception.getMostSpecificCause().getLocalizedMessage();
 
     final Throwable cause = exception.getCause();
     if (cause instanceof ValueInstantiationException vie) {
@@ -262,7 +259,7 @@ public class ErrorResponseController {
       final String field =
           path.isEmpty()
               ? NOT_AVAILABLE
-              : path.stream().map(Reference::getFieldName).collect(Collectors.joining("."));
+              : path.stream().map(Reference::getPropertyName).collect(Collectors.joining("."));
 
       List<ValidationError> validationErrors = new ArrayList<>();
       validationErrors.add(new ValidationError().field(field).message(mostSpecificMessage));
@@ -329,7 +326,7 @@ public class ErrorResponseController {
   private String resolveCoreExceptionMessage(HttpStatus httpStatus, String defaultMessage) {
     if (httpStatus.is5xxServerError()) {
       return InternalCoreError.NG_300_REQUEST.reason();
-    } else if (BAD_REQUEST == httpStatus || UNPROCESSABLE_ENTITY == httpStatus) {
+    } else if (BAD_REQUEST == httpStatus || UNPROCESSABLE_CONTENT == httpStatus) {
       return InternalCoreError.NG_200_VALIDATION.reason();
     } else if (UNAUTHORIZED == httpStatus || FORBIDDEN == httpStatus) {
       return InternalCoreError.NG_100_TOKEN.reason();

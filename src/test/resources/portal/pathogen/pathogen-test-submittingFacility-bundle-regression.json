@@ -196,8 +196,7 @@
         "telecom": [
           {
             "system": "phone",
-            "value": "0182736912388889",
-            "use": "work"
+            "value": "0182736912388889"
           },
           {
             "system": "email",
@@ -271,8 +270,7 @@
         "telecom": [
           {
             "system": "phone",
-            "value": "012345678",
-            "use": "work"
+            "value": "012345678"
           },
           {
             "system": "email",

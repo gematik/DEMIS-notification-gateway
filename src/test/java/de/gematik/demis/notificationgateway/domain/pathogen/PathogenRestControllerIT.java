@@ -40,9 +40,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import ca.uhn.fhir.context.FhirContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.gematik.demis.notificationgateway.BaseTestUtils;
 import de.gematik.demis.notificationgateway.common.constants.MessageConstants;
 import de.gematik.demis.notificationgateway.common.dto.ErrorResponse;
@@ -69,6 +66,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 @Slf4j
 @ActiveProfiles("test")
@@ -281,15 +281,15 @@ class PathogenRestControllerIT implements BaseTestUtils {
           objectNode.put("timestamp", "PLACEHOLDER_TIMESTAMP");
         }
         if (objectNode.has("fullUrl")) {
-          String fullUrl = objectNode.get("fullUrl").asText();
+          String fullUrl = objectNode.get("fullUrl").asString();
           objectNode.put("fullUrl", fullUrl.replaceAll("[a-f0-9\\-]{36}", "PLACEHOLDER_ID"));
         }
         if (objectNode.has("reference")) {
-          String reference = objectNode.get("reference").asText();
+          String reference = objectNode.get("reference").asString();
           objectNode.put("reference", reference.replaceAll("[a-f0-9\\-]{36}", "PLACEHOLDER_ID"));
         }
         if (objectNode.has("value")) {
-          String value = objectNode.get("value").asText();
+          String value = objectNode.get("value").asString();
           objectNode.put("value", value.replaceAll("[a-f0-9\\-]{36}", "PLACEHOLDER_ID"));
         }
         if (objectNode.has("issued")) {
@@ -300,7 +300,10 @@ class PathogenRestControllerIT implements BaseTestUtils {
         }
 
         // Recursively normalize nested fields
-        objectNode.fields().forEachRemaining(entry -> normalizeDynamicFields(entry.getValue()));
+        objectNode
+            .properties()
+            .iterator()
+            .forEachRemaining(entry -> normalizeDynamicFields(entry.getValue()));
       } else if (node.isArray()) {
         for (JsonNode arrayElement : node) {
           normalizeDynamicFields(arrayElement);

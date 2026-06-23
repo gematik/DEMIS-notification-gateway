@@ -40,6 +40,7 @@ customEnvVars:
   FEATURE_FLAG_DISEASE_STRICT: "false"
   FEATURE_FLAG_LOINC_VERSION_VIA_PORTAL: "false"
   FEATURE_FLAG_REFERENCE_FIELD: "false"
+  FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE: "false"
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)
 # If not given, the Entrypoint defined in Dockerfile will be used

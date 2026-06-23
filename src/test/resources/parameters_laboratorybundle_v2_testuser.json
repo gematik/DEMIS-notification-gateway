@@ -105,8 +105,7 @@
                             "telecom": [
                                 {
                                     "system": "phone",
-                                    "value": "012345767",
-                                    "use": "work"
+                                    "value": "012345767"
                                 }
                             ],
                             "gender": "male",

@@ -23,7 +23,6 @@
     "contacts": [
       {
         "contactType": "phone",
-        "usage": "work",
         "value": "0182736912388889"
       },
       {
@@ -79,9 +78,7 @@
     },
     "contacts": [
       {
-        "contactType": "phone",
-        "usage": "work",
-        "value": "01231232"
+        "contactType": "phone",        "value": "01231232"
       }
     ]
   },

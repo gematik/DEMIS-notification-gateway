@@ -40,4 +40,5 @@ public class FeatureFlags {
   boolean diseaseStrictProfile;
   boolean loincVersionViaPortal;
   boolean referenceField;
+  boolean withoutContactPointUse;
 }

@@ -187,8 +187,7 @@
         "value": "test.person@kh-rie.de"
       }, {
         "system": "phone",
-        "value": "01234567",
-        "use": "work"
+        "value": "01234567"
       } ],
       "address": [ {
         "line": [ "Im Himmelreich 1" ],

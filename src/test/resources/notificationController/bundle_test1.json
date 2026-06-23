@@ -184,8 +184,7 @@
                                         }
                                     ],
                                     "system": "phone",
-                                    "value": "+49 30 1234567890",
-                                    "use": "work"
+                                    "value": "+49 30 1234567890"
                                 }
                             ],
                             "address": [
@@ -231,23 +230,19 @@
                             "telecom": [
                                 {
                                     "system": "phone",
-                                    "value": "+49 6221 793-0",
-                                    "use": "work"
+                                    "value": "+49 6221 793-0"
                                 },
                                 {
                                     "system": "fax",
-                                    "value": "+49 621-793-111",
-                                    "use": "work"
+                                    "value": "+49 621-793-111"
                                 },
                                 {
                                     "system": "email",
-                                    "value": "heidelberg@synlab.com",
-                                    "use": "work"
+                                    "value": "heidelberg@synlab.com"
                                 },
                                 {
                                     "system": "url",
-                                    "value": "www.synlab.de",
-                                    "use": "work"
+                                    "value": "www.synlab.de"
                                 }
                             ],
                             "address": [
@@ -318,13 +313,11 @@
                             "telecom": [
                                 {
                                     "system": "phone",
-                                    "value": "06068-7598091",
-                                    "use": "work"
+                                    "value": "06068-7598091"
                                 },
                                 {
                                     "system": "fax",
-                                    "value": "06068-7598091",
-                                    "use": "work"
+                                    "value": "06068-7598091"
                                 }
                             ],
                             "address": [

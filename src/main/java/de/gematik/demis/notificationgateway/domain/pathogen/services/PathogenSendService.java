@@ -79,11 +79,7 @@ public class PathogenSendService {
     verifyHoneypot(pathogenTest);
 
     final Bundle bundle =
-        createBundle(
-            pathogenTest,
-            notificationType,
-            featureFlags.isLoincVersionViaPortal(),
-            featureFlags.isReferenceField());
+        createBundle(pathogenTest, notificationType, featureFlags.isReferenceField());
     final String url = nesProperties.laboratoryUrl();
     final String operation = NESProperties.OPERATION_NAME;
     log.info("Sending request to {}, operation: {}", "NES", operation);

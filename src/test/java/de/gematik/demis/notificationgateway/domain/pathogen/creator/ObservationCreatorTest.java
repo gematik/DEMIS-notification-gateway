@@ -65,13 +65,7 @@ class ObservationCreatorTest {
 
     List<Observation> observations =
         ObservationCreator.createObservation(
-            pathogenDTO,
-            List.of(methodPathogenDTO),
-            patient,
-            specimen,
-            notificationCategory,
-            null,
-            true);
+            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory, null);
 
     assertThat(observations).hasSize(1);
     Observation observation = observations.getFirst();
@@ -110,13 +104,7 @@ class ObservationCreatorTest {
 
     List<Observation> observations =
         ObservationCreator.createObservation(
-            pathogenDTO,
-            List.of(methodPathogenDTO),
-            patient,
-            specimen,
-            notificationCategory,
-            null,
-            true);
+            pathogenDTO, List.of(methodPathogenDTO), patient, specimen, notificationCategory, null);
 
     assertThat(observations).hasSize(2);
     Observation observation = observations.getFirst();
@@ -167,8 +155,7 @@ class ObservationCreatorTest {
             patient,
             specimen,
             notificationCategory,
-            null,
-            true);
+            null);
 
     assertThat(observations).hasSize(3);
     Observation observation = observations.getFirst();
@@ -223,8 +210,7 @@ class ObservationCreatorTest {
             patient,
             specimen,
             notificationCategory,
-            null,
-            true);
+            null);
 
     assertThat(observations).hasSize(4);
     Observation observation = observations.getFirst();
@@ -274,8 +260,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null,
-              true);
+              null);
 
       // there is no extra observation when an analyt is empty
       assertThat(observations).hasSize(1);
@@ -314,8 +299,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null,
-              true);
+              null);
 
       // there is no extra observation when an analyt is partly empty
       assertThat(observations).hasSize(1);
@@ -354,8 +338,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null,
-              true);
+              null);
 
       // there is no extra observation when an analyt is partly empty
       assertThat(observations).hasSize(1);
@@ -394,8 +377,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null,
-              true);
+              null);
 
       // there is no extra observation when an analyt is partly empty
       assertThat(observations).hasSize(1);
@@ -410,7 +392,7 @@ class ObservationCreatorTest {
   }
 
   @Nested
-  class LoincVersionViaPortal {
+  class LoincVersion {
 
     PathogenDTO pathogenDTO = mock(PathogenDTO.class);
     MethodPathogenDTO methodPathogenDTO = mock(MethodPathogenDTO.class);
@@ -441,8 +423,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              Map.of(SYSTEM_LOINC, "2.81"),
-              true);
+              Map.of(SYSTEM_LOINC, "2.81"));
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -460,8 +441,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              Map.of(),
-              true);
+              Map.of());
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -480,28 +460,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              null,
-              true);
-
-      assertThat(observations).hasSize(1);
-      Observation observation = observations.getFirst();
-      assertThat(observation.getCode().getCodingFirstRep().getSystem()).isEqualTo(SYSTEM_LOINC);
-      assertThat(observation.getCode().getCodingFirstRep().getVersion())
-          .isEqualTo(LOINC_VERSION_FALLBACK);
-    }
-
-    @Test
-    void shouldCreateObservationsForPathogen_Regression_setsFallbackVersion() {
-
-      List<Observation> observations =
-          ObservationCreator.createObservation(
-              pathogenDTO,
-              List.of(methodPathogenDTO),
-              patient,
-              specimen,
-              notificationCategory,
-              Map.of(SYSTEM_LOINC, "2.81"),
-              false);
+              null);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();
@@ -883,8 +842,7 @@ class ObservationCreatorTest {
               patient,
               specimen,
               notificationCategory,
-              versionMap,
-              true);
+              versionMap);
 
       assertThat(observations).hasSize(1);
       Observation observation = observations.getFirst();

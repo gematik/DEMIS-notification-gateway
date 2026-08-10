@@ -23,8 +23,7 @@
       "contacts":[
          {
             "contactType":"phone",
-            "value":"0182736912388889",
-            "usage":"work"
+            "value":"0182736912388889"
          },
          {
             "contactType":"email",
@@ -89,8 +88,7 @@
       "contacts":[
          {
             "contactType":"phone",
-            "value":"012345678",
-            "usage":"work"
+            "value":"012345678"
          },
          {
             "contactType":"email",

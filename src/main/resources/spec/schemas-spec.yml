@@ -107,11 +107,6 @@ components:
             - fax
             - url
           type: string
-        usage:
-          enum:
-            - home
-            - work
-          type: string
         value:
           type: string
     Period:

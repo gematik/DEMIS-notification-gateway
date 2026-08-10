@@ -68,7 +68,6 @@
     "contacts": [
       {
         "contactType": "phone",
-        "usage": "home",
         "value": "string"
       }
     ],
@@ -84,7 +83,6 @@
     "contacts": [
       {
         "contactType": "phone",
-        "usage": "home",
         "value": "string"
       }
     ],

@@ -1,6 +1,13 @@
 <div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 
 # Release notes notification-gateway
+## Release 6.10.0
+- arranged resource limits
+- fixed handling of falsy custom environment variables (false, 0) in helm chart
+- removed FEATURE_FLAG_LOINC_VERSION_VIA_PORTAL
+- removed ContactPointUsage from model
+- removed FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE
+
 ## Release 6.9.0
 - spring boot 4 upgrade
 - removed contact point use from contact point creation for disease

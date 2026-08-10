@@ -22,8 +22,7 @@
     "contacts": [
       {
         "contactType": "phone",
-        "value": "0182736912388889",
-        "usage": "work"
+        "value": "0182736912388889"
       },
       {
         "contactType": "email",

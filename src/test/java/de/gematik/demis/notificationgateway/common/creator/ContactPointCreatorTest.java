@@ -32,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo;
-import de.gematik.demis.notificationgateway.common.dto.ContactPointInfo.UsageEnum;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.junit.jupiter.api.Test;
@@ -44,26 +43,11 @@ class ContactPointCreatorTest {
     ContactPointInfo contactPointInfo = mock(ContactPointInfo.class);
     when(contactPointInfo.getContactType()).thenReturn(ContactPointInfo.ContactTypeEnum.PHONE);
     when(contactPointInfo.getValue()).thenReturn("123456789");
-    when(contactPointInfo.getUsage()).thenReturn(UsageEnum.HOME);
 
     ContactPoint result = ContactPointCreator.createContactPoint(contactPointInfo);
 
     assertThat(result.getSystem()).isEqualTo(ContactPoint.ContactPointSystem.PHONE);
     assertThat(result.getValue()).isEqualTo("123456789");
-    assertThat(result.getUse()).isNull();
-  }
-
-  @Test
-  void handlesNullUsageGracefully() {
-    ContactPointInfo contactPointInfo = mock(ContactPointInfo.class);
-    when(contactPointInfo.getContactType()).thenReturn(ContactPointInfo.ContactTypeEnum.EMAIL);
-    when(contactPointInfo.getValue()).thenReturn("test@example.com");
-    when(contactPointInfo.getUsage()).thenReturn(null);
-
-    ContactPoint result = ContactPointCreator.createContactPoint(contactPointInfo);
-
-    assertThat(result.getSystem()).isEqualTo(ContactPoint.ContactPointSystem.EMAIL);
-    assertThat(result.getValue()).isEqualTo("test@example.com");
     assertThat(result.getUse()).isNull();
   }
 

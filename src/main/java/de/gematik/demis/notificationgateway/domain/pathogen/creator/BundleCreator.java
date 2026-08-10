@@ -83,7 +83,6 @@ public class BundleCreator {
   public static Bundle createBundle(
       PathogenTest pathogenTest,
       NotificationType notificationType,
-      final boolean loincVersionViaPortalEnabled,
       final boolean referenceFieldEnabled) {
 
     // DTOs
@@ -141,8 +140,7 @@ public class BundleCreator {
                 submittingRole,
                 observation,
                 notificationLaboratoryCategory,
-                extractVersionMap(pathogenTest),
-                loincVersionViaPortalEnabled));
+                extractVersionMap(pathogenTest)));
 
     final DiagnosticReport diagnosticReport =
         createDiagnosticReport(

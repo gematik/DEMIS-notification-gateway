@@ -86,8 +86,7 @@ public class ObservationCreator {
       Patient patient,
       Specimen specimen,
       NotificationLaboratoryCategory notificationCategory,
-      Map<String, String> versionMap,
-      final boolean loincVersionViaPortalEnabled) {
+      Map<String, String> versionMap) {
     final List<Observation> collect = new ArrayList<>();
     final String pathogenCode = notificationCategory.getPathogen().getCode();
     final String pathogenDisplay = notificationCategory.getPathogen().getDisplay();
@@ -103,8 +102,7 @@ public class ObservationCreator {
             patient,
             specimen,
             pathogenShortCode,
-            versionMap,
-            loincVersionViaPortalEnabled));
+            versionMap));
 
     // Observation 2 - only if analyt is not null
     if (firstMethodPathogenDTO.getAnalyt() != null
@@ -120,8 +118,7 @@ public class ObservationCreator {
               patient,
               specimen,
               pathogenShortCode,
-              versionMap,
-              loincVersionViaPortalEnabled));
+              versionMap));
     }
 
     // Observations for all other diagnostik input
@@ -138,14 +135,7 @@ public class ObservationCreator {
       }
       collect.add(
           createSingleObservation(
-              pdto,
-              code,
-              display,
-              patient,
-              specimen,
-              pathogenShortCode,
-              versionMap,
-              loincVersionViaPortalEnabled));
+              pdto, code, display, patient, specimen, pathogenShortCode, versionMap));
     }
 
     return collect;
@@ -320,8 +310,7 @@ public class ObservationCreator {
       Patient patient,
       Specimen specimen,
       String pathogenCode,
-      Map<String, String> versionMap,
-      final boolean loincVersionViaPortalEnabled) {
+      Map<String, String> versionMap) {
 
     String methodSystem = null;
     String methodVersion = null;
@@ -339,7 +328,7 @@ public class ObservationCreator {
             ? SNOMED_CT_VERSION_FALLBACK
             : versionMap.get(SYSTEM_SNOMED_CT);
     String loincVersion =
-        !loincVersionViaPortalEnabled || versionMap == null || versionMap.isEmpty()
+        versionMap == null || versionMap.isEmpty()
             ? LOINC_VERSION_FALLBACK
             : versionMap.get(SYSTEM_LOINC);
     return new PathogenDetectionDataBuilder()

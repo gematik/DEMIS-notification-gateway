@@ -79,8 +79,7 @@ public class SpecimenCreator {
       PractitionerRole submittingRole,
       List<Observation> observation,
       NotificationLaboratoryCategory notificationLaboratoryCategory,
-      Map<String, String> versionMap,
-      final boolean loincVersionViaPortalEnabled) {
+      Map<String, String> versionMap) {
     List<Specimen> returnList = new ArrayList<>();
 
     // Retrieve the pathogen short code and the list of specimen data transfer objects (DTOs).
@@ -103,7 +102,6 @@ public class SpecimenCreator {
         }
       }
 
-      Specimen specimen = null;
       SpecimenDataBuilder specimenDataBuilder =
           new SpecimenDataBuilder()
               .setDefaultData()
@@ -121,7 +119,7 @@ public class SpecimenCreator {
         specimenDataBuilder.setCollectedDateTime(
             createDateTimeDate(specimenDTO.getExtractionDate()));
       }
-      specimen = specimenDataBuilder.build();
+      final Specimen specimen = specimenDataBuilder.build();
 
       // Add observations for pathogen detection.
       observation.addAll(
@@ -131,8 +129,7 @@ public class SpecimenCreator {
               patient,
               specimen,
               notificationLaboratoryCategory,
-              versionMap,
-              loincVersionViaPortalEnabled));
+              versionMap));
 
       // Add observations for resistance genes.
       observation.addAll(

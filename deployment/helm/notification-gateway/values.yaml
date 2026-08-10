@@ -38,9 +38,7 @@ customEnvVars:
   RPS_BASE_URL: http://report-processing-service.demis.svc.cluster.local/
   NES_BASE_URL: http://notification-processing-service.demis.svc.cluster.local/
   FEATURE_FLAG_DISEASE_STRICT: "false"
-  FEATURE_FLAG_LOINC_VERSION_VIA_PORTAL: "false"
   FEATURE_FLAG_REFERENCE_FIELD: "false"
-  FEATURE_FLAG_WITHOUT_CONTACT_POINT_USE: "false"
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)
 # If not given, the Entrypoint defined in Dockerfile will be used
@@ -118,10 +116,10 @@ service:
 # Resources
 resources:
   limits:
-    memory: "400Mi"
+    memory: "450Mi"
   requests:
     cpu: "100m"
-    memory: "400Mi"
+    memory: "450Mi"
 
 autoscaling:
   enabled: false

@@ -78,8 +78,7 @@ public class PathogenSendService {
       PathogenTest pathogenTest, Token token, NotificationType notificationType) {
     verifyHoneypot(pathogenTest);
 
-    final Bundle bundle =
-        createBundle(pathogenTest, notificationType, featureFlags.isReferenceField());
+    final Bundle bundle = createBundle(pathogenTest, notificationType);
     final String url = nesProperties.laboratoryUrl();
     final String operation = NESProperties.OPERATION_NAME;
     log.info("Sending request to {}, operation: {}", "NES", operation);

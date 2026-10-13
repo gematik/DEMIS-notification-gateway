@@ -64,7 +64,8 @@
     "category": "msvd",
     "status": "error",
     "note": "Der Patient entwickelte während des Aufenthalts in der Augenklinik spontan Beschwerden.",
-    "initialNotificationId": "init-notification-42"
+    "initialNotificationId": "init-notification-42",
+    "notificationIdReference": "relatesToOtherFacility"
   },
   "condition": {
     "recordedDate": "2024-03-04T00:00:00.000Z",

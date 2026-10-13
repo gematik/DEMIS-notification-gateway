@@ -100,7 +100,8 @@
     },
     "reportStatus": "final",
     "initialNotificationId": "12345",
-    "laboratoryOrderId": "1a2b3c"
+    "laboratoryOrderId": "1a2b3c",
+    "notificationIdReference": "relatesToOtherFacility"
   },
   "pathogenDTO": {
     "codeDisplay": {

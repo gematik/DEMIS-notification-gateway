@@ -1,6 +1,13 @@
 <div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 
 # Release notes notification-gateway
+## Release 6.10.1
+- updated docker base image to gematik1/osadl-alpine-openjdk25-jre:1.0.7
+- updated spring-parent to 4.1.12
+- added VEX documents to repository
+- removed FEATURE_FLAG_REFERENCE_FIELD
+- Updated minor/patch versions of dependencies
+
 ## Release 6.10.0
 - arranged resource limits
 - fixed handling of falsy custom environment variables (false, 0) in helm chart

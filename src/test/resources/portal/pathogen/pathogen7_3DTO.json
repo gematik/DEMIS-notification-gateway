@@ -112,7 +112,8 @@
     "reportStatus":"final",
     "interpretation":"Ich wollte nicht tauschen",
     "initialNotificationId":"834632",
-    "laboratoryOrderId":"686149"
+    "laboratoryOrderId":"686149",
+    "notificationIdReference": "relatesToOtherFacility"
   },
   "pathogenDTO":{
     "codeDisplay":{

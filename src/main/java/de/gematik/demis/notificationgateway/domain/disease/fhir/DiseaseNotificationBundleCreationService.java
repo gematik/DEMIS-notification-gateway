@@ -91,7 +91,7 @@ public class DiseaseNotificationBundleCreationService {
     createDisease(context);
     createCommonQuestionnaireResponse(diseaseNotification, context);
     createDiseaseQuestionnaireResponse(diseaseNotification, context);
-    createComposition(context, featureFlags.isReferenceField());
+    createComposition(context);
     return context.bundleBuilder().build();
   }
 
@@ -171,8 +171,7 @@ public class DiseaseNotificationBundleCreationService {
     }
   }
 
-  private void createComposition(
-      DiseaseNotificationContext context, boolean referenceFieldEnabled) {
+  private void createComposition(DiseaseNotificationContext context) {
     NotificationBundleDiseaseDataBuilder bundle = context.bundleBuilder();
     NotificationDiseaseDataBuilder composition = bundle.createComposition();
     DiseaseStatus status = context.notification().getStatus();
@@ -186,28 +185,20 @@ public class DiseaseNotificationBundleCreationService {
     String initialNotificationId = status.getInitialNotificationId();
 
     if (StringUtils.isNotBlank(initialNotificationId)) {
-      if (!referenceFieldEnabled) {
-        composition.setRelatesTo(RelatesToBuilder.forInitialNotificationId(initialNotificationId));
-      } else {
-        final DiseaseStatus.NotificationIdReferenceEnum notificationIdReference =
-            status.getNotificationIdReference();
-        if (notificationIdReference
-            == null) { // null check can be removed with feature flag referenceFieldEnabled
-          composition.setRelatesTo(
-              RelatesToBuilder.forInitialNotificationId(initialNotificationId));
-        } else {
-          switch (notificationIdReference) {
-            case RELATES_TO_OWN_FACILITY ->
-                composition.setIdentifierAsNotificationId(initialNotificationId);
-            case RELATES_TO_OTHER_FACILITY ->
-                // follow-up notification is always of type RELATES_TO_OTHER_FACILITY
-                composition.setRelatesTo(
-                    RelatesToBuilder.forInitialNotificationId(initialNotificationId));
-            default ->
-                throw new IllegalArgumentException(
-                    "NotificationIdReferenceEnum must be set to OWN ot OTHER when initialNotificationId is provided");
-          }
-        }
+
+      final DiseaseStatus.NotificationIdReferenceEnum notificationIdReference =
+          status.getNotificationIdReference();
+
+      switch (notificationIdReference) {
+        case RELATES_TO_OWN_FACILITY ->
+            composition.setIdentifierAsNotificationId(initialNotificationId);
+        case RELATES_TO_OTHER_FACILITY ->
+            // follow-up notification is always of type RELATES_TO_OTHER_FACILITY
+            composition.setRelatesTo(
+                RelatesToBuilder.forInitialNotificationId(initialNotificationId));
+        default ->
+            throw new IllegalArgumentException(
+                "NotificationIdReferenceEnum must be set to OWN ot OTHER when initialNotificationId is provided");
       }
     }
 

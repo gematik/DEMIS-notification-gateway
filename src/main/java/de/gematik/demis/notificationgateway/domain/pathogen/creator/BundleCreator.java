@@ -80,10 +80,7 @@ public class BundleCreator {
    * @return A {@link Coding} object representing the address use.
    * @throws IllegalArgumentException if the address type is null.
    */
-  public static Bundle createBundle(
-      PathogenTest pathogenTest,
-      NotificationType notificationType,
-      final boolean referenceFieldEnabled) {
+  public static Bundle createBundle(PathogenTest pathogenTest, NotificationType notificationType) {
 
     // DTOs
 
@@ -158,8 +155,7 @@ public class BundleCreator {
                 notifierRole,
                 diagnosticReport,
                 notificationLaboratoryCategory,
-                notificationType,
-                referenceFieldEnabled))
+                notificationType))
         .setLaboratoryReport(diagnosticReport)
         .build();
   }
